@@ -1,0 +1,133 @@
+{
+ "ground": [
+  [
+   0,
+   10
+  ],
+  [
+   20,
+   10
+  ],
+  [
+   40,
+   20
+  ],
+  [
+   55,
+   27
+  ],
+  [
+   80,
+   28
+  ]
+ ],
+ "layers": [
+  {
+   "name": "崩積層",
+   "color": "#D8BE8A",
+   "gamma": 18,
+   "gammaSat": 20,
+   "c": 5,
+   "phi": 28,
+   "bedrock": false,
+   "top": null
+  },
+  {
+   "name": "風化岩",
+   "color": "#B48462",
+   "gamma": 21,
+   "gammaSat": 22,
+   "c": 30,
+   "phi": 32,
+   "bedrock": false,
+   "top": [
+    [
+     0,
+     6
+    ],
+    [
+     20,
+     6
+    ],
+    [
+     40,
+     14
+    ],
+    [
+     55,
+     19
+    ],
+    [
+     80,
+     20
+    ]
+   ]
+  },
+  {
+   "name": "岩盤",
+   "color": "#8C949A",
+   "gamma": 24,
+   "gammaSat": 24,
+   "c": 200,
+   "phi": 40,
+   "bedrock": true,
+   "top": [
+    [
+     0,
+     2
+    ],
+    [
+     40,
+     8
+    ],
+    [
+     80,
+     12
+    ]
+   ]
+  }
+ ],
+ "water": [
+  [
+   0,
+   10
+  ],
+  [
+   20,
+   10.2
+  ],
+  [
+   40,
+   16
+  ],
+  [
+   55,
+   22
+  ],
+  [
+   80,
+   24
+  ]
+ ],
+ "zBase": 0,
+ "settings": {
+  "kh": 0,
+  "kv": 0,
+  "gw": 9.81,
+  "cos2": false,
+  "nCol": 60,
+  "nState": 80,
+  "nSub": 4,
+  "dmin": 1,
+  "convex": true,
+  "noBoundary": true,
+  "tol": 0.0001,
+  "maxIter": 30,
+  "F0": 2,
+  "Freq": 1.5,
+  "useF0": false,
+  "f0type": "pwri",
+  "unitG": "kN",
+  "unitC": "kPa"
+ }
+}

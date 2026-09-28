@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "SSA Slope Stability Analysis (web edition)"
+type: software
+authors:
+  - family-names: Chen
+    given-names: C. Y.
+license: GPL-3.0-only
+repository-code: "https://github.com/cychen59/ssa-slope-stability"
+url: "https://cychen59.github.io/ssa-slope-stability/"
+keywords:
+  - slope stability
+  - dynamic programming
+  - Janbu method
+  - critical slip surface
+  - landslide
+preferred-citation:
+  type: conference-paper
+  authors:
+    - family-names: Chen
+      given-names: C. Y.
+    - family-names: Ikkanda
+      given-names: S.
+    - family-names: Fujita
+      given-names: M.
+    - family-names: Tsutsumi
+      given-names: D.
+  title: "A study on mechanism of large-scale landslides and the prediction"
+  collection-title: "Proceedings of the 12th International Symposium on River Sedimentation"
+  year: 2013
+  start: 109
+  end: 118
+  url: "https://app.box.com/s/zrey81xhpm4jitn9qszz"

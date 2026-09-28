@@ -1,0 +1,1754 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="SSA 邊坡穩定分析：在瀏覽器繪製邊坡剖面、土層與地下水位，以動態規劃搜尋非圓弧臨界滑動面，並以簡易 Janbu 法計算安全係數。">
+<meta property="og:title" content="SSA 邊坡穩定分析">
+<meta property="og:description" content="動態規劃搜尋非圓弧滑動面・簡易 Janbu 法・由地下水位換算孔隙水壓，免安裝、直接在瀏覽器使用。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cychen59.github.io/ssa-slope-stability/">
+<!--
+  SSA Slope Stability Analysis (web edition)
+  Copyright (C) 2013-2026  C. Y. Chen
+  This program is free software: you can redistribute it and/or modify it under the terms of the
+  GNU General Public License as published by the Free Software Foundation, version 3.
+  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  see the GNU General Public License for more details: https://www.gnu.org/licenses/gpl-3.0.html
+-->
+<title>SSA 邊坡穩定分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#ECEFED; --surface:#FFFFFF; --panel:#F6F8F7; --canvas:#FBFCFB;
+  --ink:#16201D; --muted:#5A6763; --faint:#8A9692; --line:#D3DBD8; --line2:#E4E9E7;
+  --accent:#245C4A; --accent-ink:#FFFFFF; --accent-soft:#DCEBE4;
+  --water:#2A6FC4; --slip:#C3301D; --slip-fill:rgba(195,48,29,.13);
+  --ok:#2E7D4F; --ok-bg:#DDF0E4; --warn:#9A6200; --warn-bg:#FBEBC8; --crit:#B3261E; --crit-bg:#F9DEDA;
+  --grid:#E3E8E6; --axis:#6E7B77;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --r:8px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1413; --surface:#171E1D; --panel:#1C2423; --canvas:#131A19;
+    --ink:#E2E9E6; --muted:#9AA8A4; --faint:#6D7B77; --line:#2D3937; --line2:#243030;
+    --accent:#72C2A2; --accent-ink:#0B1712; --accent-soft:#1F3A31;
+    --water:#6CA9F2; --slip:#FF6E58; --slip-fill:rgba(255,110,88,.16);
+    --ok:#7BD29F; --ok-bg:#183327; --warn:#F2C166; --warn-bg:#3A2D10; --crit:#FF8A7E; --crit-bg:#3C1B18;
+    --grid:#1F2928; --axis:#83918D;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1413; --surface:#171E1D; --panel:#1C2423; --canvas:#131A19;
+  --ink:#E2E9E6; --muted:#9AA8A4; --faint:#6D7B77; --line:#2D3937; --line2:#243030;
+  --accent:#72C2A2; --accent-ink:#0B1712; --accent-soft:#1F3A31;
+  --water:#6CA9F2; --slip:#FF6E58; --slip-fill:rgba(255,110,88,.16);
+  --ok:#7BD29F; --ok-bg:#183327; --warn:#F2C166; --warn-bg:#3A2D10; --crit:#FF8A7E; --crit-bg:#3C1B18;
+  --grid:#1F2928; --axis:#83918D;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;padding-inline:16px;padding-block:14px 32px}
+.app{max-width:1440px;margin:0 auto;display:grid;gap:14px}
+.num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 20px}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand .mark{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.14em;color:var(--accent-ink);background:var(--accent);padding:3px 8px;border-radius:4px}
+.brand h1{font-size:21px;margin:0;font-weight:700;letter-spacing:.02em}
+.brand p{margin:0;color:var(--muted);font-size:13px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* buttons */
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px}
+.btn:hover{border-color:var(--faint)}
+.btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600;padding:8px 16px;font-size:14px}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.primary:disabled{opacity:.7;cursor:progress}
+.btn.small{padding:3px 8px;font-size:12px}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* layout */
+.layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:14px;align-items:start}
+.side{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.stage{display:grid;gap:14px;min-width:0}
+@media (max-width:900px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .stage{order:-1}
+}
+
+/* tabs */
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);background:var(--panel)}
+.tabs button{border:0;background:transparent;padding:10px 4px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.pane{padding:14px;display:grid;gap:14px}
+.pane>*{min-width:0}
+.sec{display:grid;gap:8px}
+.sec h3{margin:0;font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.hint{font-size:12px;color:var(--muted);margin:0}
+
+/* line list */
+.linelist{display:grid;gap:4px}
+.lrow{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:8px;padding:6px 8px;border:1px solid transparent;border-radius:6px;cursor:pointer;background:transparent;text-align:left}
+.lrow:hover{background:var(--panel)}
+.lrow[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.lrow .cnt{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.sw{width:22px;height:0;border-top:3px solid var(--ink)}
+.sw.water{border-top:3px dashed var(--water)}
+.sw.bound{border-top-width:2px}
+
+textarea{width:100%;border:1px solid var(--line);border-radius:6px;background:var(--canvas);padding:8px;font-family:var(--mono);font-size:12.5px;line-height:1.5;resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.field{display:grid;gap:3px}
+.field label{font-size:12px;color:var(--muted)}
+.field input[type=number],.field input[type=text],.field select{width:100%;border:1px solid var(--line);border-radius:6px;padding:5px 7px;background:var(--canvas);font-family:var(--mono);font-size:13px}
+.field input[type=text]{font-family:var(--sans)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}
+.check{display:flex;align-items:flex-start;gap:8px;font-size:13px;cursor:pointer}
+.check input{margin-top:3px;accent-color:var(--accent)}
+.check small{display:block;color:var(--muted);font-size:12px}
+
+/* layer cards */
+.layer{border:1px solid var(--line);border-radius:6px;padding:10px;display:grid;gap:8px;background:var(--panel)}
+.layer-head{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center}
+.layer-head input[type=color]{width:28px;height:28px;border:1px solid var(--line);border-radius:5px;padding:0;background:none;cursor:pointer}
+.layer-head input[type=text]{border:1px solid var(--line);border-radius:6px;padding:5px 7px;background:var(--canvas);width:100%;font-weight:600}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.layer .idx{font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+/* toolbar + canvas */
+.board{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--panel)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg .btn{border:0;border-radius:0;border-right:1px solid var(--line)}
+.seg .btn:last-child{border-right:0}
+.tb-label{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.tb-label input[type=number]{width:62px;border:1px solid var(--line);border-radius:5px;padding:3px 6px;background:var(--canvas);font-family:var(--mono);font-size:12px}
+.tb-label input[type=checkbox]{accent-color:var(--accent)}
+.spacer{flex:1}
+.canvas-wrap{position:relative;height:clamp(340px,58vh,620px);background:var(--canvas)}
+@media (max-width:600px){.canvas-wrap{height:340px}}
+#cv{width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+#cv.m-add{cursor:crosshair}
+#cv.m-del{cursor:not-allowed}
+.hud{position:absolute;left:56px;top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);background:color-mix(in srgb,var(--canvas) 85%,transparent);padding:2px 6px;border-radius:4px;pointer-events:none}
+.legend{position:absolute;right:10px;top:8px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);background:color-mix(in srgb,var(--canvas) 85%,transparent);padding:4px 8px;border-radius:4px;pointer-events:none;max-width:calc(100% - 200px);justify-content:flex-end}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{display:inline-block;width:16px;height:0;border-top:2px solid var(--ink)}
+.legend i.w{border-top:2px dashed var(--water)}
+.legend i.s{border-top:3px solid var(--slip)}
+.statusbar{padding:6px 12px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between}
+
+/* svg styles */
+.ax text{font-family:var(--mono);font-size:11px;fill:var(--axis)}
+.ax line{stroke:var(--grid);stroke-width:1}
+.ax .frame{fill:none;stroke:var(--line)}
+.ground{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.bound{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:1.2}
+.wline{fill:none;stroke:var(--water);stroke-width:2;stroke-dasharray:7 4}
+.wsym{fill:none;stroke:var(--water);stroke-width:1.5}
+.basel{stroke:var(--faint);stroke-width:1.2;stroke-dasharray:4 3}
+.slip{fill:none;stroke:var(--slip);stroke-width:2.6;stroke-linejoin:round}
+.mass{fill:var(--slip-fill);stroke:none}
+.slice{stroke:var(--slip);stroke-opacity:.35;stroke-width:.8}
+.gridpts{fill:var(--faint);fill-opacity:.55}
+.vtx{fill:var(--surface);stroke-width:2;cursor:grab}
+.vtx.on{r:6}
+.vtx.hot{fill:var(--accent)}
+.fslabel rect{fill:var(--surface);stroke:var(--slip);stroke-width:1.2}
+.fslabel text{font-family:var(--mono);font-size:12.5px;font-weight:600;fill:var(--slip)}
+.hatch line{stroke:var(--ink);stroke-opacity:.35;stroke-width:1}
+.pv{stroke:var(--accent);stroke-width:1;stroke-dasharray:3 3}
+
+/* results */
+.results{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:14px;transition:opacity .2s}
+.results.stale{opacity:.6}
+.res-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 24px;align-items:start}
+@media (max-width:700px){.res-top{grid-template-columns:minmax(0,1fr)}}
+.fsbox{display:grid;gap:4px;min-width:200px}
+.fsbox .lbl{font-size:12px;color:var(--muted);letter-spacing:.04em}
+.fsbox .big{font-family:var(--mono);font-size:44px;font-weight:600;line-height:1.05;letter-spacing:-.01em}
+.fsbox .sub{font-size:13px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;width:max-content}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.ok{color:var(--ok);background:var(--ok-bg)}
+.chip.warn{color:var(--warn);background:var(--warn-bg)}
+.chip.crit{color:var(--crit);background:var(--crit-bg)}
+.chip.stale{color:var(--muted);background:var(--panel)}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px 18px;margin:0}
+.stats div{display:grid;gap:1px;border-top:1px solid var(--line2);padding-top:6px}
+.stats dt{font-size:12px;color:var(--muted)}
+.stats dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px}
+details{border-top:1px solid var(--line);padding-top:10px}
+details summary{cursor:pointer;font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸";color:var(--muted);transition:transform .15s}
+details[open] summary::before{transform:rotate(90deg)}
+.tblwrap{overflow-x:auto;margin-top:8px;max-height:360px;overflow-y:auto;border:1px solid var(--line2);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{padding:4px 8px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line2)}
+th{position:sticky;top:0;background:var(--panel);font-weight:600;color:var(--muted);text-align:right}
+td{font-family:var(--mono);font-variant-numeric:tabular-nums}
+td.t,th.t{text-align:left;font-family:var(--sans)}
+.guide{border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:10px 12px;display:grid;gap:8px}
+.guide .gt{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.guide dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:12.5px}
+.guide dt{color:var(--muted)}
+.guide dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.guide dd em{font-style:normal;color:var(--muted);font-family:var(--sans);font-size:12px}
+.guide .note{font-size:12.5px;padding:6px 8px;border-radius:5px;margin:0}
+.guide .note.ok{background:var(--ok-bg);color:var(--ok)}
+.guide .note.warn{background:var(--warn-bg);color:var(--warn)}
+.frows{display:grid;gap:10px}
+.frow{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:2px 10px;align-items:center}
+.frow label{font-size:13px}
+.frow input{width:100%;border:1px solid var(--line);border-radius:6px;padding:5px 7px;background:var(--canvas);font-family:var(--mono);font-size:13px}
+.frow .fh{grid-column:1/-1;margin:0;font-size:12px;color:var(--muted);line-height:1.5}
+.gridchip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:1px 10px;font-size:12px;cursor:pointer;color:var(--muted);font-family:var(--mono)}
+.gridchip.warn{color:var(--warn);background:var(--warn-bg);border-color:transparent}
+.gridchip:hover{border-color:var(--faint)}
+.msg{padding:10px 12px;border-radius:6px;background:var(--crit-bg);color:var(--crit);font-size:13px}
+.msg ul{margin:4px 0 0;padding-left:18px}
+.doc{font-size:13.5px;line-height:1.75;max-width:65ch}
+.doc h4{margin:14px 0 4px;font-size:14px}
+.doc p,.doc ul{margin:0 0 8px}
+.doc ul{padding-left:18px}
+.doc code{font-family:var(--mono);font-size:12px;background:var(--panel);padding:1px 4px;border-radius:3px}
+.doc .eq{font-family:var(--mono);font-size:12.5px;background:var(--panel);padding:8px 10px;border-radius:6px;overflow-x:auto;white-space:nowrap}
+/* theory */
+.theory,.cite{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px clamp(16px,3vw,32px);display:grid;gap:22px}
+.theory h2,.cite h2{margin:0;font-size:19px;text-wrap:balance}
+.th-head{display:grid;gap:8px;max-width:72ch}
+.th-head p{margin:0;color:var(--muted);line-height:1.8}
+.th-sec{display:grid;gap:10px;max-width:78ch;border-top:1px solid var(--line2);padding-top:16px}
+.th-sec h3{margin:0;font-size:15.5px}
+.th-sec p{margin:0;line-height:1.85;font-size:14px}
+.eqn{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;background:var(--panel);border-radius:6px;padding:10px 14px;overflow-x:auto}
+.eqn math{font-size:1.12em;justify-self:start;min-width:0}
+.eqn.eq-key{box-shadow:inset 3px 0 0 var(--accent)}
+.eqno{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+math{font-family:"STIX Two Math","Cambria Math","Latin Modern Math",serif}
+.th-fig{margin:4px 0;display:grid;gap:6px;justify-items:start}
+.th-fig svg{width:100%;max-width:520px;height:auto;display:block}
+.th-fig-sm svg{max-width:340px}
+.th-fig figcaption{font-size:12.5px;color:var(--muted);line-height:1.6}
+.fg-grid line{stroke:var(--line);stroke-width:1;stroke-dasharray:3 3}
+.fg-ground{fill:none;stroke:var(--ink);stroke-width:2}
+.fg-node circle{fill:var(--faint)}
+.fg-path{fill:none;stroke:var(--slip);stroke-width:2.4;stroke-linejoin:round}
+.fg-lbl{font-size:11.5px;fill:var(--muted);font-family:var(--sans)}
+.fg-acc{font-size:12px;fill:var(--slip);font-family:var(--mono);font-weight:600}
+.fg-slice{fill:var(--accent-soft);stroke:var(--ink);stroke-width:1.5}
+.fg-dash{stroke:var(--faint);stroke-dasharray:4 3}
+.fg-thin{fill:none;stroke:var(--muted);stroke-width:1}
+.fg-f{stroke:var(--ink);stroke-width:1.6}
+.fg-r{stroke:var(--slip);stroke-width:1.8}
+.fg-ah{fill:var(--ink)}
+.fg-ah2{fill:var(--slip)}
+.th-steps{margin:0;padding-left:22px;display:grid;gap:4px;line-height:1.8}
+.th-sym{margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 20px}
+.th-sym div{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:13px;border-bottom:1px solid var(--line2);padding-bottom:4px}
+.th-sym dt{font-family:var(--mono)}
+.th-sym dd{margin:0;color:var(--muted)}
+.cite{gap:12px}
+.cite p{margin:0}
+.cite h3{margin:8px 0 0;font-size:14px}
+.cite-main{margin:0;padding:12px 16px;background:var(--accent-soft);border-radius:6px;font-family:var(--mono);font-size:13px;line-height:1.7;max-width:90ch}
+.refs{margin:0;padding-left:22px;display:grid;gap:6px;font-size:13px;line-height:1.7;color:var(--muted);max-width:90ch}
+a.btn{text-decoration:none;color:inherit}
+.doc a{color:var(--accent)}
+.hint-list{margin:0;padding-left:18px;font-size:12px;color:var(--muted);display:grid;gap:4px;line-height:1.55}
+.hint-list strong{color:var(--ink);font-weight:600}
+details.sample{border-top:0;padding-top:0}
+details.sample summary{font-size:12.5px;font-weight:600;color:var(--accent)}
+details.sample[open]{display:grid;gap:6px}
+details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:8px;font-family:var(--mono);font-size:12px;overflow-x:auto}
+.savenote{background:var(--accent-soft);border-radius:6px;padding:10px 12px}
+.savenote .hint{color:var(--ink)}
+.site-foot{display:grid;gap:4px;font-size:12px;color:var(--muted);padding:6px 2px 0;line-height:1.7}
+.site-foot p{margin:0}
+.site-foot a{color:var(--accent)}
+#fallback{display:none}
+#fallback.show{display:block}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <span class="mark">SSA</span>
+      <h1>邊坡穩定分析</h1>
+      <p>動態規劃搜尋非圓弧滑動面・簡易 Janbu 法・由地下水位換算孔隙水壓</p>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="btnUndo" type="button" title="復原上一步（Ctrl+Z）">↶ 復原</button>
+      <button class="btn" id="btnSample" type="button">載入範例</button>
+      <a class="btn" href="#theory">原理與公式</a>
+      <a class="btn" href="#cite">如何引用</a>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="side">
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="geo" id="tab-geo" type="button">剖面</button>
+        <button role="tab" aria-selected="false" data-tab="soil" id="tab-soil" type="button">土層</button>
+        <button role="tab" aria-selected="false" data-tab="set" id="tab-set" type="button">設定</button>
+        <button role="tab" aria-selected="false" data-tab="doc" id="tab-doc" type="button">說明</button>
+      </div>
+
+      <!-- geometry -->
+      <div class="pane" data-pane="geo">
+        <div class="sec">
+          <h3>編輯中的線</h3>
+          <div class="linelist" id="lineList"></div>
+          <p class="hint">點選一條線後，可在右側圖上拖曳節點、加點或刪點。每條線都以 x 由小到大排序。</p>
+        </div>
+        <div class="sec">
+          <h3 id="coordTitle">座標（x　z）</h3>
+          <textarea id="coords" rows="9" spellcheck="false" aria-label="目前線段的座標"></textarea>
+          <div class="row">
+            <button class="btn small" id="btnApply" type="button">套用座標</button>
+            <button class="btn small ghost" id="btnClearLine" type="button">清除水位線</button>
+            <button class="btn small ghost" id="btnMakeWater" type="button">由地表下 2 m 建立水位線</button>
+          </div>
+          <p class="hint">每行一點，x 與 z 以空白、逗號或 Tab 分隔，可直接從 Excel 貼上。單位 m。</p>
+        </div>
+        <div class="sec">
+          <h3>模型範圍</h3>
+          <div class="grid2">
+            <div class="field"><label for="zBase">模型底部高程 (m)</label><input type="number" id="zBase" step="0.5"></div>
+          </div>
+          <p class="hint">滑動面不會低於此高程，也不會進入勾選為「岩盤」的土層。</p>
+          <p class="hint" id="rangeInfo"></p>
+        </div>
+        <div class="sec">
+          <h3>匯入地形 CSV</h3>
+          <div class="row">
+            <label class="btn small" for="csvIn">選擇 CSV 檔…</label>
+            <input type="file" id="csvIn" accept=".csv,.txt,text/csv,text/plain" hidden>
+          </div>
+          <p class="hint">可接受兩種格式，第一列可以是欄名。以 Excel 另存為 CSV（UTF-8 或 Big5）皆可。</p>
+          <ul class="hint-list">
+            <li><strong>兩欄（x, z）</strong>：匯入到上方目前選取的線，預設是地表線。</li>
+            <li><strong>三欄以上（整個剖面）</strong>：第 1 欄 x，第 2 欄地表高程，之後各欄依序為第 2、3…層的頂面高程。欄名含「水」字的欄視為地下水位線。某條線在該 x 沒有資料時留空即可。</li>
+          </ul>
+          <details class="sample">
+            <summary>範例檔</summary>
+            <p class="hint">整個剖面（即本頁預設範例）：</p>
+            <pre id="csvSampleFull"></pre>
+            <div class="row"><button class="btn small" id="btnDlFull" type="button">下載 SSA-剖面範例.csv</button><button class="btn small ghost" id="btnCpFull" type="button">複製</button></div>
+            <p class="hint">單一地表線：</p>
+            <pre id="csvSampleGround"></pre>
+            <div class="row"><button class="btn small" id="btnDlGround" type="button">下載 SSA-地表線範例.csv</button><button class="btn small ghost" id="btnCpGround" type="button">複製</button></div>
+          </details>
+        </div>
+        <div class="sec savenote">
+          <h3>保存與接續分析</h3>
+          <p class="hint">在「設定」頁籤最下方的「模型存取」，可以把這次的所有模型參數存成一個 JSON 檔，內容包含地形、各土層界面、地下水位、土層參數與分析設定。下次開啟本工具時，在同一處選擇這個 JSON 檔匯入，就能接續上次的模型繼續分析。本工具每次開啟都會從預設範例開始，不會自動保留上次的內容，請記得存檔。</p>
+          <div class="row"><button class="btn small" id="btnGoSave" type="button">前往「模型存取」</button></div>
+        </div>
+      </div>
+
+      <!-- soil layers -->
+      <div class="pane" data-pane="soil" hidden>
+        <div class="grid2">
+          <div class="field"><label for="s-unitG">單位重 γ、γsat</label>
+            <select id="s-unitG" data-s="unitG"><option value="kN">kN/m³</option><option value="tf">tf/m³</option></select></div>
+          <div class="field"><label for="s-unitC">凝聚力 c'</label>
+            <select id="s-unitC" data-s="unitC"><option value="kPa">kPa</option><option value="tf">tf/m²</option></select></div>
+        </div>
+        <p class="hint">土層由上往下排列。第 1 層的頂面就是地表，其餘各層的頂面在「剖面」頁編輯。φ' 單位為度。換算採 1 tf = 9.80665 kN，切換單位時數值會自動換算，計算結果也以相同單位顯示。</p>
+        <div id="layerList" class="sec"></div>
+        <button class="btn" id="btnAddLayer" type="button">＋ 新增土層（加在最下方）</button>
+      </div>
+
+      <!-- settings -->
+      <div class="pane" data-pane="set" hidden>
+        <div class="sec">
+          <h3>地震力（擬靜態）</h3>
+          <div class="grid2">
+            <div class="field"><label for="s-kh">水平震度 kh</label><input type="number" id="s-kh" data-s="kh" step="0.01" min="0"></div>
+            <div class="field"><label for="s-kv">垂直震度 kv</label><input type="number" id="s-kv" data-s="kv" step="0.01"></div>
+          </div>
+        </div>
+        <div class="sec">
+          <h3>孔隙水壓</h3>
+          <div class="grid2">
+            <div class="field"><label for="s-gw" id="lbl-gw">水的單位重 γw (kN/m³)</label><input type="number" id="s-gw" data-s="gw" step="0.01" min="0"></div>
+          </div>
+          <label class="check"><input type="checkbox" id="s-cos2" data-s="cos2"><span>水位線傾斜修正 u = γw·hw·cos²θ<small>未勾選時採靜水壓 u = γw·hw，hw 為水位線到滑動面的鉛直距離。</small></span></label>
+        </div>
+        <div class="sec">
+          <h3>滑動面搜尋</h3>
+          <div class="guide" id="searchGuide" aria-live="polite"></div>
+          <div class="frows">
+            <div class="frow">
+              <label for="s-nCol">垂直分割線數</label><input type="number" id="s-nCol" data-s="nCol" step="1" min="8" max="200">
+              <p class="fh">決定水平解析度。建議線距 1–2 m，約等於「水平長度 ÷ 1.5」。常用 60–120 條。</p>
+            </div>
+            <div class="frow">
+              <label for="s-nState">每線節點數</label><input type="number" id="s-nState" data-s="nState" step="1" min="12" max="250">
+              <p class="fh">決定垂直解析度。建議節點間距 0.3 m 左右，約等於「最大土層厚度 ÷ 0.3」。常用 80–120 個。</p>
+            </div>
+            <div class="frow">
+              <label for="s-nSub">每段切片數</label><input type="number" id="s-nSub" data-s="nSub" step="1" min="1" max="10">
+              <p class="fh">每兩條分割線之間再切幾片計算土重與水壓。一般 3–4，土層很薄或水位起伏大時用 5。</p>
+            </div>
+            <div class="frow">
+              <label for="s-dmin">最小滑動深度 (m)</label><input type="number" id="s-dmin" data-s="dmin" step="0.1" min="0">
+              <p class="fh">排除過淺的表層滑動。c'=0 的砂土或崩積層建議 1–2 m；要檢討淺層崩塌時設 0。</p>
+            </div>
+          </div>
+          <p class="hint">分割線數與節點數越多越精細，但計算量約與「分割線數 × 節點數²」成正比，節點數加倍，時間約變 4 倍。</p>
+          <label class="check"><input type="checkbox" id="s-convex" data-s="convex"><span>限制滑動面為凹形<small>滑動面坡度沿滑動方向單調變化，排除運動學上不合理的形狀（原程式 ktotu）。</small></span></label>
+          <label class="check"><input type="checkbox" id="s-noBoundary" data-s="noBoundary"><span>滑動面不穿越模型左右邊界<small>兩端的分割線只允許在地表以上（原程式 kconc 的推廣）。</small></span></label>
+        </div>
+        <div class="sec">
+          <h3>收斂與判定</h3>
+          <div class="grid2">
+            <div class="field"><label for="s-tol">容許誤差 ΔF</label><input type="number" id="s-tol" data-s="tol" step="0.0001" min="0"></div>
+            <div class="field"><label for="s-maxIter">最大迭代次數</label><input type="number" id="s-maxIter" data-s="maxIter" step="1" min="1" max="200"></div>
+            <div class="field"><label for="s-F0">起始 F</label><input type="number" id="s-F0" data-s="F0" step="0.1" min="0.1"></div>
+            <div class="field"><label for="s-Freq">要求安全係數</label><input type="number" id="s-Freq" data-s="Freq" step="0.05" min="0"></div>
+          </div>
+          <div class="field"><label for="s-f0type">修正係數 f0 公式</label>
+            <select id="s-f0type" data-s="f0type">
+              <option value="pwri">f0 = (50d/L)^0.03（土研資料 1987，申・板垣 1983）</option>
+              <option value="janbu">f0 = 1 + b1[d/L − 1.4(d/L)²]（Janbu 修正曲線）</option>
+            </select>
+          </div>
+          <label class="check"><input type="checkbox" id="s-useF0" data-s="useF0"><span>以修正後 f0·Fs 判定<small>未勾選時以簡易 Janbu 未修正值判定，與原 SSA 程式定義相同、較保守。</small></span></label>
+        </div>
+        <div class="sec">
+          <h3 id="saveSec">模型存取</h3>
+          <p class="hint">「儲存模型」會把地形、土層界面、地下水位、土層參數與分析設定全部存成一個 JSON 檔。下次開啟本工具時按「匯入模型」選擇這個檔案，就能接續上次的分析。</p>
+          <div class="row">
+            <button class="btn" id="btnSaveJson" type="button">儲存模型（JSON 檔）</button>
+            <label class="btn" for="fileIn">匯入模型…</label>
+            <input type="file" id="fileIn" accept=".json,application/json,text/plain" hidden>
+          </div>
+          <details class="sample">
+            <summary>以文字方式複製或貼上 JSON</summary>
+            <div class="row" style="margin-top:8px">
+              <button class="btn small" id="btnExport" type="button">產生 JSON</button>
+              <button class="btn small" id="btnCopyJson" type="button">複製</button>
+              <button class="btn small" id="btnImport" type="button">從文字載入</button>
+            </div>
+            <textarea id="jsonBox" rows="6" spellcheck="false" aria-label="模型 JSON"></textarea>
+          </details>
+        </div>
+      </div>
+
+      <!-- doc -->
+      <div class="pane" data-pane="doc" hidden>
+        <div class="doc">
+          <p>完整的方法原理、公式與參考文獻放在頁面下方的<a href="#theory">「方法原理與公式」</a>。</p>
+          <h4>操作步驟</h4>
+          <ul>
+            <li>「剖面」頁編輯地表線、各土層頂面與地下水位線。</li>
+            <li>「土層」頁輸入 γ、γsat、c'、φ'，最下層可設為岩盤。</li>
+            <li>「設定」頁確認搜尋網格，再按「計算最危險滑動面」。</li>
+          </ul>
+          <h4>與原 C++ 程式的差異</h4>
+          <ul>
+            <li>原程式由 Richards 方程的有限元素解讀入壓力水頭，改為直接由地下水位線換算。</li>
+            <li>孔隙水壓改在每個切片中點計算，原程式每段只取一個中點值。</li>
+            <li>土層與水位交點改以切片取樣處理，避免原程式在層線轉折點附近漏算交點。</li>
+            <li>加入進出狀態，確保只有一個連續滑動體；凹形限制只套用在地表下的相鄰兩段，入口與出口的轉折不受限制。</li>
+            <li>加入最小滑動深度，避免 c'=0 時收斂到極淺的表層滑動。</li>
+            <li>原程式未套用修正係數 f0，本工具另列 f0·Fs 供參考。</li>
+            <li>單位改為 kN、kPa（1 tf/m² ≈ 9.81 kPa）。可自動判斷坡面朝左或朝右。</li>
+          </ul>
+          <h4>使用限制</h4>
+          <ul>
+            <li>二維平面應變、極限平衡分析，不考慮基質吸力。</li>
+            <li>水位高於地表的積水載重與側向水壓未納入。</li>
+            <li>簡易 Janbu 法忽略切片間剪力，未修正值通常偏保守。</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <section class="stage">
+      <div class="board">
+        <div class="toolbar">
+          <div class="seg" role="group" aria-label="編輯模式">
+            <button class="btn" data-mode="drag" aria-pressed="true" type="button" title="拖曳節點">✥ 拖曳</button>
+            <button class="btn" data-mode="add" aria-pressed="false" type="button" title="點擊圖面新增節點">＋ 加點</button>
+            <button class="btn" data-mode="del" aria-pressed="false" type="button" title="點擊節點刪除">− 刪點</button>
+          </div>
+          <label class="tb-label">格點 <input type="number" id="snap" value="0.5" step="0.1" min="0"> m</label>
+          <label class="tb-label"><input type="checkbox" id="optEqual" checked> 等比例</label>
+          <label class="tb-label"><input type="checkbox" id="optSlices" checked> 切片</label>
+          <label class="tb-label"><input type="checkbox" id="optGrid"> 搜尋節點</label>
+          <button class="btn small" id="btnFit" type="button">全圖</button>
+          <span class="spacer"></span>
+          <button class="btn primary" id="btnRun" type="button">計算最危險滑動面</button>
+        </div>
+        <div class="canvas-wrap">
+          <svg id="cv" aria-label="邊坡剖面圖"></svg>
+          <div class="hud" id="hud">x —　z —</div>
+          <div class="legend">
+            <span><i></i>地表</span>
+            <span><i class="w"></i>地下水位</span>
+            <span><i class="s"></i>臨界滑動面</span>
+          </div>
+        </div>
+        <div class="statusbar"><span id="status">就緒</span><button class="gridchip" id="gridChip" type="button" title="查看搜尋設定建議"></button><span id="activeInfo"></span></div>
+      </div>
+
+      <div class="results" id="results"></div>
+      <textarea id="fallback" rows="5" readonly aria-label="複製內容"></textarea>
+      <article class="theory" id="theory">
+        <header class="th-head">
+          <h2>方法原理與公式</h2>
+          <p>本工具的計算核心係參考日本建設省土木研究所地すべり研究室的「動的計画法を用いた臨界すべり面解析法」（中村・久保田，1987，土木研究所資料第 2425 號，程式 CSSDP1）。以動態規劃搜尋任意形狀的臨界滑動面，並以簡易 Janbu 法計算安全係數。下文式號與原報告相同，方便對照。</p>
+        </header>
+
+        <section class="th-sec">
+          <h3>一、為什麼用動態規劃</h3>
+          <p>臨界滑動面分析是在給定的地形、地層與土壤條件下，找出安全係數最小的滑動面。傳統做法先假設圓弧或對數螺旋，再移動圓心與半徑試算；多層地盤、地形起伏大時，真正的臨界面往往不是圓弧。動態規劃（Dynamic Programming，DP）由 Bellman（1957）提出，把問題拆成多個階段逐段求最佳解，可以在搜尋範圍內找出任意形狀的滑動面，不必事先假設形狀。</p>
+          <p>DP 依據最佳化原理：不論初始狀態與第一步如何選擇，其餘的決策對第一步造成的狀態而言必須是最佳的。多階段問題因此化為遞迴式。</p>
+          <div class="eqn"><math display="block"><msub><mi>f</mi><mi>n</mi></msub><mo>=</mo><mi>min</mi><mover><mi>G</mi><mo>‾</mo></mover><mo>=</mo><mi>min</mi><mrow><mo>[</mo><msub><mover><mi>G</mi><mo>‾</mo></mover><mn>0</mn></msub><mo>+</mo><msub><mi>f</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>]</mo></mrow></math><span class="eqno">(1)</span></div>
+          <p>放到邊坡上，每一條垂直分割線是一個「階段」（stage），線上的候選點是「狀態」（state）。滑動面就是從第一條線走到最後一條線、每條線各選一點所連成的折線。</p>
+          <figure class="th-fig">
+            <svg viewBox="0 0 440 210" role="img" aria-label="動態規劃搜尋網格示意：垂直分割線為階段，線上節點為狀態，紅線為最小累積值的路徑">
+              <g class="fg-grid">
+                <line x1="40" y1="20" x2="40" y2="180"/><line x1="100" y1="20" x2="100" y2="180"/><line x1="160" y1="20" x2="160" y2="180"/><line x1="220" y1="20" x2="220" y2="180"/><line x1="280" y1="20" x2="280" y2="180"/><line x1="340" y1="20" x2="340" y2="180"/><line x1="400" y1="20" x2="400" y2="180"/>
+              </g>
+              <polyline class="fg-ground" points="20,150 100,150 160,118 220,86 280,58 340,42 420,38"/>
+              <g class="fg-node">
+                <circle cx="40" cy="140" r="2.6"/><circle cx="40" cy="155" r="2.6"/><circle cx="40" cy="170" r="2.6"/>
+                <circle cx="100" cy="140" r="2.6"/><circle cx="100" cy="155" r="2.6"/><circle cx="100" cy="170" r="2.6"/>
+                <circle cx="160" cy="108" r="2.6"/><circle cx="160" cy="124" r="2.6"/><circle cx="160" cy="140" r="2.6"/><circle cx="160" cy="156" r="2.6"/><circle cx="160" cy="172" r="2.6"/>
+                <circle cx="220" cy="76" r="2.6"/><circle cx="220" cy="96" r="2.6"/><circle cx="220" cy="116" r="2.6"/><circle cx="220" cy="136" r="2.6"/><circle cx="220" cy="156" r="2.6"/><circle cx="220" cy="176" r="2.6"/>
+                <circle cx="280" cy="48" r="2.6"/><circle cx="280" cy="70" r="2.6"/><circle cx="280" cy="92" r="2.6"/><circle cx="280" cy="114" r="2.6"/><circle cx="280" cy="136" r="2.6"/><circle cx="280" cy="158" r="2.6"/>
+                <circle cx="340" cy="32" r="2.6"/><circle cx="340" cy="54" r="2.6"/><circle cx="340" cy="76" r="2.6"/><circle cx="340" cy="98" r="2.6"/><circle cx="340" cy="120" r="2.6"/>
+                <circle cx="400" cy="28" r="2.6"/><circle cx="400" cy="50" r="2.6"/><circle cx="400" cy="72" r="2.6"/>
+              </g>
+              <polyline class="fg-path" points="40,140 100,140 160,140 220,136 280,92 340,32 400,28"/>
+              <text class="fg-lbl" x="220" y="198" text-anchor="middle">階段 i（垂直分割線）</text>
+              <text class="fg-lbl" x="226" y="152">狀態 j</text>
+              <line class="fg-thin" x1="300" y1="146" x2="254" y2="117"/><text class="fg-acc" x="302" y="156">DG<tspan dy="3" font-size="9">i</tspan><tspan dy="-3">(K, j)</tspan></text>
+              <text class="fg-lbl" x="24" y="112">地表以上 DG = 0</text><line class="fg-thin" x1="60" y1="117" x2="70" y2="136"/>
+            </svg>
+            <figcaption>搜尋網格示意。紅線是累積值最小的路徑，地表以上的線段不計任何力，所以滑動面的起點與終點由計算自動決定。</figcaption>
+          </figure>
+        </section>
+
+        <section class="th-sec">
+          <h3>二、簡易 Janbu 法的安全係數</h3>
+          <p>把滑動土體切成 n 個垂直切片。第 i 片受到自重 W<sub>i</sub>、水平與垂直震度 k<sub>H</sub>、k<sub>V</sub>、滑動面上的正向力 N<sub>i</sub> 與抵抗力 T<sub>i</sub>，以及兩側的切片間水平力 E 與剪力 X。</p>
+          <figure class="th-fig th-fig-sm">
+            <svg viewBox="0 0 300 250" role="img" aria-label="切片受力圖：自重、震度力、正向力、抵抗力與切片間力">
+              <defs>
+                <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fg-ah"/></marker>
+                <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fg-ah2"/></marker>
+              </defs>
+              <polygon class="fg-slice" points="90,60 200,40 200,160 90,196"/>
+              <line class="fg-dash" x1="200" y1="160" x2="250" y2="160"/>
+              <path class="fg-thin" d="M236,160 A36,36 0 0 0 234,149"/>
+              <text class="fg-lbl" x="242" y="154">α<tspan dy="3" font-size="9">i</tspan></text>
+              <line class="fg-f" x1="150" y1="100" x2="150" y2="150" marker-end="url(#ah)"/>
+              <text class="fg-lbl" x="141" y="142" text-anchor="end">(1+k<tspan dy="3" font-size="9">V</tspan><tspan dy="-3">)W</tspan><tspan dy="3" font-size="9">i</tspan></text>
+              <line class="fg-f" x1="150" y1="92" x2="112" y2="92" marker-end="url(#ah)"/>
+              <text class="fg-lbl" x="112" y="80">k<tspan dy="3" font-size="9">H</tspan><tspan dy="-3">W</tspan><tspan dy="3" font-size="9">i</tspan></text>
+              <line class="fg-r" x1="162" y1="222" x2="149" y2="182" marker-end="url(#ah2)"/>
+              <text class="fg-acc" x="168" y="232">N<tspan dy="3" font-size="9">i</tspan></text>
+              <line class="fg-r" x1="108" y1="206" x2="170" y2="186" marker-end="url(#ah2)"/>
+              <text class="fg-acc" x="86" y="226">T<tspan dy="3" font-size="9">i</tspan></text>
+              <line class="fg-f" x1="244" y1="100" x2="204" y2="100" marker-end="url(#ah)"/>
+              <text class="fg-lbl" x="250" y="104">E<tspan dy="3" font-size="9">i</tspan></text>
+              <line class="fg-f" x1="212" y1="140" x2="212" y2="112" marker-end="url(#ah)"/>
+              <text class="fg-lbl" x="218" y="130">X<tspan dy="3" font-size="9">i</tspan></text>
+              <line class="fg-f" x1="40" y1="128" x2="86" y2="128" marker-end="url(#ah)"/>
+              <text class="fg-lbl" x="6" y="122">E<tspan dy="3" font-size="9">i</tspan><tspan dy="-3">+ΔE</tspan><tspan dy="3" font-size="9">i</tspan></text>
+              <line class="fg-f" x1="78" y1="92" x2="78" y2="120" marker-end="url(#ah)"/>
+              <text class="fg-lbl" x="12" y="86">X<tspan dy="3" font-size="9">i</tspan><tspan dy="-3">+ΔX</tspan><tspan dy="3" font-size="9">i</tspan></text>
+            </svg>
+            <figcaption>第 i 個切片的受力（參考原報告圖 2）。土體向左下滑動，α<sub>i</sub> 為滑動面傾角。</figcaption>
+          </figure>
+          <p>切片的垂直與水平力平衡：</p>
+          <div class="eqn"><math display="block"><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><msub><mi>W</mi><mi>i</mi></msub><mo>+</mo><mi>Δ</mi><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><msub><mi>T</mi><mi>i</mi></msub><mi>sin</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>N</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub></math><span class="eqno">(8)</span></div>
+          <div class="eqn"><math display="block"><mi>Δ</mi><msub><mi>E</mi><mi>i</mi></msub><mo>=</mo><mo>−</mo><msub><mi>T</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>N</mi><mi>i</mi></msub><mi>sin</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><msub><mi>W</mi><mi>i</mi></msub></math><span class="eqno">(9)</span></div>
+          <p>滑動土體兩端不受外力，X<sub>1</sub> = X<sub>n+1</sub> = 0、E<sub>1</sub> = E<sub>n+1</sub> = 0，所以 ΣΔX<sub>i</sub> = 0、ΣΔE<sub>i</sub> = 0（式 12、15、16）。滑動面上的抵抗力由 Mohr–Coulomb 破壞準則與安全係數定義：</p>
+          <div class="eqn"><math display="block"><msub><mi>T</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msubsup><mi>c</mi><mi>i</mi><mo>′</mo></msubsup><msub><mi>ℓ</mi><mi>i</mi></msub><mo>+</mo><mo>(</mo><msub><mi>N</mi><mi>i</mi></msub><mo>−</mo><msub><mi>U</mi><mi>i</mi></msub><msub><mi>ℓ</mi><mi>i</mi></msub><mo>)</mo><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></mrow><msub><mi>F</mi><mi>s</mi></msub></mfrac></math><span class="eqno">(19)</span></div>
+          <p>由式 (8) 解出 N<sub>i</sub> 代入式 (19)，再代入整體水平力平衡，並採用簡易 Janbu 法的假設 ΔX<sub>i</sub> = 0（切片間垂直剪力變化忽略不計，式 25），得到：</p>
+          <div class="eqn eq-key"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><msub><mi>f</mi><mn>0</mn></msub><mo>·</mo><mfrac><mrow><mo>∑</mo><msub><mi>A</mi><mi>i</mi></msub></mrow><mrow><mo>∑</mo><msub><mi>B</mi><mi>i</mi></msub></mrow></mfrac></math><span class="eqno">(27)</span></div>
+          <div class="eqn"><math display="block"><msub><mi>A</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msubsup><mi>c</mi><mi>i</mi><mo>′</mo></msubsup><msub><mi>ℓ</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><mo>{</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><msub><mi>W</mi><mi>i</mi></msub><mo>−</mo><msub><mi>U</mi><mi>i</mi></msub><msub><mi>ℓ</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub><mo>}</mo><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></mrow><msub><mi>n</mi><mrow><mi>α</mi><mi>i</mi></mrow></msub></mfrac></math><span class="eqno">(28)</span></div>
+          <div class="eqn"><math display="block"><msub><mi>B</mi><mi>i</mi></msub><mo>=</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><msub><mi>W</mi><mi>i</mi></msub><mi>tan</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><msub><mi>W</mi><mi>i</mi></msub></math><span class="eqno">(29)</span></div>
+          <div class="eqn"><math display="block"><msub><mi>n</mi><mrow><mi>α</mi><mi>i</mi></mrow></msub><mo>=</mo><msup><mi>cos</mi><mn>2</mn></msup><msub><mi>α</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><mi>tan</mi><msub><mi>α</mi><mi>i</mi></msub><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></mrow><msub><mi>F</mi><mi>s</mi></msub></mfrac><mo>)</mo></mrow></math><span class="eqno">(23)</span></div>
+          <p>A<sub>i</sub> 是抵抗成分，B<sub>i</sub> 是滑動成分。ℓ<sub>i</sub>cosα<sub>i</sub> 就是切片寬度 b<sub>i</sub>。F<sub>s</sub> 同時出現在等號兩邊，需先假設初值再反覆計算到收斂。</p>
+          <p>f<sub>0</sub> 是補償 ΔX<sub>i</sub> = 0 假設的修正係數。原報告採用申・板垣（1983）的經驗式，L 為滑動面兩端點的直線距離，d 為平行此直線且與滑動面相切的直線到它的距離，也就是滑動面的最大垂直深度：</p>
+          <div class="eqn"><math display="block"><msub><mi>f</mi><mn>0</mn></msub><mo>=</mo><msup><mrow><mo>(</mo><mn>50</mn><mi>d</mi><mo>/</mo><mi>L</mi><mo>)</mo></mrow><mn>0.03</mn></msup></math><span class="eqno">(30)</span></div>
+        </section>
+
+        <section class="th-sec">
+          <h3>三、孔隙水壓</h3>
+          <p>原報告以有效重量處理地下水，水位以下的土重改用水中單位重計算，式 (28) 因此改寫為：</p>
+          <div class="eqn"><math display="block"><msub><mi>A</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msubsup><mi>c</mi><mi>i</mi><mo>′</mo></msubsup><msub><mi>ℓ</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><mo>(</mo><msubsup><mi>W</mi><mi>i</mi><mo>′</mo></msubsup><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><msubsup><mi>W</mi><mi>i</mi><mo>′</mo></msubsup><mo>)</mo><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></mrow><msub><mi>n</mi><mrow><mi>α</mi><mi>i</mi></mrow></msub></mfrac></math><span class="eqno">(31)</span></div>
+          <p>本工具直接由使用者畫的地下水位線計算切片底部的孔隙水壓，u<sub>i</sub> = γ<sub>w</sub>h<sub>w</sub>，h<sub>w</sub> 為水位線到切片底部中點的鉛直距離。水位線以上的土以 γ 計重，以下以 γ<sub>sat</sub> 計重，再以 (W<sub>i</sub> − u<sub>i</sub>b<sub>i</sub>) 代入式 (28)。水位線水平時兩種寫法完全相同。勾選「水位線傾斜修正」時改用 u<sub>i</sub> = γ<sub>w</sub>h<sub>w</sub>cos²θ，θ 為水位線傾角。</p>
+        </section>
+
+        <section class="th-sec">
+          <h3>四、Baker 的輔助泛函</h3>
+          <p>DP 只能處理可以逐段相加的目標函數，而式 (27) 是兩個總和的比值，不能直接相加。Baker（1980）改以下列輔助泛函取代：</p>
+          <div class="eqn eq-key"><math display="block"><mover><mi>G</mi><mo>‾</mo></mover><mo>=</mo><mo>∑</mo><mrow><mo>(</mo><msub><mi>A</mi><mi>i</mi></msub><mo>−</mo><msub><mi>F</mi><mi>s</mi></msub><mo>·</mo><msub><mi>B</mi><mi>i</mi></msub><mo>/</mo><msub><mi>f</mi><mn>0</mn></msub><mo>)</mo></mrow><mo>=</mo><mover><mi>A</mi><mo>‾</mo></mover><mo>−</mo><msub><mi>F</mi><mi>s</mi></msub><mover><mi>B</mi><mo>‾</mo></mover><mo>/</mo><msub><mi>f</mi><mn>0</mn></msub></math><span class="eqno">(34)</span></div>
+          <p>以變分法比較兩者，在臨界滑動面 e 上：</p>
+          <div class="eqn"><math display="block"><mi>δ</mi><msub><mrow><mo>(</mo><msub><mover><mi>F</mi><mo>‾</mo></mover><mi>s</mi></msub><mo>)</mo></mrow><mi>e</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>f</mi><mn>0</mn></msub><mi>δ</mi><msub><mrow><mo>(</mo><mover><mi>G</mi><mo>‾</mo></mover><mo>)</mo></mrow><mi>e</mi></msub></mrow><msub><mrow><mo>(</mo><mover><mi>B</mi><mo>‾</mo></mover><mo>)</mo></mrow><mi>e</mi></msub></mfrac><mspace width="2em"/><msup><mi>δ</mi><mn>2</mn></msup><msub><mrow><mo>(</mo><msub><mover><mi>F</mi><mo>‾</mo></mover><mi>s</mi></msub><mo>)</mo></mrow><mi>e</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>f</mi><mn>0</mn></msub><msup><mi>δ</mi><mn>2</mn></msup><msub><mrow><mo>(</mo><mover><mi>G</mi><mo>‾</mo></mover><mo>)</mo></mrow><mi>e</mi></msub></mrow><msub><mrow><mo>(</mo><mover><mi>B</mi><mo>‾</mo></mover><mo>)</mo></mrow><mi>e</mi></msub></mfrac></math><span class="eqno">(43)(44)</span></div>
+          <p>只要總滑動成分 B̄ &gt; 0，G 的極小值條件（δG = 0、δ²G &gt; 0）就是 F<sub>s</sub> 的極小值條件。所以固定 F<sub>s</sub> 後讓 G 最小，等於讓安全係數最小。G 可以逐段相加，DP 因此能夠處理。</p>
+        </section>
+
+        <section class="th-sec">
+          <h3>五、DP 遞迴與計算流程</h3>
+          <p>第一條分割線上所有候選點的累積值設為 0，之後逐線向前推進，每個點只保留累積值最小的前一點：</p>
+          <div class="eqn"><math display="block"><msub><mi>G</mi><mn>1</mn></msub><mo>(</mo><mi>K</mi><mo>)</mo><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><mi>K</mi><mo>=</mo><mn>1</mn><mo>…</mo><mi>K</mi><msub><mi>K</mi><mn>1</mn></msub></math><span class="eqno">(45)(48)</span></div>
+          <div class="eqn eq-key"><math display="block"><msub><mi>G</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><munder><mi>min</mi><mrow><mi>K</mi><mo>=</mo><mn>1</mn><mo>…</mo><mi>K</mi><msub><mi>K</mi><mi>i</mi></msub></mrow></munder><mrow><mo>{</mo><msub><mi>G</mi><mi>i</mi></msub><mo>(</mo><mi>K</mi><mo>)</mo><mo>+</mo><mi>D</mi><msub><mi>G</mi><mi>i</mi></msub><mo>(</mo><mi>K</mi><mo>,</mo><mi>j</mi><mo>)</mo><mo>}</mo></mrow></math><span class="eqno">(47)</span></div>
+          <div class="eqn"><math display="block"><mi>D</mi><msub><mi>G</mi><mi>i</mi></msub><mo>=</mo><msub><mi>A</mi><mi>i</mi></msub><mo>−</mo><msub><mi>F</mi><mrow><mi>s</mi><mn>0</mn></mrow></msub><mo>·</mo><msub><mi>B</mi><mi>i</mi></msub><mo>/</mo><msub><mi>f</mi><mn>0</mn></msub></math><span class="eqno">(49)</span></div>
+          <p>DG<sub>i</sub>(K, j) 稱為「利得」，是第 i 條線的點 K 連到第 i+1 條線的點 j 這一段滑動面的貢獻。搜尋範圍延伸到地表以上，地表以上的線段利得為 0，滑動面的起點與終點因此成為解的一部分。最後一條線上累積值最小的點，再沿記錄的前一點回溯，就得到臨界滑動面：</p>
+          <div class="eqn"><math display="block"><msub><mi>T</mi><mi>s</mi></msub><mo>=</mo><munder><mi>min</mi><mrow><mi>K</mi><mo>=</mo><mn>1</mn><mo>…</mo><mi>K</mi><msub><mi>K</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow></munder><mrow><mo>[</mo><msub><mi>G</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>K</mi><mo>)</mo><mo>]</mo></mrow></math><span class="eqno">(46)</span></div>
+          <ol class="th-steps">
+            <li>假設安全係數初值 λ（及修正係數 f<sub>0</sub>）。</li>
+            <li>以式 (49) 計算所有候選線段的利得，用式 (47) 以 DP 求出使 G 最小的滑動面 y<sub>i</sub>。</li>
+            <li>沿這個滑動面以簡易 Janbu 法反覆計算，得到它自己的 F<sub>s</sub>。</li>
+            <li>若 |F<sub>s</sub> − λ| &lt; ε 則結束；否則令 λ = F<sub>s</sub>，回到步驟 2。</li>
+          </ol>
+          <p>本工具的「迭代紀錄」逐輪列出 λ 與該輪滑動面的 F<sub>s</sub>，數值應逐輪下降並收斂。</p>
+        </section>
+
+        <section class="th-sec">
+          <h3>六、滑動面形狀的限制條件</h3>
+          <p>為了排除現實中不會出現的滑動面，原報告加入兩項限制。第一項要求滑動面為凹形（向上開口），避免中間凸起的異常形狀：</p>
+          <div class="eqn"><math display="block"><msub><mrow><mo>(</mo><mfrac><mrow><msup><mi>d</mi><mn>2</mn></msup><mi>y</mi></mrow><mrow><mi>d</mi><msup><mi>x</mi><mn>2</mn></msup></mrow></mfrac><mo>)</mo></mrow><mi>i</mi></msub><mo>≥</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><mi>i</mi><mo>=</mo><mn>1</mn><mo>…</mo><mi>n</mi></math><span class="eqno">(50)</span></div>
+          <p>第二項要求 n<sub>αi</sub> &gt; 0，避免坡趾附近反傾的切片算出負的抵抗力：</p>
+          <div class="eqn"><math display="block"><msub><mi>n</mi><mrow><mi>α</mi><mi>i</mi></mrow></msub><mo>&gt;</mo><mn>0</mn><mspace width="1em"/><mo>⇒</mo><mspace width="1em"/><msub><mi>F</mi><mi>s</mi></msub><mo>&gt;</mo><mo>−</mo><mi>tan</mi><msub><mi>α</mi><mi>i</mi></msub><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></math><span class="eqno">(51)(52)</span></div>
+          <p>本工具對應的設定是「限制滑動面為凹形」。第二項改用較嚴格的常用準則 m<sub>α</sub> = cosα + sinα·tanφ′/F ≥ 0.2，只套用在反傾（α &lt; 0）的切片。</p>
+        </section>
+
+        <section class="th-sec">
+          <h3>符號</h3>
+          <dl class="th-sym">
+            <div><dt>W<sub>i</sub></dt><dd>切片自重 (kN/m)</dd></div>
+            <div><dt>N<sub>i</sub>、T<sub>i</sub></dt><dd>滑動面上的正向力、抵抗力</dd></div>
+            <div><dt>E<sub>i</sub>、X<sub>i</sub></dt><dd>切片間水平力、剪力</dd></div>
+            <div><dt>α<sub>i</sub></dt><dd>滑動面傾角</dd></div>
+            <div><dt>ℓ<sub>i</sub>、b<sub>i</sub></dt><dd>切片底長、寬度，b = ℓcosα</dd></div>
+            <div><dt>c′、φ′</dt><dd>有效凝聚力 (kPa)、有效摩擦角</dd></div>
+            <div><dt>U<sub>i</sub>、u<sub>i</sub></dt><dd>切片底部孔隙水壓 (kPa)</dd></div>
+            <div><dt>k<sub>H</sub>、k<sub>V</sub></dt><dd>水平、垂直震度</dd></div>
+            <div><dt>F<sub>s</sub>、λ</dt><dd>安全係數、搜尋用的安全係數</dd></div>
+            <div><dt>f<sub>0</sub></dt><dd>修正係數</dd></div>
+            <div><dt>d、L</dt><dd>滑動面最大垂直深度、兩端點直線距離</dd></div>
+            <div><dt>G、DG</dt><dd>輔助泛函、利得（單段貢獻）</dd></div>
+          </dl>
+        </section>
+      </article>
+
+      <section class="cite" id="cite">
+        <h2>引用本程式</h2>
+        <p>使用本工具的分析結果發表報告或論文時，請引用下列文獻：</p>
+        <blockquote class="cite-main" id="citeText">Chen, C. Y., Ikkanda, S., Fujita, M., and Tsutsumi, D. (2013): A study on mechanism of large-scale landslides and the prediction, Proceeding of 12th International Symposium on River Sedimentation, pp.109-118.</blockquote>
+        <div class="row">
+          <button class="btn small" id="btnCite" type="button">複製引用文字</button>
+          <button class="btn small" id="btnBib" type="button">複製 BibTeX</button>
+          <a class="btn small" href="https://app.box.com/s/zrey81xhpm4jitn9qszz" target="_blank" rel="noopener">開啟論文全文 ↗</a>
+        </div>
+        <h3>方法來源與參考文獻</h3>
+        <ol class="refs">
+          <li>中村浩之、久保田哲也（1987）：動的計画法を用いた臨界すべり面解析法，土木研究所資料第 2425 号，建設省土木研究所砂防部地すべり研究室。</li>
+          <li>Baker, R. (1980): Determination of the critical slip surface in slope stability computations, International Journal for Numerical and Analytical Methods in Geomechanics, Vol. 4, pp. 333-359.</li>
+          <li>Bellman, R. (1957): Dynamic Programming, Princeton University Press.</li>
+          <li>山上拓男、植田康宏（1986）：Noncircular Slip Surface Analysis of the Stability of Slopes: An Application of Dynamic Programming to the Janbu Method，地すべり，第 22 巻第 4 号。</li>
+          <li>申潤植、板垣治（1983）：地すべり（その 4），土と基礎，Vol. 31，No. 7，pp. 89-97。</li>
+          <li>Janbu, N. (1973): Slope stability computations, In Embankment-Dam Engineering (Casagrande Volume), Wiley, pp. 47-86.</li>
+        </ol>
+      </section>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <p>SSA 邊坡穩定分析以 <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GNU GPL-3.0</a> 授權開放使用。原始碼與問題回報：<a href="https://github.com/cychen59/ssa-slope-stability" target="_blank" rel="noopener">github.com/cychen59/ssa-slope-stability</a>。使用本工具的結果請引用 <a href="#cite">Chen et al. (2013)</a>。</p>
+    <p>本工具為二維極限平衡分析的輔助工具，計算結果僅供參考，實際工程判斷與設計仍應由專業人員依現地調查與相關規範負責。</p>
+  </footer>
+</div>
+<script>
+/* ===== SSA engine: Dynamic Programming search + Simplified Janbu, water table → pore pressure ===== */
+const SSA = (() => {
+  const sortP = P => (P || []).filter(p => isFinite(p[0]) && isFinite(p[1])).map(p => [+p[0], +p[1]]).sort((a, b) => a[0] - b[0]);
+
+  function interp(P, x) {
+    const n = P.length;
+    if (!n) return NaN;
+    if (x <= P[0][0]) return P[0][1];
+    if (x >= P[n - 1][0]) return P[n - 1][1];
+    let lo = 0, hi = n - 1;
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (P[m][0] <= x) lo = m; else hi = m; }
+    const x1 = P[lo][0], z1 = P[lo][1], x2 = P[hi][0], z2 = P[hi][1];
+    return x2 === x1 ? z2 : z1 + (z2 - z1) * (x - x1) / (x2 - x1);
+  }
+  function slopeAt(P, x) {
+    const n = P.length;
+    if (n < 2 || x <= P[0][0] || x >= P[n - 1][0]) return 0;
+    let i = 0; while (i < n - 2 && P[i + 1][0] <= x) i++;
+    const dx = P[i + 1][0] - P[i][0];
+    return dx > 0 ? (P[i + 1][1] - P[i][1]) / dx : 0;
+  }
+
+  function validate(model) {
+    const err = [];
+    const g = sortP(model.ground);
+    if (g.length < 2) err.push('地表線至少需要 2 個點。');
+    if (!model.layers || !model.layers.length) err.push('至少需要 1 個土層。');
+    (model.layers || []).forEach((L, i) => {
+      if (i > 0 && sortP(L.top).length < 2) err.push(`「${L.name}」的頂界面至少需要 2 個點。`);
+      if (!(L.gamma > 0)) err.push(`「${L.name}」的單位重 γ 需大於 0。`);
+      if (!(L.gammaSat > 0)) err.push(`「${L.name}」的飽和單位重 γsat 需大於 0。`);
+      if (!(L.c >= 0)) err.push(`「${L.name}」的凝聚力 c' 不可為負。`);
+      if (!(L.phi >= 0 && L.phi < 90)) err.push(`「${L.name}」的摩擦角 φ' 需介於 0–90°。`);
+    });
+    if (g.length >= 2) {
+      const zmin = Math.min(...g.map(p => p[1]));
+      if (!(model.zBase < zmin)) err.push('模型底部高程需低於地表最低點。');
+    }
+    return err;
+  }
+
+  /* bring the model to the canonical orientation: crest on the right, mass slides toward -x */
+  function prepare(model) {
+    const s = model.settings;
+    let ground = sortP(model.ground);
+    const mirror = ground[0][1] > ground[ground.length - 1][1];
+    const T = P => { const q = sortP(P); return mirror ? q.map(([x, z]) => [-x, z]).reverse() : q; };
+    ground = T(ground);
+    const layers = model.layers.map((L, i) => ({
+      name: L.name, gamma: +L.gamma, gammaSat: +L.gammaSat, c: +L.c, phi: +L.phi,
+      tanphi: Math.tan(+L.phi * Math.PI / 180), bedrock: !!L.bedrock, top: i ? T(L.top) : null
+    }));
+    const water = T(model.water);
+    const M = { mirror, ground, layers, water, zBase: +model.zBase, s };
+    const N = Math.max(8, Math.round(s.nCol)), NS = Math.max(12, Math.round(s.nState)), nSub = Math.max(1, Math.round(s.nSub));
+    const margin = 3;
+    const x0 = ground[0][0], x1 = ground[ground.length - 1][0];
+    const xs = new Float64Array(N);
+    for (let k = 0; k < N; k++) xs[k] = x0 + (x1 - x0) * k / (N - 1);
+
+    const zmax = Math.max(...ground.map(p => p[1]));
+    const Hmin = (zmax - M.zBase) * 0.02;
+    const cols = [];
+    for (let k = 0; k < N; k++) {
+      const pr = profileAt(M, xs[k]);
+      let dz = (pr.zg - pr.zb) / (NS - 1 - margin);
+      if (!(dz > Hmin / NS)) dz = Hmin / NS;
+      const z = new Float64Array(NS);
+      for (let j = 0; j < NS; j++) z[j] = pr.zb + j * dz;
+      const allow = new Uint8Array(NS);
+      const edge = (k === 0 || k === N - 1) && s.noBoundary;
+      for (let j = 0; j < NS; j++) allow[j] = edge ? (z[j] >= pr.zg - 1e-9 ? 1 : 0) : 1;
+      cols.push({ x: xs[k], zg: pr.zg, zb: pr.zb, z, allow });
+    }
+    const gaps = [];
+    for (let k = 0; k < N - 1; k++) {
+      const dx = xs[k + 1] - xs[k], b = dx / nSub, subs = [];
+      for (let q = 0; q < nSub; q++) {
+        const xc = xs[k] + (q + 0.5) * b;
+        subs.push({ xc, off: (q + 0.5) * b, pr: profileAt(M, xc) });
+      }
+      gaps.push({ dx, b, subs });
+    }
+    return { M, N, NS, xs, cols, gaps, s, gw: +s.gw };
+  }
+
+  /* vertical profile at x: layer tops, water table, cumulative weight table */
+  function profileAt(M, x) {
+    const s = M.s;
+    const zg = interp(M.ground, x);
+    const nL = M.layers.length;
+    const tops = [zg];
+    for (let i = 1; i < nL; i++) tops[i] = Math.min(tops[i - 1], interp(M.layers[i].top, x));
+    let zb = M.zBase;
+    for (let i = 0; i < nL; i++) if (M.layers[i].bedrock) { zb = Math.max(zb, tops[i]); break; }
+    zb = Math.min(zb, zg);
+    const hasW = M.water.length >= 2;
+    const zw = hasW ? Math.min(interp(M.water, x), zg) : -Infinity;
+    let cw = 1;
+    if (hasW && s.cos2) { const t = slopeAt(M.water, x); cw = 1 / (1 + t * t); }
+    // intervals, top-down
+    const iv = [];
+    for (let i = 0; i < nL; i++) {
+      const zt = tops[i], zbot = i + 1 < nL ? tops[i + 1] : -1e9;
+      if (zt - zbot <= 0) continue;
+      const L = M.layers[i];
+      if (zw < zt && zw > zbot) {
+        iv.push({ zt, zbot: zw, g: L.gamma, L: i });
+        iv.push({ zt: zw, zbot, g: L.gammaSat, L: i });
+      } else iv.push({ zt, zbot, g: zw >= zt ? L.gammaSat : L.gamma, L: i });
+    }
+    let cum = 0;
+    for (const v of iv) { v.cum = cum; cum += v.g * (v.zt - Math.max(v.zbot, -1e6)); }
+    return { zg, zb, zw, cw, iv, tops };
+  }
+
+  /* evaluate one straight segment of the slip surface between column k (zl) and k+1 (zr) */
+  function segEval(ctx, k, zl, zr, F, out, rows) {
+    const gp = ctx.gaps[k], M = ctx.M, s = ctx.s, gw = ctx.gw;
+    const t = (zr - zl) / gp.dx, ca = 1 / Math.sqrt(1 + t * t), sa = t * ca;
+    let A = 0, B = 0, act = false;
+    const kh = s.kh, kv = s.kv, b = gp.b;
+    for (let q = 0; q < gp.subs.length; q++) {
+      const sb = gp.subs[q], pr = sb.pr;
+      const zc = zl + sb.off * t;
+      if (zc >= pr.zg) continue;
+      act = true;
+      if (zc < pr.zb - 1e-6) { out.ok = false; return; }
+      let v = null;
+      for (let m = 0; m < pr.iv.length; m++) if (zc >= pr.iv[m].zbot) { v = pr.iv[m]; break; }
+      if (!v) { out.ok = false; return; }
+      const L = M.layers[v.L];
+      if (L.bedrock) { out.ok = false; return; }
+      const W = b * (v.cum + v.g * (v.zt - zc));
+      const Wv = W * (1 + kv);
+      const hw = pr.zw > zc ? pr.zw - zc : 0;
+      const U = gw * hw * pr.cw * b;
+      const tp = L.tanphi;
+      const ma = ca + sa * tp / F;
+      if (sa < 0 && ma < 0.2) { out.ok = false; return; }
+      const res = (L.c * b + Math.max(0, Wv - U) * tp) / (ca * ma);
+      A += res;
+      const drv = Wv * t + kh * W;
+      B += drv;
+      if (rows) rows.push({ xc: sb.xc, b, zc, zg: pr.zg, alpha: Math.atan(t) * 180 / Math.PI, W, U, u: U / b, hw, c: L.c, phi: L.phi, layer: L.name, ma, res, drv });
+    }
+    out.ok = true; out.act = act; out.A = A; out.B = B;
+  }
+
+  /* dynamic programming: minimise G = Σ(A − λB)
+     phases 0 = not yet entered, 1 = inside (min depth not reached), 2 = inside (depth reached), 3 = exited */
+  function dp(ctx, lam) {
+    const { N, NS, cols, gaps, s } = ctx;
+    const P = 4, S = NS * P, INF = Infinity, dmin = Math.max(0, +s.dmin || 0);
+    const g = new Float64Array(N * S).fill(INF);
+    const pred = new Int32Array(N * S).fill(-1);
+    for (let j = 0; j < NS; j++) if (cols[0].allow[j]) g[j * P] = 0;
+    const out = {};
+    for (let k = 0; k < N - 1; k++) {
+      const ca = cols[k], cb = cols[k + 1], base = k * S, nb = (k + 1) * S;
+      const dxPrev = k > 0 ? gaps[k - 1].dx : 1, dx = gaps[k].dx;
+      for (let i = 0; i < NS; i++) {
+        const o = base + i * P;
+        const g0 = g[o], g1 = g[o + 1], g2 = g[o + 2], g3 = g[o + 3];
+        if (g0 === INF && g1 === INF && g2 === INF && g3 === INF) continue;
+        const zi = ca.z[i];
+        let s1 = -INF, s2 = -INF;
+        if (s.convex && k > 0) {
+          if (g1 !== INF) { const p = pred[o + 1]; if (p >= 0) s1 = (zi - cols[k - 1].z[(p / P) | 0]) / dxPrev; }
+          if (g2 !== INF) { const p = pred[o + 2]; if (p >= 0) s2 = (zi - cols[k - 1].z[(p / P) | 0]) / dxPrev; }
+        }
+        for (let j = 0; j < NS; j++) {
+          if (!cb.allow[j]) continue;
+          const zj = cb.z[j];
+          segEval(ctx, k, zi, zj, lam, out, null);
+          if (!out.ok) continue;
+          if (out.act) {
+            const c = out.A - lam * out.B;
+            const deep = cb.zg - zj >= dmin || dmin === 0;
+            const sc = (zj - zi) / dx;
+            const idA = nb + j * P + (deep ? 2 : 1), idB = nb + j * P + 2;
+            if (g0 !== INF && g0 + c < g[idA]) { g[idA] = g0 + c; pred[idA] = i * P; }
+            if (g1 !== INF && sc >= s1 - 1e-9 && g1 + c < g[idA]) { g[idA] = g1 + c; pred[idA] = i * P + 1; }
+            if (g2 !== INF && sc >= s2 - 1e-9 && g2 + c < g[idB]) { g[idB] = g2 + c; pred[idB] = i * P + 2; }
+          } else {
+            let id = nb + j * P;
+            if (g0 < g[id]) { g[id] = g0; pred[id] = i * P; }
+            id = nb + j * P + 3;
+            if (g2 < g[id]) { g[id] = g2; pred[id] = i * P + 2; }
+            if (g3 < g[id]) { g[id] = g3; pred[id] = i * P + 3; }
+          }
+        }
+      }
+    }
+    let best = INF, bi = -1;
+    const lb = (N - 1) * S;
+    for (let j = 0; j < NS; j++) for (const ph of [2, 3]) {
+      const v = g[lb + j * P + ph];
+      if (v < best) { best = v; bi = j * P + ph; }
+    }
+    if (bi < 0) return null;
+    const z = new Float64Array(N), idx = new Int32Array(N);
+    let cur = bi;
+    for (let k = N - 1; k >= 0; k--) {
+      idx[k] = (cur / P) | 0; z[k] = cols[k].z[idx[k]];
+      if (k > 0) cur = pred[k * S + cur];
+    }
+    return { G: best, z, idx };
+  }
+
+  function sums(ctx, z, F, rows) {
+    let A = 0, B = 0; const out = {};
+    for (let k = 0; k < ctx.N - 1; k++) {
+      segEval(ctx, k, z[k], z[k + 1], F, out, rows);
+      if (!out.ok) return null;
+      A += out.A; B += out.B;
+    }
+    return { A, B };
+  }
+  function janbuF(ctx, z, F0) {
+    let F = F0 > 0 ? F0 : 1;
+    for (let it = 0; it < 300; it++) {
+      const r = sums(ctx, z, F);
+      if (!r || !(r.B > 0)) return NaN;
+      const Fn = r.A / r.B;
+      if (!isFinite(Fn) || Fn <= 0) return NaN;
+      if (Math.abs(Fn - F) < 1e-8) return Fn;
+      F = it > 50 ? 0.5 * (F + Fn) : Fn;
+    }
+    return F;
+  }
+
+  /* generator: yields progress after each DP pass, returns final result */
+  function* solve(model) {
+    const ctx = prepare(model);
+    const s = ctx.s, hist = [];
+    let lam = +s.F0 > 0 ? +s.F0 : 2, best = null, worse = 0;
+    for (let it = 1; it <= s.maxIter; it++) {
+      const p = dp(ctx, lam);
+      if (!p) break;
+      const F = janbuF(ctx, p.z, lam);
+      hist.push({ it, lam, F, G: p.G });
+      yield { it, lam, F, max: s.maxIter };
+      if (!isFinite(F)) { lam *= 2; continue; }
+      if (!best || F < best.F - 1e-12) { best = { F, z: p.z }; worse = 0; } else worse++;
+      if (Math.abs(F - lam) < s.tol || worse >= 3) break;
+      lam = F;
+    }
+    if (!best) return { ok: false, msg: '找不到可行的滑動面。請檢查幾何與參數，或放寬搜尋限制。', hist };
+    return finalize(ctx, best, hist);
+  }
+
+  function finalize(ctx, best, hist) {
+    const { M, N, cols, gaps, xs } = ctx, z = best.z, F = best.F;
+    const rows = [];
+    const sm = sums(ctx, z, F, rows);
+    const zgAt = x => interp(M.ground, x);
+    const chord = (k, x) => z[k] + (z[k + 1] - z[k]) * (x - xs[k]) / gaps[k].dx;
+    // active range
+    const act = [];
+    const o = {};
+    for (let k = 0; k < N - 1; k++) { segEval(ctx, k, z[k], z[k + 1], F, o, null); act.push(o.act); }
+    const k0 = act.indexOf(true), k1 = act.lastIndexOf(true);
+    const root = (k, a, b) => {
+      let fa = chord(k, a) - zgAt(a);
+      for (let it = 0; it < 60; it++) {
+        const m = 0.5 * (a + b), fm = chord(k, m) - zgAt(m);
+        if ((fa >= 0) === (fm >= 0)) { a = m; fa = fm; } else b = m;
+      }
+      return 0.5 * (a + b);
+    };
+    const pts = [];
+    // left end (toe side)
+    if (z[k0] >= cols[k0].zg - 1e-9) {
+      // search from the left end of gap k0 toward the right for the first crossing
+      const n = 40; let xa = xs[k0];
+      for (let q = 1; q <= n; q++) {
+        const xb = xs[k0] + gaps[k0].dx * q / n;
+        if (chord(k0, xb) < zgAt(xb)) { const xr = root(k0, xa, xb); pts.push([xr, zgAt(xr)]); break; }
+        xa = xb;
+      }
+      if (!pts.length) pts.push([xs[k0], z[k0]]);
+    } else { pts.push([xs[k0], cols[k0].zg]); pts.push([xs[k0], z[k0]]); }
+    for (let k = k0 + 1; k <= k1; k++) if (z[k] < cols[k].zg) pts.push([xs[k], z[k]]);
+    // right end (crest side)
+    if (z[k1 + 1] >= cols[k1 + 1].zg - 1e-9) {
+      const n = 40; let xb = xs[k1 + 1], found = false;
+      for (let q = n - 1; q >= 0; q--) {
+        const xa = xs[k1] + gaps[k1].dx * q / n;
+        if (chord(k1, xa) < zgAt(xa)) { const xr = root(k1, xa, xb); pts.push([xr, zgAt(xr)]); found = true; break; }
+        xb = xa;
+      }
+      if (!found) pts.push([xs[k1 + 1], z[k1 + 1]]);
+    } else { pts.push([xs[k1 + 1], z[k1 + 1]]); pts.push([xs[k1 + 1], cols[k1 + 1].zg]); }
+
+    // area, depth, Janbu f0
+    const slip = pts;
+    const xa = slip[0][0], xb = slip[slip.length - 1][0];
+    let area = 0, dmaxV = 0;
+    const nA = 600;
+    for (let q = 0; q < nA; q++) {
+      const x = xa + (xb - xa) * (q + 0.5) / nA;
+      const h = zgAt(x) - interp(slip, x);
+      if (h > 0) { area += h * (xb - xa) / nA; dmaxV = Math.max(dmaxV, h); }
+    }
+    const pA = slip[0], pB = slip[slip.length - 1];
+    const Lc = Math.hypot(pB[0] - pA[0], pB[1] - pA[1]);
+    let dperp = 0;
+    for (const p of slip) {
+      const d = Math.abs((pB[0] - pA[0]) * (pA[1] - p[1]) - (pA[0] - p[0]) * (pB[1] - pA[1])) / (Lc || 1);
+      dperp = Math.max(dperp, d);
+    }
+    const cz = rows.every(r => r.c === 0), fz = rows.every(r => r.phi === 0);
+    const b1 = cz ? 0.31 : fz ? 0.69 : 0.5;
+    const dl = Lc > 0 ? dperp / Lc : 0;
+    const f0type = ctx.s.f0type === 'janbu' ? 'janbu' : 'pwri';
+    const f0 = f0type === 'janbu' ? 1 + b1 * (dl - 1.4 * dl * dl) : (dl > 0 ? Math.pow(50 * dl, 0.03) : 1);
+
+    const X = x => (M.mirror ? -x : x);
+    const mapP = P => { const q = P.map(([x, zz]) => [X(x), zz]); return M.mirror ? q.reverse() : q; };
+    const rowsOut = rows.map(r => ({ ...r, xc: X(r.xc), alpha: M.mirror ? -r.alpha : r.alpha }));
+    if (M.mirror) rowsOut.reverse();
+    const grid = cols.map(c => ({ x: X(c.x), z: Array.from(c.z) }));
+    return {
+      ok: true, F, f0, f0type, Fc: F * f0, b1, dL: dl, area, dmaxV, Lc,
+      slip: mapP(slip), path: mapP(Array.from(z).map((zz, k) => [xs[k], zz])),
+      rows: rowsOut, sumA: sm ? sm.A : NaN, sumB: sm ? sm.B : NaN, hist, grid, mirror: M.mirror,
+      facing: M.mirror ? '坡面朝右（向右滑動）' : '坡面朝左（向左滑動）'
+    };
+  }
+
+  return { solve, validate, interp, sortP, profileAt };
+})();
+if (typeof module !== 'undefined') module.exports = SSA;
+</script>
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const KEY = 'ssa-web-model-v1';
+  const gTF = () => model.settings.unitG === 'tf', cTF = () => model.settings.unitC === 'tf';
+  const uG = () => gTF() ? 'tf/m³' : 'kN/m³', uC = () => cTF() ? 'tf/m²' : 'kPa', uF = () => gTF() ? 'tf/m' : 'kN/m';
+  const toG = v => gTF() ? v / TF : v, fromG = v => gTF() ? v * TF : v;
+  const toC = v => cTF() ? v / TF : v, fromC = v => cTF() ? v * TF : v;
+  const dispN = v => String(Math.round(v * 1000) / 1000);
+  const fmt = (v, d = 2) => (v == null || !isFinite(v)) ? '—' : (+v).toFixed(d);
+
+  const DEF_SET = { kh: 0, kv: 0, gw: 9.81, cos2: false, nCol: 60, nState: 80, nSub: 4, dmin: 1, convex: true, noBoundary: true, tol: 0.0001, maxIter: 30, F0: 2, Freq: 1.5, useF0: false, f0type: 'pwri', unitG: 'kN', unitC: 'kPa' };
+  const TF = 9.80665;
+  const SAMPLE = {
+    ground: [[0, 10], [20, 10], [40, 20], [55, 27], [80, 28]],
+    layers: [
+      { name: '崩積層', color: '#D8BE8A', gamma: 18, gammaSat: 20, c: 5, phi: 28, bedrock: false, top: null },
+      { name: '風化岩', color: '#B48462', gamma: 21, gammaSat: 22, c: 30, phi: 32, bedrock: false, top: [[0, 6], [20, 6], [40, 14], [55, 19], [80, 20]] },
+      { name: '岩盤', color: '#8C949A', gamma: 24, gammaSat: 24, c: 200, phi: 40, bedrock: true, top: [[0, 2], [40, 8], [80, 12]] }
+    ],
+    water: [[0, 10], [20, 10.2], [40, 16], [55, 22], [80, 24]],
+    zBase: 0,
+    settings: DEF_SET
+  };
+
+  function save() { }
+  function sanitize(m) {
+    if (!m || !Array.isArray(m.ground) || !Array.isArray(m.layers) || !m.layers.length) throw new Error('格式不符');
+    const P = a => Array.isArray(a) ? a.filter(p => Array.isArray(p) && isFinite(p[0]) && isFinite(p[1])).map(p => [+p[0], +p[1]]).sort((a, b) => a[0] - b[0]) : [];
+    const pal = ['#D8BE8A', '#B48462', '#8C949A', '#A9B38B', '#C7A1A1', '#9FB4C7'];
+    return {
+      ground: P(m.ground),
+      layers: m.layers.map((L, i) => ({
+        name: String(L.name || `土層 ${i + 1}`), color: /^#[0-9a-f]{6}$/i.test(L.color) ? L.color : pal[i % pal.length],
+        gamma: +L.gamma || 18, gammaSat: +L.gammaSat || +L.gamma || 20, c: +L.c || 0, phi: +L.phi || 0, bedrock: !!L.bedrock,
+        top: i ? P(L.top) : null
+      })),
+      water: P(m.water),
+      zBase: isFinite(m.zBase) ? +m.zBase : Math.min(...P(m.ground).map(p => p[1])) - 10,
+      settings: Object.assign({}, DEF_SET, m.settings || {})
+    };
+  }
+
+  let model = clone(SAMPLE);
+  let active = 'ground', mode = 'drag';
+  let result = null, stale = false, running = false;
+  let undoStack = [];
+  let bounds = null, T = null;
+  let drag = null, hover = null;
+
+  /* ---------- lines ---------- */
+  function lineDefs() {
+    const a = [{ key: 'ground', label: '地表線', kind: 'ground' }];
+    model.layers.forEach((L, i) => { if (i) a.push({ key: 'L' + i, label: `${L.name} 頂面`, kind: 'bound', color: L.color }); });
+    a.push({ key: 'water', label: '地下水位線', kind: 'water' });
+    return a;
+  }
+  function getPts(key) {
+    if (key === 'ground') return model.ground;
+    if (key === 'water') return model.water;
+    const L = model.layers[+key.slice(1)];
+    return L ? L.top : null;
+  }
+  function setPts(key, P) {
+    P.sort((a, b) => a[0] - b[0]);
+    if (key === 'ground') model.ground = P; else if (key === 'water') model.water = P; else model.layers[+key.slice(1)].top = P;
+  }
+  function minPts(key) { return key === 'water' ? 0 : 2; }
+
+  function pushUndo() { undoStack.push(JSON.stringify(model)); if (undoStack.length > 60) undoStack.shift(); $('#btnUndo').disabled = false; }
+  function doUndo() {
+    if (!undoStack.length) return;
+    model = JSON.parse(undoStack.pop());
+    if (!getPts(active)) active = 'ground';
+    $('#btnUndo').disabled = !undoStack.length;
+    changed(true);
+  }
+  function changed(full) {
+    stale = !!result; save();
+    if (full) { renderLines(); renderLayers(); renderSettings(); }
+    else renderLines();
+    renderCoords(); draw(); renderResults(); renderGuide();
+  }
+
+  /* ---------- sidebar ---------- */
+  function renderLines() {
+    const box = $('#lineList');
+    box.innerHTML = lineDefs().map(d => {
+      const n = (getPts(d.key) || []).length;
+      const sw = d.kind === 'water' ? '<span class="sw water"></span>' : d.kind === 'bound' ? `<span class="sw bound" style="border-top-color:${d.color}"></span>` : '<span class="sw"></span>';
+      return `<button class="lrow" type="button" data-key="${d.key}" aria-pressed="${d.key === active}">${sw}<span>${esc(d.label)}</span><span class="cnt">${n} 點</span></button>`;
+    }).join('');
+    const d = lineDefs().find(x => x.key === active);
+    $('#coordTitle').textContent = `座標：${d ? d.label : ''}（x　z）`;
+    $('#btnClearLine').hidden = active !== 'water';
+    $('#btnMakeWater').hidden = !(active === 'water' && !model.water.length);
+    $('#activeInfo').textContent = `編輯中：${d ? d.label : ''}`;
+  }
+  function renderCoords() {
+    const P = getPts(active) || [];
+    $('#coords').value = P.map(p => `${r3(p[0])}\t${r3(p[1])}`).join('\n');
+  }
+  const r3 = v => Math.round(v * 1000) / 1000;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function parseCoords(txt) {
+    const out = [];
+    for (const line of txt.split(/\r?\n/)) {
+      const t = line.trim(); if (!t) continue;
+      const v = t.split(/[\s,;，]+/).map(Number).filter(n => isFinite(n));
+      if (v.length >= 2) out.push([v[0], v[1]]);
+    }
+    return out;
+  }
+
+  function renderLayers() {
+    const box = $('#layerList');
+    box.innerHTML = model.layers.map((L, i) => `
+      <div class="layer" data-i="${i}">
+        <div class="layer-head">
+          <input type="color" value="${L.color}" data-f="color" aria-label="顏色">
+          <input type="text" value="${esc(L.name)}" data-f="name" aria-label="土層名稱">
+          <button class="btn small ghost" data-del="${i}" type="button" ${model.layers.length < 2 ? 'disabled' : ''} title="刪除此層">刪除</button>
+        </div>
+        <div class="grid4">
+          <div class="field"><label>γ <small>${uG()}</small></label><input type="number" step="${gTF() ? 0.01 : 0.1}" value="${dispN(toG(L.gamma))}" data-f="gamma"></div>
+          <div class="field"><label>γsat <small>${uG()}</small></label><input type="number" step="${gTF() ? 0.01 : 0.1}" value="${dispN(toG(L.gammaSat))}" data-f="gammaSat"></div>
+          <div class="field"><label>c' <small>${uC()}</small></label><input type="number" step="${cTF() ? 0.1 : 0.5}" value="${dispN(toC(L.c))}" data-f="c"></div>
+          <div class="field"><label>φ' <small>°</small></label><input type="number" step="0.5" value="${L.phi}" data-f="phi"></div>
+        </div>
+        <label class="check"><input type="checkbox" data-f="bedrock" ${L.bedrock ? 'checked' : ''}><span>岩盤（滑動面不可穿越）</span></label>
+        <span class="idx">第 ${i + 1} 層・頂面為${i ? '界面線 ' + i : '地表線'}</span>
+      </div>`).join('');
+  }
+  function renderSettings() {
+    $$('[data-s]').forEach(el => {
+      const v = model.settings[el.dataset.s];
+      if (el.type === 'checkbox') el.checked = !!v;
+      else if (el.dataset.s === 'gw') el.value = dispN(toG(v));
+      else el.value = v;
+    });
+    $('#lbl-gw').textContent = `水的單位重 γw (${uG()})`;
+    $('#zBase').value = model.zBase;
+  }
+
+  /* ---------- search-grid guide ---------- */
+  function gridInfo() {
+    const g = model.ground, s = model.settings;
+    if (g.length < 2) return null;
+    const x0 = g[0][0], x1 = g[g.length - 1][0], L = x1 - x0;
+    let H = 0;
+    for (let q = 0; q <= 200; q++) {
+      const x = x0 + L * q / 200;
+      let prev = interp(g, x), zb = model.zBase;
+      model.layers.forEach((Ly, i) => {
+        const z = i ? Math.min(prev, Ly.top && Ly.top.length ? interp(Ly.top, x) : prev) : prev;
+        if (Ly.bedrock && zb === model.zBase) zb = Math.max(model.zBase, z);
+        prev = z;
+      });
+      H = Math.max(H, interp(g, x) - zb);
+    }
+    const N = Math.round(s.nCol), M = Math.round(s.nState), nSub = Math.max(1, Math.round(s.nSub));
+    const dx = L / Math.max(1, N - 1), dz = H / Math.max(1, M - 4);
+    const recN = Math.min(150, Math.max(40, Math.round(L / 1.5) + 1));
+    const recM = Math.min(150, Math.max(60, Math.ceil(H / 0.3) + 4));
+    const evals = (N - 1) * M * M * nSub;
+    const sec = evals * 3.5e-8 * 6;
+    return { L, H, N, M, dx, dz, recN, recM, sec, x0, x1 };
+  }
+  function renderGuide() {
+    const gi = gridInfo(), box = $('#searchGuide'), chip = $('#gridChip');
+    if (!gi) { box.innerHTML = ''; chip.textContent = ''; return; }
+    const warns = [];
+    if (gi.dx > 2.5) warns.push(`分割線間距 ${fmt(gi.dx, 2)} m 偏大，滑動面會較粗糙，Fs 可能偏高。`);
+    if (gi.dz > 0.6) warns.push(`節點垂直間距 ${fmt(gi.dz, 2)} m 偏大，淺層滑動面可能抓不準。`);
+    const short = [];
+    model.layers.forEach((Ly, i) => { if (i && Ly.top && Ly.top.length && (Ly.top[0][0] > gi.x0 + 1e-6 || Ly.top[Ly.top.length - 1][0] < gi.x1 - 1e-6)) short.push(`${Ly.name} 頂面`); });
+    const w = model.water; if (w.length >= 2 && (w[0][0] > gi.x0 + 1e-6 || w[w.length - 1][0] < gi.x1 - 1e-6)) short.push('地下水位線');
+    if (short.length) warns.push(`${short.join('、')}沒有涵蓋地表線全長，超出部分會沿用端點高程，建議補上端點。`);
+    if (gi.sec > 8) warns.push('網格很密，計算可能要十幾秒以上，可先用建議值試算。');
+    const same = gi.N === gi.recN && gi.M === gi.recM;
+    const t = gi.sec < 1 ? '1 秒內' : `約 ${Math.ceil(gi.sec)} 秒`;
+    box.innerHTML = `
+      <span class="gt">目前模型的搜尋網格</span>
+      <dl>
+        <dt>水平長度</dt><dd>${fmt(gi.L, 1)} m <em>（地表線 x = ${fmt(gi.x0, 1)} 到 ${fmt(gi.x1, 1)}）</em></dd>
+        <dt>最大土層厚度</dt><dd>${fmt(gi.H, 1)} m <em>（地表到底部或岩盤）</em></dd>
+        <dt>分割線間距</dt><dd>${fmt(gi.dx, 2)} m <em>（建議 1–2 m）</em></dd>
+        <dt>節點垂直間距</dt><dd>最大 ${fmt(gi.dz, 2)} m <em>（建議 ≤ 0.5 m）</em></dd>
+        <dt>預估計算時間</dt><dd>${t}</dd>
+      </dl>
+      ${warns.length ? warns.map(w => `<p class="note warn">${w}</p>`).join('') : '<p class="note ok">網格密度適當。</p>'}
+      <div class="row"><button class="btn small" id="btnRec" type="button" ${same ? 'disabled' : ''}>套用建議值：分割線 ${gi.recN} 條、節點 ${gi.recM} 個</button></div>`;
+    chip.textContent = `網格 ${gi.N}×${gi.M}・線距 ${fmt(gi.dx, 1)} m`;
+    chip.classList.toggle('warn', warns.length > 0);
+    chip.title = warns.length ? warns.join('\n') : '搜尋網格密度適當，點選查看設定';
+    $('#rangeInfo').textContent = `目前水平範圍 ${fmt(gi.x0, 1)} 到 ${fmt(gi.x1, 1)} m（長 ${fmt(gi.L, 1)} m），由地表線第一點與最後一點決定。要改長度，請改地表線端點的 x，並把界面線與水位線延伸到同一範圍。`;
+    const br = $('#btnRec');
+    if (br) br.onclick = () => {
+      pushUndo(); model.settings.nCol = gi.recN; model.settings.nState = gi.recM;
+      renderSettings(); stale = !!result; save(); renderGuide(); renderResults();
+      status(`已套用建議值：分割線 ${gi.recN} 條、節點 ${gi.recM} 個`);
+    };
+  }
+
+  /* ---------- geometry frame ---------- */
+  function allPts() {
+    const a = [...model.ground, ...model.water];
+    model.layers.forEach(L => { if (L.top) a.push(...L.top); });
+    return a;
+  }
+  function fit() {
+    const pts = allPts();
+    if (!pts.length) { bounds = { x0: 0, x1: 100, z0: 0, z1: 50 }; return; }
+    let x0 = Math.min(...model.ground.map(p => p[0])), x1 = Math.max(...model.ground.map(p => p[0]));
+    let z0 = Math.min(model.zBase, ...pts.map(p => p[1])), z1 = Math.max(...pts.map(p => p[1]));
+    const dx = (x1 - x0) || 10, dz = (z1 - z0) || 10;
+    bounds = { x0: x0 - dx * 0.03, x1: x1 + dx * 0.03, z0: z0 - dz * 0.04, z1: z1 + dz * 0.16 };
+  }
+  function setupT() {
+    const svg = $('#cv');
+    const W = svg.clientWidth || 800, H = svg.clientHeight || 450;
+    const pad = { l: 50, r: 14, t: 34, b: 30 };
+    const b = bounds, iw = Math.max(50, W - pad.l - pad.r), ih = Math.max(50, H - pad.t - pad.b);
+    let sx = iw / (b.x1 - b.x0), sz = ih / (b.z1 - b.z0);
+    let ox = pad.l, oy = pad.t + ih;
+    if ($('#optEqual').checked) {
+      const s = Math.min(sx, sz); sx = sz = s;
+      ox = pad.l + (iw - s * (b.x1 - b.x0)) / 2;
+      oy = pad.t + ih - (ih - s * (b.z1 - b.z0)) / 2;
+    }
+    T = {
+      W, H, pad, sx, sz,
+      X: x => ox + (x - b.x0) * sx, Z: z => oy - (z - b.z0) * sz,
+      ix: px => b.x0 + (px - ox) / sx, iz: py => b.z0 + (oy - py) / sz,
+      vx0: b.x0 + (pad.l - ox) / sx, vx1: b.x0 + (W - pad.r - ox) / sx,
+      vz0: b.z0 + (oy - (H - pad.b)) / sz, vz1: b.z0 + (oy - pad.t) / sz
+    };
+  }
+  function niceStep(range, px) {
+    const raw = range / Math.max(2, px / 70);
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const m = raw / p;
+    return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p;
+  }
+  const interp = (P, x) => SSA.interp(P, x);
+
+  /* ---------- drawing ---------- */
+  function poly(P) { return P.map(p => `${T.X(p[0]).toFixed(1)},${T.Z(p[1]).toFixed(1)}`).join(' '); }
+  function draw() {
+    if (!bounds) fit();
+    setupT();
+    const svg = $('#cv'), out = [];
+    const { W, H, pad } = T;
+    out.push(`<defs>
+      <pattern id="hatchRock" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)" class="hatch"><line x1="0" y1="0" x2="0" y2="8"/></pattern>
+      <pattern id="hatchBase" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)" class="hatch"><line x1="0" y1="0" x2="0" y2="7"/></pattern>
+      <clipPath id="clipIn"><rect x="${pad.l}" y="${pad.t}" width="${W - pad.l - pad.r}" height="${H - pad.t - pad.b}"/></clipPath>
+    </defs>`);
+    // axes & grid
+    const ax = [];
+    const stx = niceStep(T.vx1 - T.vx0, W - pad.l - pad.r), stz = niceStep(T.vz1 - T.vz0, H - pad.t - pad.b);
+    for (let x = Math.ceil(T.vx0 / stx) * stx; x <= T.vx1 + 1e-9; x += stx) {
+      const px = T.X(x).toFixed(1);
+      ax.push(`<line x1="${px}" x2="${px}" y1="${pad.t}" y2="${H - pad.b}"/><text x="${px}" y="${H - pad.b + 16}" text-anchor="middle">${+x.toFixed(6)}</text>`);
+    }
+    for (let z = Math.ceil(T.vz0 / stz) * stz; z <= T.vz1 + 1e-9; z += stz) {
+      const py = T.Z(z).toFixed(1);
+      ax.push(`<line x1="${pad.l}" x2="${W - pad.r}" y1="${py}" y2="${py}"/><text x="${pad.l - 6}" y="${(+py + 4)}" text-anchor="end">${+z.toFixed(6)}</text>`);
+    }
+    out.push(`<g class="ax">${ax.join('')}<rect class="frame" x="${pad.l}" y="${pad.t}" width="${W - pad.l - pad.r}" height="${H - pad.t - pad.b}"/>
+      <text x="${W - pad.r}" y="${H - 4}" text-anchor="end">x (m)</text><text x="4" y="${pad.t - 8}">z (m)</text></g>`);
+
+    out.push('<g clip-path="url(#clipIn)">');
+    const g = model.ground;
+    if (g.length >= 2) {
+      // x samples
+      const gx0 = g[0][0], gx1 = g[g.length - 1][0];
+      const xsSet = new Set();
+      allPts().forEach(p => { if (p[0] >= gx0 && p[0] <= gx1) xsSet.add(p[0]); });
+      for (let q = 0; q <= 240; q++) xsSet.add(gx0 + (gx1 - gx0) * q / 240);
+      const xs = [...xsSet].sort((a, b) => a - b);
+      const tops = model.layers.map(() => []);
+      xs.forEach(x => {
+        let prev = interp(g, x);
+        model.layers.forEach((L, i) => {
+          const z = i ? Math.min(prev, L.top && L.top.length ? interp(L.top, x) : prev) : prev;
+          tops[i].push([x, Math.max(z, model.zBase)]); prev = z;
+        });
+      });
+      const base = xs.map(x => [x, model.zBase]);
+      model.layers.forEach((L, i) => {
+        const top = tops[i], bot = i + 1 < model.layers.length ? tops[i + 1] : base;
+        const P = [...top, ...bot.slice().reverse()];
+        out.push(`<polygon points="${poly(P)}" fill="${L.color}" fill-opacity=".62"/>`);
+        if (L.bedrock) out.push(`<polygon points="${poly(P)}" fill="url(#hatchRock)"/>`);
+      });
+      // base
+      const bx0 = T.X(gx0), bx1 = T.X(gx1), by = T.Z(model.zBase);
+      out.push(`<rect x="${bx0}" y="${by}" width="${bx1 - bx0}" height="10" fill="url(#hatchBase)"/><line class="basel" x1="${bx0}" x2="${bx1}" y1="${by}" y2="${by}"/>`);
+      // boundaries (effective)
+      for (let i = 1; i < model.layers.length; i++) out.push(`<polyline class="bound" points="${poly(tops[i])}"/>`);
+    }
+    // water
+    if (model.water.length >= 2) {
+      out.push(`<polyline class="wline" points="${poly(model.water)}"/>`);
+      const w = model.water, xm = w[0][0] + (w[w.length - 1][0] - w[0][0]) * 0.12;
+      const px = T.X(xm), py = T.Z(interp(w, xm));
+      out.push(`<g class="wsym"><path d="M${px - 7},${py - 11} L${px + 7},${py - 11} L${px},${py - 2} Z"/><line x1="${px - 8}" x2="${px + 8}" y1="${py + 4}" y2="${py + 4}"/><line x1="${px - 5}" x2="${px + 5}" y1="${py + 8}" y2="${py + 8}"/></g>`);
+    }
+    // search grid
+    if (result && result.ok && $('#optGrid').checked) {
+      let d = '';
+      result.grid.forEach(c => c.z.forEach(z => { d += `M${T.X(c.x).toFixed(1)},${T.Z(z).toFixed(1)}h1.6v1.6h-1.6z`; }));
+      out.push(`<path class="gridpts" d="${d}"/>`);
+    }
+    // result
+    if (result && result.ok) {
+      const S = result.slip;
+      const xa = S[0][0], xb = S[S.length - 1][0];
+      const gpart = model.ground.filter(p => p[0] > xa && p[0] < xb);
+      const top = [[xa, interp(model.ground, xa)], ...gpart, [xb, interp(model.ground, xb)]];
+      out.push(`<polygon class="mass" points="${poly([...S, ...top.reverse()])}"/>`);
+      if ($('#optSlices').checked) {
+        let d = '';
+        result.rows.forEach(r => {
+          const x = r.xc - r.b / 2;
+          if (x <= xa || x >= xb) return;
+          const zs = interp(S, x), zg = interp(model.ground, x);
+          if (zg > zs) d += `M${T.X(x).toFixed(1)},${T.Z(zs).toFixed(1)}V${T.Z(zg).toFixed(1)}`;
+        });
+        out.push(`<path class="slice" d="${d}"/>`);
+      }
+      out.push(`<polyline class="slip" points="${poly(S)}"/>`);
+    }
+    // ground on top
+    if (g.length >= 2) out.push(`<polyline class="ground" points="${poly(g)}"/>`);
+    out.push('</g>');
+    // Fs label
+    if (result && result.ok) {
+      const S = result.slip, xm = (S[0][0] + S[S.length - 1][0]) / 2;
+      let px = T.X(xm), py = T.Z(interp(model.ground, xm)) - 22;
+      const txt = `Fs = ${fmt(result.F, 3)}`, w = txt.length * 7.8 + 14;
+      px = Math.min(Math.max(px, pad.l + w / 2 + 4), W - pad.r - w / 2 - 4); py = Math.max(py, pad.t + 14);
+      out.push(`<g class="fslabel"${stale ? ' opacity=".5"' : ''}><rect x="${px - w / 2}" y="${py - 12}" width="${w}" height="22" rx="4"/><text x="${px}" y="${py + 4}" text-anchor="middle">${txt}</text></g>`);
+    }
+    // active vertices
+    const def = lineDefs().find(d => d.key === active);
+    const AP = getPts(active) || [];
+    const stroke = def && def.kind === 'water' ? 'var(--water)' : def && def.kind === 'bound' ? 'var(--ink)' : 'var(--ink)';
+    AP.forEach((p, i) => {
+      const isHot = (drag && drag.i === i) || (hover && hover.key === active && hover.i === i);
+      out.push(`<circle class="vtx${isHot ? ' hot' : ''}" cx="${T.X(p[0]).toFixed(1)}" cy="${T.Z(p[1]).toFixed(1)}" r="${isHot ? 6.5 : 5}" stroke="${stroke}"/>`);
+    });
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = out.join('');
+    svg.className.baseVal = mode === 'add' ? 'm-add' : mode === 'del' ? 'm-del' : '';
+  }
+
+  /* ---------- pointer editing ---------- */
+  function evtPt(e) {
+    const r = $('#cv').getBoundingClientRect();
+    return { px: e.clientX - r.left, py: e.clientY - r.top };
+  }
+  function snapV(v) {
+    const s = +$('#snap').value;
+    return s > 0 ? Math.round(v / s) * s : Math.round(v * 100) / 100;
+  }
+  function nearest(px, py, keys, tol = 11) {
+    let best = null;
+    for (const key of keys) {
+      (getPts(key) || []).forEach((p, i) => {
+        const d = Math.hypot(T.X(p[0]) - px, T.Z(p[1]) - py);
+        if (d < tol && (!best || d < best.d)) best = { key, i, d };
+      });
+    }
+    return best;
+  }
+  function onDown(e) {
+    if (running) return;
+    const { px, py } = evtPt(e);
+    const svg = $('#cv');
+    if (mode === 'drag') {
+      let n = nearest(px, py, [active]);
+      if (!n) { n = nearest(px, py, lineDefs().map(d => d.key)); if (n) { active = n.key; renderLines(); renderCoords(); } }
+      if (n) { pushUndo(); drag = { key: n.key, i: n.i, moved: false }; svg.setPointerCapture(e.pointerId); draw(); }
+    } else if (mode === 'add') {
+      if (nearest(px, py, [active])) return;
+      const x = snapV(T.ix(px)), z = snapV(T.iz(py));
+      const P = (getPts(active) || []).slice();
+      if (P.some(p => Math.abs(p[0] - x) < 1e-6)) { status('此 x 位置已有節點，請改用拖曳。'); return; }
+      pushUndo(); P.push([x, z]); setPts(active, P); changed(false);
+      status(`已加入節點 (${r3(x)}, ${r3(z)})`);
+    } else if (mode === 'del') {
+      const n = nearest(px, py, [active]);
+      if (!n) return;
+      const P = getPts(active).slice();
+      if (P.length <= minPts(active)) { status('這條線至少要保留 2 個點。'); return; }
+      pushUndo(); P.splice(n.i, 1); setPts(active, P); changed(false);
+      status('已刪除節點');
+    }
+    e.preventDefault();
+  }
+  function onMove(e) {
+    if (!T) return;
+    const { px, py } = evtPt(e);
+    $('#hud').textContent = `x ${fmt(T.ix(px), 2)}　z ${fmt(T.iz(py), 2)}`;
+    if (drag) {
+      const P = getPts(drag.key);
+      let x = snapV(T.ix(px)), z = snapV(T.iz(py));
+      const lo = drag.i > 0 ? P[drag.i - 1][0] + 0.01 : -Infinity, hi = drag.i < P.length - 1 ? P[drag.i + 1][0] - 0.01 : Infinity;
+      x = Math.min(Math.max(x, lo), hi);
+      P[drag.i] = [x, z]; drag.moved = true;
+      $('#hud').textContent = `節點 (${fmt(x, 2)}, ${fmt(z, 2)})`;
+      stale = !!result; draw();
+      return;
+    }
+    const n = nearest(px, py, [active]);
+    const h = n ? { key: n.key, i: n.i } : null;
+    if ((h && (!hover || hover.i !== h.i)) || (!h && hover)) { hover = h; draw(); }
+  }
+  function onUp() {
+    if (!drag) return;
+    const moved = drag.moved; drag = null;
+    if (moved) changed(false); else { undoStack.pop(); $('#btnUndo').disabled = !undoStack.length; draw(); }
+  }
+
+  /* ---------- run ---------- */
+  function status(t) { $('#status').textContent = t; }
+  function currentModel() {
+    return { ground: model.ground, layers: model.layers, water: model.water.length >= 2 ? model.water : [], zBase: model.zBase, settings: model.settings };
+  }
+  let errors = [];
+  function run() {
+    if (running) return;
+    errors = SSA.validate(currentModel());
+    if (errors.length) { result = null; renderResults(); draw(); status('輸入有誤，請依提示修正'); return; }
+    running = true;
+    const btn = $('#btnRun'); btn.disabled = true; btn.textContent = '計算中…';
+    const t0 = performance.now();
+    let gen;
+    try { gen = SSA.solve(clone(currentModel())); } catch (e) { finish({ ok: false, msg: String(e.message || e) }, t0); return; }
+    const step = () => {
+      try {
+        const n = gen.next();
+        if (n.done) { finish(n.value, t0); return; }
+        status(`第 ${n.value.it} 輪：F = ${fmt(n.value.F, 4)}`);
+        setTimeout(step, 0);
+      } catch (e) { finish({ ok: false, msg: '計算失敗：' + (e.message || e) }, t0); }
+    };
+    setTimeout(step, 20);
+  }
+  function finish(r, t0) {
+    running = false;
+    const btn = $('#btnRun'); btn.disabled = false; btn.textContent = '計算最危險滑動面';
+    r.ms = performance.now() - t0;
+    result = r; stale = false;
+    status(r.ok ? `完成：${r.hist.length} 輪、${fmt(r.ms / 1000, 2)} 秒` : '未找到滑動面');
+    draw(); renderResults();
+  }
+
+  function renderResults() {
+    const box = $('#results');
+    box.classList.toggle('stale', !!(stale && result));
+    if (errors.length) {
+      box.innerHTML = `<div class="msg"><strong>無法計算，請先修正：</strong><ul>${errors.map(e => `<li>${esc(e)}</li>`).join('')}</ul></div>`;
+      return;
+    }
+    if (!result) { box.innerHTML = '<p class="hint">按「計算最危險滑動面」開始分析。</p>'; return; }
+    if (!result.ok) { box.innerHTML = `<div class="msg">${esc(result.msg)}</div>`; return; }
+    const r = result, s = model.settings;
+    const Fj = s.useF0 ? r.Fc : r.F, req = +s.Freq;
+    let chip;
+    if (stale) chip = '<span class="chip stale">幾何或參數已變更，請重新計算</span>';
+    else if (Fj < 1) chip = '<span class="chip crit">不穩定（Fs &lt; 1.0）</span>';
+    else if (Fj < req) chip = `<span class="chip warn">低於要求值 ${fmt(req, 2)}</span>`;
+    else chip = `<span class="chip ok">符合要求值 ${fmt(req, 2)}</span>`;
+    const S = r.slip, pA = S[0], pB = S[S.length - 1];
+    const toe = r.mirror ? pB : pA, head = r.mirror ? pA : pB;
+    box.innerHTML = `
+      <div class="res-top">
+        <div class="fsbox">
+          <span class="lbl">安全係數 Fs（簡易 Janbu）</span>
+          <span class="big">${fmt(r.F, 3)}</span>
+          <span class="sub">修正後 f0·Fs = <span class="num">${fmt(r.Fc, 3)}</span>（f0 = ${fmt(r.f0, 3)}，${r.f0type === 'janbu' ? 'Janbu 曲線' : '(50d/L)<sup>0.03</sup>'}）</span>
+          ${chip}
+        </div>
+        <dl class="stats">
+          <div><dt>滑動體面積</dt><dd>${fmt(r.area, 1)} m²/m</dd></div>
+          <div><dt>最大鉛直深度</dt><dd>${fmt(r.dmaxV, 2)} m</dd></div>
+          <div><dt>坡趾出口 (x, z)</dt><dd>${fmt(toe[0], 2)}, ${fmt(toe[1], 2)}</dd></div>
+          <div><dt>坡頂入口 (x, z)</dt><dd>${fmt(head[0], 2)}, ${fmt(head[1], 2)}</dd></div>
+          <div><dt>ΣR 抵抗力</dt><dd>${fmt(toG(r.sumA), gTF() ? 2 : 1)} ${uF()}</dd></div>
+          <div><dt>ΣD 滑動力</dt><dd>${fmt(toG(r.sumB), gTF() ? 2 : 1)} ${uF()}</dd></div>
+          <div><dt>d / L</dt><dd>${fmt(r.dL, 3)}${r.f0type === 'janbu' ? `（b1 = ${fmt(r.b1, 2)}）` : ''}</dd></div>
+          <div><dt>迭代・耗時</dt><dd>${r.hist.length} 輪・${fmt(r.ms / 1000, 2)} s</dd></div>
+        </dl>
+      </div>
+      <details>
+        <summary>切片明細（${r.rows.length} 片）</summary>
+        <div class="row" style="margin-top:8px"><button class="btn small" id="btnCopyRows" type="button">複製切片表 (CSV)</button><button class="btn small" id="btnCopySlip" type="button">複製滑動面座標</button></div>
+        <div class="tblwrap"><table>
+          <thead><tr><th>x 中點</th><th>寬 b</th><th>底部 z</th><th>α (°)</th><th>W (${uF()})</th><th>hw (m)</th><th>u (${uC()})</th><th>c' (${uC()})</th><th>φ' (°)</th><th class="t">土層</th><th>mα</th><th>R (${uF()})</th><th>D (${uF()})</th></tr></thead>
+          <tbody>${r.rows.map(x => `<tr><td>${fmt(x.xc, 2)}</td><td>${fmt(x.b, 2)}</td><td>${fmt(x.zc, 2)}</td><td>${fmt(x.alpha, 1)}</td><td>${fmt(toG(x.W), gTF() ? 2 : 1)}</td><td>${fmt(x.hw, 2)}</td><td>${fmt(toC(x.u), cTF() ? 2 : 1)}</td><td>${fmt(toC(x.c), cTF() ? 2 : 1)}</td><td>${fmt(x.phi, 1)}</td><td class="t">${esc(x.layer)}</td><td>${fmt(x.ma, 3)}</td><td>${fmt(toG(x.res), gTF() ? 2 : 1)}</td><td>${fmt(toG(x.drv), gTF() ? 2 : 1)}</td></tr>`).join('')}</tbody>
+        </table></div>
+      </details>
+      <details>
+        <summary>迭代紀錄</summary>
+        <div class="tblwrap"><table>
+          <thead><tr><th>輪次</th><th>搜尋用 F (λ)</th><th>該輪滑動面 Fs</th><th>G 最小值</th></tr></thead>
+          <tbody>${r.hist.map(h => `<tr><td>${h.it}</td><td>${fmt(h.lam, 4)}</td><td>${fmt(h.F, 4)}</td><td>${fmt(h.G, 1)}</td></tr>`).join('')}</tbody>
+        </table></div>
+      </details>`;
+    $('#btnCopyRows').onclick = ev => {
+      const fu = gTF() ? 'tf_m' : 'kN_m', su = cTF() ? 'tf_m2' : 'kPa';
+      const head = `x,b,z_base,alpha_deg,W_${fu},hw_m,u_${su},c_${su},phi_deg,layer,m_alpha,R_${fu},D_${fu}`;
+      copyText([head, ...r.rows.map(x => [x.xc, x.b, x.zc, x.alpha, toG(x.W), x.hw, toC(x.u), toC(x.c), x.phi, x.layer, x.ma, toG(x.res), toG(x.drv)].map(v => typeof v === 'number' ? r3(v) : v).join(','))].join('\n'), ev.currentTarget);
+    };
+    $('#btnCopySlip').onclick = ev => copyText(['x,z', ...r.slip.map(p => `${r3(p[0])},${r3(p[1])}`)].join('\n'), ev.currentTarget);
+  }
+
+  /* ---------- file save (downloads capability, or plain download in the standalone file) ---------- */
+  let dlCap = null;
+  (async () => { try { if (window.claude && typeof window.claude.use === 'function') dlCap = await window.claude.use('downloads'); } catch (e) { dlCap = null; } })();
+  async function saveFile(filename, text, btn) {
+    if (dlCap) {
+      try { await dlCap.save({ filename, data: text }); status(`已下載 ${filename}`); }
+      catch (e) {
+        if (e && e.code === 'declined') status('已取消下載');
+        else if (e && e.code === 'rate_limited') status('下載視窗已開啟，請先完成或關閉它。');
+        else { copyText(text, btn); status('無法下載檔案，已改為複製內容，請貼到文字編輯器後存檔。'); }
+      }
+      return;
+    }
+    try {
+      const url = URL.createObjectURL(new Blob([text], { type: filename.endsWith('.json') ? 'application/json' : 'text/csv' }));
+      const a = document.createElement('a'); a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      status(`已下載 ${filename}（若沒有開始下載，請改用「複製」）`);
+    } catch (e) { copyText(text, btn); }
+  }
+  const stamp = () => { const d = new Date(), p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`; };
+
+  /* ---------- CSV import ---------- */
+  const CSV_FULL = 'x,地表,風化岩頂面,岩盤頂面,地下水位\n0,10,6,2,10\n20,10,6,,10.2\n40,20,14,8,16\n55,27,19,,22\n80,28,20,12,24\n';
+  const CSV_GROUND = 'x,z\n0,10\n20,10\n40,20\n55,27\n80,28\n';
+  function decodeText(buf) {
+    let t;
+    try { t = new TextDecoder('utf-8', { fatal: true }).decode(buf); }
+    catch (e) { try { t = new TextDecoder('big5').decode(buf); } catch (e2) { t = new TextDecoder().decode(buf); } }
+    return t.replace(/^\uFEFF/, '');
+  }
+  function importCSV(text) {
+    const rows = text.split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#')).map(l => l.split(/\s*[,;\t]\s*|\s+(?=[-\d.])/));
+    if (!rows.length) throw new Error('檔案是空的');
+    let header = null;
+    if (!isFinite(parseFloat(rows[0][0]))) header = rows.shift();
+    const data = rows.filter(r => isFinite(parseFloat(r[0])));
+    if (data.length < 2) throw new Error('至少需要 2 列數值資料');
+    const ncol = Math.max(...data.map(r => r.length), header ? header.length : 0);
+    const col = j => data.filter(r => r[j] !== undefined && r[j] !== '' && isFinite(parseFloat(r[j]))).map(r => [parseFloat(r[0]), parseFloat(r[j])]).sort((a, b) => a[0] - b[0]);
+    pushUndo();
+    let msg;
+    if (ncol <= 2) {
+      const P = col(1);
+      if (P.length < 2) throw new Error('x、z 兩欄至少需要 2 個點');
+      setPts(active, P);
+      const d = lineDefs().find(x => x.key === active);
+      msg = `已匯入 ${P.length} 點到「${d ? d.label : ''}」`;
+    } else {
+      const G = col(1);
+      if (G.length < 2) throw new Error('第 2 欄（地表高程）至少需要 2 個點');
+      model.ground = G;
+      let li = 1, nb = 0, nw = 0;
+      const pal = ['#D8BE8A', '#B48462', '#8C949A', '#A9B38B', '#C7A1A1', '#9FB4C7'];
+      for (let j = 2; j < ncol; j++) {
+        const P = col(j), name = header && header[j] ? header[j].trim() : '';
+        if (P.length < 2) continue;
+        if (/水|water|wt|gwl/i.test(name)) { model.water = P; nw = P.length; continue; }
+        if (!model.layers[li]) {
+          const nm = (name.replace(/頂面|頂界面|頂|top/gi, '').trim()) || `土層 ${li + 1}`;
+          model.layers.push({ name: nm, color: pal[li % pal.length], gamma: 20, gammaSat: 21, c: 10, phi: 30, bedrock: false, top: P });
+        } else model.layers[li].top = P;
+        li++; nb++;
+      }
+      msg = `已匯入地表 ${G.length} 點、${nb} 條土層界面${nw ? `、地下水位 ${nw} 點` : ''}`;
+      if (li < model.layers.length) msg += `（第 ${li + 1} 層以下沿用原本的界面）`;
+    }
+    const zs = [...model.ground, ...model.water, ...model.layers.flatMap(L => L.top || [])].map(p => p[1]);
+    const zg = Math.min(...model.ground.map(p => p[1]));
+    if (!(model.zBase < zg)) { model.zBase = Math.floor(Math.min(...zs)) - 2; msg += `，模型底部高程已調為 ${model.zBase} m`; }
+    result = null; fit(); changed(true);
+    status(msg);
+  }
+
+  function copyText(t, btn) {
+    const done = () => { if (btn) { const o = btn.textContent; btn.textContent = '已複製'; setTimeout(() => btn.textContent = o, 1400); } };
+    const fb = () => { const f = $('#fallback'); f.value = t; f.classList.add('show'); f.focus(); f.select(); status('無法直接寫入剪貼簿，已選取下方文字，請按 Ctrl+C 複製。'); };
+    try { navigator.clipboard.writeText(t).then(done, fb); } catch (e) { fb(); }
+  }
+
+  /* ---------- wiring ---------- */
+  function bind() {
+    $$('.tabs button').forEach(b => b.addEventListener('click', () => {
+      $$('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
+      $$('.pane').forEach(p => p.hidden = p.dataset.pane !== b.dataset.tab);
+    }));
+    $('#lineList').addEventListener('click', e => {
+      const b = e.target.closest('.lrow'); if (!b) return;
+      active = b.dataset.key; renderLines(); renderCoords(); draw();
+    });
+    $('#btnApply').addEventListener('click', () => {
+      const P = parseCoords($('#coords').value);
+      if (P.length < minPts(active)) { status('至少需要 2 個點。'); return; }
+      pushUndo(); setPts(active, P); fit(); changed(false); status('已套用座標');
+    });
+    $('#btnClearLine').addEventListener('click', () => { pushUndo(); model.water = []; changed(false); status('已清除地下水位線'); });
+    $('#btnMakeWater').addEventListener('click', () => { pushUndo(); model.water = model.ground.map(p => [p[0], Math.max(model.zBase, p[1] - 2)]); changed(false); });
+    $('#zBase').addEventListener('change', e => { const v = +e.target.value; if (!isFinite(v)) return; pushUndo(); model.zBase = v; fit(); changed(false); });
+
+    $('#layerList').addEventListener('input', e => {
+      const card = e.target.closest('.layer'), f = e.target.dataset.f; if (!card || !f) return;
+      const L = model.layers[+card.dataset.i];
+      if (f === 'name') L.name = e.target.value;
+      else if (f === 'color') L.color = e.target.value;
+      else if (f === 'bedrock') L.bedrock = e.target.checked;
+      else { const v = parseFloat(e.target.value); if (isFinite(v)) L[f] = f === 'c' ? fromC(v) : (f === 'gamma' || f === 'gammaSat') ? fromG(v) : v; }
+      stale = !!result; save(); draw(); renderResults(); if (f === 'bedrock') renderGuide();
+      if (f === 'name' || f === 'color') renderLines();
+    });
+    $('#layerList').addEventListener('focusin', e => { if (e.target.dataset.f) { const s = JSON.stringify(model); if (undoStack[undoStack.length - 1] !== s) pushUndo(); } });
+    $('#layerList').addEventListener('click', e => {
+      const d = e.target.closest('[data-del]'); if (!d) return;
+      const i = +d.dataset.del; if (model.layers.length < 2) return;
+      pushUndo();
+      model.layers.splice(i, 1);
+      if (i === 0) model.layers[0].top = null;
+      active = 'ground'; changed(true);
+    });
+    $('#btnAddLayer').addEventListener('click', () => {
+      pushUndo();
+      const n = model.layers.length, last = n > 1 ? model.layers[n - 1].top : model.ground;
+      const pal = ['#D8BE8A', '#B48462', '#8C949A', '#A9B38B', '#C7A1A1', '#9FB4C7'];
+      const top = last.map(p => [p[0], Math.max(model.zBase + 0.5, p[1] - 3)]);
+      model.layers.push({ name: `土層 ${n + 1}`, color: pal[n % pal.length], gamma: 20, gammaSat: 21, c: 10, phi: 30, bedrock: false, top });
+      active = 'L' + n; changed(true);
+      status('已新增土層，頂面預設為上一層頂面往下 3 m，可在「剖面」頁調整。');
+    });
+    $$('[data-s]').forEach(el => el.addEventListener('change', () => {
+      const k = el.dataset.s;
+      let v = el.type === 'checkbox' ? el.checked : el.tagName === 'SELECT' ? el.value : (isFinite(parseFloat(el.value)) ? parseFloat(el.value) : model.settings[k]);
+      if (k === 'gw' && typeof v === 'number') v = fromG(v);
+      model.settings[k] = v;
+      if (k === 'unitG' || k === 'unitC') {
+        renderLayers(); renderSettings(); renderResults();
+        status(`單位已切換為 ${uG()}、${uC()}，數值已自動換算`);
+        return;
+      }
+      if (k === 'Freq' || k === 'useF0') { save(); renderResults(); return; }
+      stale = !!result; save(); renderResults(); draw(); renderGuide();
+    }));
+    $$('[data-mode]').forEach(b => b.addEventListener('click', () => {
+      mode = b.dataset.mode; $$('[data-mode]').forEach(x => x.setAttribute('aria-pressed', x === b)); draw();
+    }));
+    ['#optEqual', '#optSlices', '#optGrid'].forEach(s => $(s).addEventListener('change', draw));
+    $('#btnFit').addEventListener('click', () => { fit(); draw(); });
+    $('#btnRun').addEventListener('click', run);
+    $('#btnCite').addEventListener('click', e => copyText($('#citeText').textContent.trim(), e.currentTarget));
+    $('#btnBib').addEventListener('click', e => copyText(`@inproceedings{chen2013landslide,
+  author    = {Chen, C. Y. and Ikkanda, S. and Fujita, M. and Tsutsumi, D.},
+  title     = {A study on mechanism of large-scale landslides and the prediction},
+  booktitle = {Proceedings of the 12th International Symposium on River Sedimentation},
+  pages     = {109--118},
+  year      = {2013},
+  url       = {https://app.box.com/s/zrey81xhpm4jitn9qszz}
+}`, e.currentTarget));
+    $('#gridChip').addEventListener('click', () => { $('#tab-set').click(); $('#searchGuide').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); });
+    $('#btnUndo').addEventListener('click', doUndo);
+    $('#btnSample').addEventListener('click', () => { pushUndo(); model = clone(SAMPLE); active = 'ground'; fit(); changed(true); run(); });
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); doUndo(); }
+    });
+    const svg = $('#cv');
+    svg.addEventListener('pointerdown', onDown);
+    svg.addEventListener('pointermove', onMove);
+    svg.addEventListener('pointerup', onUp);
+    svg.addEventListener('pointercancel', onUp);
+    svg.addEventListener('pointerleave', () => { $('#hud').textContent = 'x —　z —'; if (hover && !drag) { hover = null; draw(); } });
+
+    $('#csvSampleFull').textContent = CSV_FULL;
+    $('#csvSampleGround').textContent = CSV_GROUND;
+    $('#btnDlFull').addEventListener('click', e => saveFile('SSA-剖面範例.csv', '\uFEFF' + CSV_FULL, e.currentTarget));
+    $('#btnDlGround').addEventListener('click', e => saveFile('SSA-地表線範例.csv', '\uFEFF' + CSV_GROUND, e.currentTarget));
+    $('#btnCpFull').addEventListener('click', e => copyText(CSV_FULL, e.currentTarget));
+    $('#btnCpGround').addEventListener('click', e => copyText(CSV_GROUND, e.currentTarget));
+    $('#csvIn').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => { try { importCSV(decodeText(rd.result)); } catch (err) { status('CSV 匯入失敗：' + err.message + '。請對照範例檔的格式。'); } };
+      rd.readAsArrayBuffer(f); e.target.value = '';
+    });
+    $('#btnSaveJson').addEventListener('click', e => saveFile(`SSA-model-${stamp()}.json`, JSON.stringify(model, null, 1), e.currentTarget));
+    $('#btnGoSave').addEventListener('click', () => { $('#tab-set').click(); $('#saveSec').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
+    $('#btnExport').addEventListener('click', () => { $('#jsonBox').value = JSON.stringify(model, null, 1); });
+    $('#btnCopyJson').addEventListener('click', e => { if (!$('#jsonBox').value) $('#jsonBox').value = JSON.stringify(model, null, 1); copyText($('#jsonBox').value, e.currentTarget); });
+    $('#btnImport').addEventListener('click', () => importText($('#jsonBox').value));
+    $('#fileIn').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => { $('#jsonBox').value = rd.result; importText(rd.result); renderSettings(); };
+      rd.readAsText(f); e.target.value = '';
+    });
+    let rt = 0;
+    new ResizeObserver(() => { cancelAnimationFrame(rt); rt = requestAnimationFrame(draw); }).observe($('.canvas-wrap'));
+  }
+  function importText(t) {
+    try {
+      const m = sanitize(JSON.parse(t));
+      pushUndo(); model = m; active = 'ground'; result = null; fit(); changed(true); status('已載入模型'); run();
+    } catch (e) { status('載入失敗：JSON 格式不正確或缺少地表線、土層資料。'); }
+  }
+
+  bind();
+  $('#btnUndo').disabled = true;
+  fit(); renderLines(); renderCoords(); renderLayers(); renderSettings(); draw(); renderResults(); renderGuide();
+  run();
+})();
+</script>
+</body>
+</html>
