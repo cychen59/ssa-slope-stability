@@ -4,6 +4,8 @@
 
 **線上使用：<https://cychen59.github.io/ssa-slope-stability/>**
 
+![使用人數](https://abacus.jasoncameron.dev/get/cychen59.github.io/ssa-slope-stability-visitors/shield) ![累計開啟次數](https://abacus.jasoncameron.dev/get/cychen59.github.io/ssa-slope-stability-views/shield)
+
 ---
 
 ## 功能

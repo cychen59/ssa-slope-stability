@@ -66,7 +66,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .brand .mark{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.14em;color:var(--accent-ink);background:var(--accent);padding:3px 8px;border-radius:4px}
 .brand h1{font-size:21px;margin:0;font-weight:700;letter-spacing:.02em}
 .brand p{margin:0;color:var(--muted);font-size:13px}
-.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.visits{display:inline-flex;align-items:baseline;gap:6px;font-size:12.5px;color:var(--muted);padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);white-space:nowrap}
+.visits b{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;font-weight:600;color:var(--accent)}
+.visits .sep{color:var(--line)}
 
 /* buttons */
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px}
@@ -293,6 +296,7 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
       <p>動態規劃搜尋非圓弧滑動面・簡易 Janbu 法・由地下水位換算孔隙水壓</p>
     </div>
     <div class="top-actions">
+      <span class="visits" id="visitCount" hidden title="使用人數以瀏覽器計算，同一個瀏覽器只算一次"></span>
       <button class="btn" id="btnUndo" type="button" title="復原上一步（Ctrl+Z）">↶ 復原</button>
       <button class="btn" id="btnSample" type="button">載入範例</button>
       <a class="btn" href="#theory">原理與公式</a>
@@ -680,6 +684,7 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
   </main>
   <footer class="site-foot">
     <p>SSA 邊坡穩定分析以 <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GNU GPL-3.0</a> 授權開放使用。原始碼與問題回報：<a href="https://github.com/cychen59/ssa-slope-stability" target="_blank" rel="noopener">github.com/cychen59/ssa-slope-stability</a>。使用本工具的結果請引用 <a href="#cite">Chen et al. (2013)</a>。</p>
+    <p>使用人數由 <a href="https://jasoncameron.dev/abacus/" target="_blank" rel="noopener">Abacus</a> 計數服務統計，只記錄次數，不蒐集個人資料。</p>
     <p>本工具為二維極限平衡分析的輔助工具，計算結果僅供參考，實際工程判斷與設計仍應由專業人員依現地調查與相關規範負責。</p>
   </footer>
 </div>
@@ -1744,7 +1749,28 @@ if (typeof module !== 'undefined') module.exports = SSA;
     } catch (e) { status('載入失敗：JSON 格式不正確或缺少地表線、土層資料。'); }
   }
 
+  /* ---------- usage counter (live GitHub Pages site only) ---------- */
+  async function visitCounter() {
+    const el = $('#visitCount');
+    if (!el || !/(^|\.)github\.io$/i.test(location.hostname)) return;
+    const base = 'https://abacus.jasoncameron.dev', ns = 'cychen59.github.io';
+    const kUser = 'ssa-slope-stability-visitors', kView = 'ssa-slope-stability-views';
+    let first = true;
+    try { first = !localStorage.getItem('ssa-visited'); } catch (e) { }
+    const get = url => fetch(url, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
+    const [u, v] = await Promise.all([get(`${base}/${first ? 'hit' : 'get'}/${ns}/${kUser}`), get(`${base}/hit/${ns}/${kView}`)]);
+    if (u && first) { try { localStorage.setItem('ssa-visited', String(Date.now())); } catch (e) { } }
+    const n = x => Number(x).toLocaleString('zh-TW');
+    const parts = [];
+    if (u && isFinite(u.value)) parts.push(`已有 <b>${n(u.value)}</b> 位使用者`);
+    if (v && isFinite(v.value)) parts.push(`累計開啟 <b>${n(v.value)}</b> 次`);
+    if (!parts.length) return;
+    el.innerHTML = parts.join('<span class="sep">｜</span>');
+    el.hidden = false;
+  }
+
   bind();
+  visitCounter();
   $('#btnUndo').disabled = true;
   fit(); renderLines(); renderCoords(); renderLayers(); renderSettings(); draw(); renderResults(); renderGuide();
   run();
