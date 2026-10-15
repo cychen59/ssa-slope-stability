@@ -27,7 +27,7 @@
   --accent:#245C4A; --accent-ink:#FFFFFF; --accent-soft:#DCEBE4;
   --water:#2A6FC4; --slip:#C3301D; --slip-fill:rgba(195,48,29,.13);
   --ok:#2E7D4F; --ok-bg:#DDF0E4; --warn:#9A6200; --warn-bg:#FBEBC8; --crit:#B3261E; --crit-bg:#F9DEDA;
-  --grid:#E3E8E6; --axis:#6E7B77;
+  --grid:#E3E8E6; --axis:#6E7B77; --wall:#C9CDD0; --load:#8A4FB0;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   --r:8px;
@@ -40,7 +40,7 @@
     --accent:#72C2A2; --accent-ink:#0B1712; --accent-soft:#1F3A31;
     --water:#6CA9F2; --slip:#FF6E58; --slip-fill:rgba(255,110,88,.16);
     --ok:#7BD29F; --ok-bg:#183327; --warn:#F2C166; --warn-bg:#3A2D10; --crit:#FF8A7E; --crit-bg:#3C1B18;
-    --grid:#1F2928; --axis:#83918D;
+    --grid:#1F2928; --axis:#83918D; --wall:#5A6266; --load:#C59BE3;
   }
 }
 :root[data-theme="dark"]{
@@ -50,7 +50,7 @@
   --accent:#72C2A2; --accent-ink:#0B1712; --accent-soft:#1F3A31;
   --water:#6CA9F2; --slip:#FF6E58; --slip-fill:rgba(255,110,88,.16);
   --ok:#7BD29F; --ok-bg:#183327; --warn:#F2C166; --warn-bg:#3A2D10; --crit:#FF8A7E; --crit-bg:#3C1B18;
-  --grid:#1F2928; --axis:#83918D;
+  --grid:#1F2928; --axis:#83918D; --wall:#5A6266; --load:#C59BE3;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -92,7 +92,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 }
 
 /* tabs */
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);background:var(--panel)}
+.tabs{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid var(--line);background:var(--panel)}
 .tabs button{border:0;background:transparent;padding:10px 4px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 .pane{padding:14px;display:grid;gap:14px}
@@ -282,6 +282,37 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
 .site-foot{display:grid;gap:4px;font-size:12px;color:var(--muted);padding:6px 2px 0;line-height:1.7}
 .site-foot p{margin:0}
 .site-foot a{color:var(--accent)}
+.sw.trial{border-top:2px dashed var(--slip)}
+.tline{fill:none;stroke:var(--slip);stroke-width:1.6;stroke-dasharray:6 4;opacity:.8}
+.slip-base{fill:none;stroke:var(--faint);stroke-width:2;stroke-dasharray:7 5}
+.mem{stroke:var(--ink);stroke-opacity:.55;stroke-width:1.6;stroke-linecap:round}
+.mem.bond{stroke-width:3.6}
+.mem.on{stroke:var(--accent);stroke-opacity:1}
+.mem.off{stroke-dasharray:3 3;stroke-opacity:.35}
+.mem-x{fill:var(--accent);stroke:var(--surface);stroke-width:1.2}
+.mem-lbl{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+.rcard{border:1px solid var(--line);border-radius:6px;padding:10px;display:grid;gap:8px;background:var(--panel)}
+.rcard.off{opacity:.6}
+.rcard .idx{font-size:12px;color:var(--muted)}
+.rcard-head{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rcard-head .btn{padding:2px 7px;font-size:12px}
+.rcard-head .check span{white-space:nowrap}
+.rcard-head .no{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent-ink);background:var(--accent);border-radius:4px;padding:1px 6px}
+.rcard-head select{border:1px solid var(--line);border-radius:6px;padding:3px 4px;background:var(--canvas);font-size:13px}
+.rcard-head .sp{flex:1}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.base-line{font-size:13px;color:var(--muted)}
+.base-line b{font-family:var(--mono);color:var(--ink)}
+.mode-chip{display:inline-block;font-size:11.5px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:0 8px;margin-left:6px;vertical-align:1px}
+.wall{fill:var(--wall);stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round}
+.wall.off{opacity:.4;stroke-dasharray:4 3}
+.hatch .dot{fill:var(--ink);fill-opacity:.35;stroke:none}
+.load{stroke:var(--load);fill:none}
+.load.head{fill:var(--load);stroke:none}
+.load.off{opacity:.35}
+.load-lbl{font-family:var(--mono);font-size:11px;fill:var(--load)}
+.lhandle{fill:var(--surface);stroke:var(--load);stroke-width:1.6;cursor:ew-resize}
+.slip-base2{fill:none;stroke:var(--faint);stroke-width:2;stroke-dasharray:2 4;stroke-linecap:round}
 #fallback{display:none}
 #fallback.show{display:block}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
@@ -309,6 +340,8 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
       <div class="tabs" role="tablist">
         <button role="tab" aria-selected="true" data-tab="geo" id="tab-geo" type="button">剖面</button>
         <button role="tab" aria-selected="false" data-tab="soil" id="tab-soil" type="button">土層</button>
+        <button role="tab" aria-selected="false" data-tab="load" id="tab-load" type="button">載重</button>
+        <button role="tab" aria-selected="false" data-tab="reinf" id="tab-reinf" type="button">補強</button>
         <button role="tab" aria-selected="false" data-tab="set" id="tab-set" type="button">設定</button>
         <button role="tab" aria-selected="false" data-tab="doc" id="tab-doc" type="button">說明</button>
       </div>
@@ -325,7 +358,8 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
           <textarea id="coords" rows="9" spellcheck="false" aria-label="目前線段的座標"></textarea>
           <div class="row">
             <button class="btn small" id="btnApply" type="button">套用座標</button>
-            <button class="btn small ghost" id="btnClearLine" type="button">清除水位線</button>
+            <button class="btn small ghost" id="btnClearLine" type="button">清除此線</button>
+            <button class="btn small ghost" id="btnCopyCrit" type="button">複製目前的臨界滑動面</button>
             <button class="btn small ghost" id="btnMakeWater" type="button">由地表下 2 m 建立水位線</button>
           </div>
           <p class="hint">每行一點，x 與 z 以空白、逗號或 Tab 分隔，可直接從 Excel 貼上。單位 m。</p>
@@ -380,6 +414,78 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
       </div>
 
       <!-- settings -->
+      <div class="pane" data-pane="load" hidden>
+        <div class="sec">
+          <h3>地表載重</h3>
+          <p class="hint">均布載重 q 作用在地表一段 x 範圍，線載重 P 作用在一點，都以每公尺寬計。只有落在滑動土體上方的部分會計入，作用方式和土重相同，同時增加正向力與滑動力。</p>
+          <label class="check"><input type="checkbox" id="s-compareLoad" data-s="compareLoad"><span>同時計算無載重的情況<small>並列有、無載重的 Fs，並以點線畫出無載重時的臨界滑動面。</small></span></label>
+          <div id="loadList" class="sec"></div>
+          <div class="row">
+            <select id="loadTpl" aria-label="載重範本" style="border:1px solid var(--line);border-radius:6px;padding:5px 6px;background:var(--canvas)">
+              <option value="road">道路車載（均布，不計地震力）</option>
+              <option value="bldg">建築物（均布）</option>
+              <option value="pile">堆置物（均布）</option>
+              <option value="wallL">圍牆或構造物（線載重）</option>
+            </select>
+            <button class="btn" id="btnAddLoad" type="button">＋ 加入載重</button>
+          </div>
+          <p class="hint">新加入的載重強度都是佔位數字，請依設計規範與現地狀況輸入。可在圖上拖曳載重端點調整位置。</p>
+        </div>
+        <div class="sec">
+          <h3>使用提醒</h3>
+          <ul class="hint-list">
+            <li>坡頂（上邊坡）的載重通常會降低 Fs；坡趾（下邊坡）的載重通常會提高 Fs，也就是壓腳效果。</li>
+            <li>坡趾的載重若可能被移走（停車、臨時堆料），不應依賴它提高安全係數，請分別計算有、無載重兩種情況，取較低的 Fs。</li>
+            <li>填土本身有強度，滑動面也可能穿過它，請修改地表線並加入填土土層，不要用載重代表。</li>
+            <li>道路車載等臨時載重，一般不計入地震慣性力；結構物等永久載重則應計入。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="reinf" hidden>
+        <div class="sec">
+          <h3>補強力計入方式</h3>
+          <div class="field"><label for="s-reinfMode">計入方式</label>
+            <select id="s-reinfMode" data-s="reinfMode">
+              <option value="active">主動法：補強力抵減滑動力（預力地錨常用）</option>
+              <option value="passive">被動法：補強力加入抵抗力（土釘常用，較保守）</option>
+            </select></div>
+          <label class="check"><input type="checkbox" id="s-compare" data-s="compare"><span>同時計算無補強措施的情況<small>另外計算不含補強構件與擋土牆的情況，並列兩個 Fs，並以灰色虛線畫出原本的臨界滑動面。</small></span></label>
+          <p class="hint">每支構件在滑動面交點提供拉力 T，取抗拉、拉拔（q × 穿出滑動面的有效長度）、面版或設計錨力的最小值，再除以水平間距換算為每公尺寬。地錨只有錨碇段能提供拉拔阻抗。</p>
+        </div>
+        <div class="sec">
+          <h3>補強構件</h3>
+          <p class="hint">θ 為構件向下的傾角。抗拉、面版、錨力為每支構件的容量；拉拔 q 為每公尺有效長度的拉拔阻抗。數值請依設計採用的容許值或極限值一致輸入。</p>
+          <div id="reinfList" class="sec"></div>
+          <div class="row">
+            <button class="btn" id="btnAddNail" type="button">＋ 土釘</button>
+            <button class="btn" id="btnAddAnchor" type="button">＋ 地錨</button>
+          </div>
+        </div>
+        <div class="sec">
+          <h3>整排配置</h3>
+          <p class="hint">以清單中最後一支為範本，在坡面上 x 的範圍內平均配置多支，頭部自動貼齊地表。</p>
+          <div class="grid2">
+            <div class="field"><label for="rbXa">起點 x (m)</label><input type="number" id="rbXa" step="0.5"></div>
+            <div class="field"><label for="rbXb">終點 x (m)</label><input type="number" id="rbXb" step="0.5"></div>
+            <div class="field"><label for="rbN">支數</label><input type="number" id="rbN" step="1" min="1" max="60" value="5"></div>
+          </div>
+          <div class="row">
+            <button class="btn small" id="btnBatchAdd" type="button">加入這一排</button>
+            <button class="btn small ghost" id="btnBatchReplace" type="button">取代全部構件</button>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h3>擋土牆（整體穩定）</h3>
+          <p class="hint">擋土牆視為不可穿越、計入重量的結構物。滑動面只能從牆底下或牆後方通過，牆重計入切片重量。牆體本身的滑動、傾倒與承載力不在此計算，請依規範另行檢核。</p>
+          <div id="wallList" class="sec"></div>
+          <div class="row">
+            <button class="btn" id="btnAddWall" type="button">＋ 重力式擋土牆</button>
+          </div>
+        </div>
+      </div>
+
       <div class="pane" data-pane="set" hidden>
         <div class="sec">
           <h3>地震力（擬靜態）</h3>
@@ -480,6 +586,9 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
           <ul>
             <li>二維平面應變、極限平衡分析，不考慮基質吸力。</li>
             <li>水位高於地表的積水載重與側向水壓未納入。</li>
+            <li>補強只考慮構件拉力，不計抗彎與抗剪。</li>
+            <li>擋土牆只做整體穩定，牆體外部穩定與結構強度需另行檢核。</li>
+            <li>載重只考慮垂直方向，不含傾斜載重、隨深度擴散，以及快速加載造成的超額孔隙水壓。</li>
             <li>簡易 Janbu 法忽略切片間剪力，未修正值通常偏保守。</li>
           </ul>
         </div>
@@ -500,6 +609,7 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
           <label class="tb-label"><input type="checkbox" id="optGrid"> 搜尋節點</label>
           <button class="btn small" id="btnFit" type="button">全圖</button>
           <span class="spacer"></span>
+          <button class="btn" id="btnTrial" type="button" title="只計算「剖面」頁的指定滑動面，不做搜尋">試算指定滑動面</button>
           <button class="btn primary" id="btnRun" type="button">計算最危險滑動面</button>
         </div>
         <div class="canvas-wrap">
@@ -643,6 +753,60 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
         </section>
 
         <section class="th-sec">
+          <h3>七、補強構件（土釘與地錨）</h3>
+          <p>每支構件在滑動面的交點，對滑動土體施加一個沿構件方向、指向坡內的拉力。可用拉力取下列最小值，再除以水平間距 S<sub>h</sub> 換算為每公尺寬：</p>
+          <div class="eqn"><math display="block"><mi>T</mi><mo>=</mo><mfrac><mrow><mi>min</mi><mo>(</mo><msub><mi>T</mi><mi>t</mi></msub><mo>,</mo><mi>q</mi><mo>·</mo><msub><mi>L</mi><mi>e</mi></msub><mo>,</mo><msub><mi>T</mi><mi>f</mi></msub><mo>,</mo><mi>P</mi><mo>)</mo></mrow><msub><mi>S</mi><mi>h</mi></msub></mfrac><mspace width="1.5em"/><msub><mi>P</mi><mi>x</mi></msub><mo>=</mo><mi>T</mi><mi>cos</mi><mi>θ</mi><mo>,</mo><mspace width="0.6em"/><msub><mi>P</mi><mi>y</mi></msub><mo>=</mo><mi>T</mi><mi>sin</mi><mi>θ</mi></math><span class="eqno">(R1)</span></div>
+          <p>T<sub>t</sub> 為抗拉強度，q 為每公尺拉拔阻抗，L<sub>e</sub> 為穿出滑動面、位於穩定區的長度。土釘另受面版容量 T<sub>f</sub> 限制；地錨只計錨碇段，錨碇段整段落在滑動體內時 L<sub>e</sub> = 0，並受設計錨力 P 限制。θ 為構件向下傾角。</p>
+          <p>把 P<sub>x</sub>、P<sub>y</sub> 加入原報告式 (8)(9) 的切片平衡後，依同樣步驟推導，主動法的安全係數為：</p>
+          <div class="eqn eq-key"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><mrow><mo>[</mo><msup><mi>c</mi><mo>′</mo></msup><mi>b</mi><mo>+</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><msub><mi>P</mi><mi>y</mi></msub><mo>−</mo><mi>u</mi><mi>b</mi><mo>)</mo><mi>tan</mi><msup><mi>φ</mi><mo>′</mo></msup><mo>]</mo></mrow><mo>/</mo><msub><mi>n</mi><mi>α</mi></msub></mrow><mrow><mo>∑</mo><mrow><mo>[</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><msub><mi>P</mi><mi>y</mi></msub><mo>)</mo><mi>tan</mi><mi>α</mi><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><mi>W</mi><mo>]</mo></mrow><mo>−</mo><mo>∑</mo><msub><mi>P</mi><mi>x</mi></msub></mrow></mfrac></math><span class="eqno">(R2)</span></div>
+          <p>被動法則把 ΣP<sub>x</sub> 從分母移到分子，與土壤抵抗力一起除以 F<sub>s</sub>。邊坡穩定時（F<sub>s</sub> &gt; 1），主動法算出的值一定比被動法高；一般預力地錨用主動法，靠變形才發揮的土釘用被動法，後者較保守。補強力只取決於每一段滑動面與構件的交點，G 仍可逐段相加，因此動態規劃可直接搜尋補強後的臨界滑動面，包括繞到構件後方的較深滑動面。</p>
+          <p>驗證案例：單一平面滑動塊體加一支地錨，在使用者指定的平面滑動面上，簡易 Janbu 法沒有切片間剪力的誤差，應與下列封閉解一致（主動法，L 為滑動面長，β 為傾角）：</p>
+          <div class="eqn"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><mfrac><mrow><msup><mi>c</mi><mo>′</mo></msup><mi>L</mi><mo>+</mo><mo>(</mo><mi>W</mi><mi>cos</mi><mi>β</mi><mo>+</mo><mi>T</mi><mi>sin</mi><mo>(</mo><mi>β</mi><mo>+</mo><mi>θ</mi><mo>)</mo><mo>)</mo><mi>tan</mi><msup><mi>φ</mi><mo>′</mo></msup></mrow><mrow><mi>W</mi><mi>sin</mi><mi>β</mi><mo>−</mo><mi>T</mi><mi>cos</mi><mo>(</mo><mi>β</mi><mo>+</mo><mi>θ</mi><mo>)</mo></mrow></mfrac></math><span class="eqno">(R3)</span></div>
+          <div class="tblwrap" style="max-height:none"><table>
+            <thead><tr><th class="t">驗證情況</th><th>封閉解</th><th>本工具</th><th>誤差</th></tr></thead>
+            <tbody>
+              <tr><td class="t">無補強</td><td>1.36876</td><td>1.36876</td><td>&lt; 0.001%</td></tr>
+              <tr><td class="t">地錨 T = 100 kN/m（設計錨力控制）</td><td>1.87476</td><td>1.87476</td><td>&lt; 0.001%</td></tr>
+              <tr><td class="t">地錨 T = 70 kN/m（拉拔控制，L<sub>e</sub> = 14 m）</td><td>1.69916</td><td>1.69916</td><td>&lt; 0.001%</td></tr>
+              <tr><td class="t">水平間距加倍（T = 50 kN/m）</td><td>1.59465</td><td>1.59465</td><td>&lt; 0.001%</td></tr>
+            </tbody>
+          </table></div>
+          <p class="hint">案例條件：均質土 γ = 20 kN/m³、c′ = 5 kPa、φ′ = 30°，坡高 15 m、坡比 1:1.33；平面滑動面由坡趾 (10, 0) 至坡頂 (34, 15)；地錨頭部 (20, 7.5)、向下 20°、總長 20 m、自由段 6 m、水平間距 2 m。另以 T = 0 時結果與無補強完全相同、坡面左右鏡射結果相同、構件加長時臨界滑動面逐漸移到構件後方等條件檢查。</p>
+        </section>
+
+        <section class="th-sec">
+          <h3>八、擋土牆（整體穩定）</h3>
+          <p>擋土牆以多邊形表示，視為不可穿越、計入重量的結構物。滑動面的任何一段穿過牆體內部都視為不可行，因此搜尋只會找到從牆底下或牆後方通過的滑動面；沿牆底面或牆背滑動則允許。</p>
+          <p>切片重量由地表往下累加土重，再加上牆體造成的差值。牆體位於地表以下的部分，以牆的單位重取代原本的土重；突出地表的部分則直接加上牆重。對切片底部高程 z<sub>c</sub>：</p>
+          <div class="eqn"><math display="block"><mi>W</mi><mo>=</mo><mi>b</mi><mrow><mo>[</mo><msub><mi>W</mi><mtext>土</mtext></msub><mo>(</mo><msub><mi>z</mi><mi>c</mi></msub><mo>)</mo><mo>+</mo><munder><mo>∑</mo><mtext>牆</mtext></munder><mrow><mo>(</mo><msub><mi>γ</mi><mtext>牆</mtext></msub><msub><mi>h</mi><mtext>牆</mtext></msub><mo>−</mo><msub><mi>W</mi><mtext>被取代的土</mtext></msub><mo>)</mo></mrow><mo>]</mo></mrow></math><span class="eqno">(R4)</span></div>
+          <p>這樣處理的是包含擋土牆在內的整體穩定，也就是滑動面從牆底或牆後通過時的安全係數。牆體本身沿底面滑動、傾倒、地基承載力等外部穩定，以及牆身結構強度，仍須依土壓力理論與相關規範另行檢核。</p>
+          <div class="tblwrap" style="max-height:none"><table>
+            <thead><tr><th class="t">驗證情況</th><th>封閉解</th><th>本工具</th></tr></thead>
+            <tbody>
+              <tr><td class="t">平面滑動塊體，坡頂有突出地表的牆塊（2 m × 2 m，γ = 24 kN/m³）</td><td>1.307381</td><td>1.307381</td></tr>
+              <tr><td class="t">平面滑動塊體，地表下埋設牆塊（4 m × 2.5 m，γ = 24 kN/m³）</td><td>1.523770</td><td>1.523770</td></tr>
+              <tr><td class="t">牆的單位重與土相同時，結果應與無牆相同</td><td>1.527867</td><td>1.527867</td></tr>
+            </tbody>
+          </table></div>
+          <p class="hint">另檢查：指定滑動面穿過牆體時程式會拒絕計算並說明原因；自動搜尋找到的滑動面以 500 個點取樣，沒有任何一點落在牆體內；坡面左右鏡射結果相同。</p>
+        </section>
+
+        <section class="th-sec">
+          <h3>九、地表載重</h3>
+          <p>均布載重 q 與線載重 P 都視為作用在切片頂面的垂直外力。每個切片承受的載重 Q 為 q 乘以切片寬度與載重範圍重疊的長度，線載重則整個加在它所在的切片。只有滑動土體上方的切片會計入，Q 與土重一樣同時進入正向力與滑動力：</p>
+          <div class="eqn eq-key"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><mrow><mo>[</mo><msup><mi>c</mi><mo>′</mo></msup><mi>b</mi><mo>+</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><msup><mi>Q</mi><mo>*</mo></msup><mo>−</mo><mi>u</mi><mi>b</mi><mo>)</mo><mi>tan</mi><msup><mi>φ</mi><mo>′</mo></msup><mo>]</mo></mrow><mo>/</mo><msub><mi>n</mi><mi>α</mi></msub></mrow><mrow><mo>∑</mo><mrow><mo>[</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><msup><mi>Q</mi><mo>*</mo></msup><mo>)</mo><mi>tan</mi><mi>α</mi><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><mo>(</mo><mi>W</mi><mo>+</mo><msup><mi>Q</mi><mo>*</mo></msup><mo>)</mo><mo>]</mo></mrow></mrow></mfrac></math><span class="eqno">(R5)</span></div>
+          <p>Q<sup>*</sup> 是勾選「計入地震慣性力」的載重。坡頂載重落在 α 為正的區段，增加的滑動力大於抵抗力，F<sub>s</sub> 下降；坡趾載重落在 α 接近 0 或為負的區段，主要增加抵抗力，F<sub>s</sub> 上升。動態規劃會自動找出載重影響下最危險的滑動面，包括繞到坡頂載重後方的滑動面，或從坡趾載重後方出露、避開壓腳效果的滑動面。</p>
+          <p>驗證案例沿用第七節的平面滑動塊體，載重 Q 加在塊體上方，封閉解為：</p>
+          <div class="eqn"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><mfrac><mrow><msup><mi>c</mi><mo>′</mo></msup><mi>L</mi><mo>+</mo><mo>[</mo><mo>(</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>)</mo><mi>cos</mi><mi>β</mi><mo>−</mo><msub><mi>k</mi><mi>H</mi></msub><msup><mi>W</mi><mo>′</mo></msup><mi>sin</mi><mi>β</mi><mo>]</mo><mi>tan</mi><msup><mi>φ</mi><mo>′</mo></msup></mrow><mrow><mo>(</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>)</mo><mi>sin</mi><mi>β</mi><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><msup><mi>W</mi><mo>′</mo></msup><mi>cos</mi><mi>β</mi></mrow></mfrac></math><span class="eqno">(R6)</span></div>
+          <p class="hint">W′ 為受地震力作用的重量：載重計入地震慣性力時 W′ = W + Q，否則 W′ = W。</p>
+          <div class="tblwrap" style="max-height:none"><table>
+            <thead><tr><th class="t">驗證情況</th><th>封閉解</th><th>本工具</th></tr></thead>
+            <tbody><tr><td class="t">無載重</td><td>1.368760</td><td>1.368760</td></tr><tr><td class="t">均布載重 q = 20 kPa，整段在滑動體上（Q = 60 kN/m）</td><td>1.328306</td><td>1.328306</td></tr><tr><td class="t">均布載重只有 2 m 在滑動體上（Q = 40 kN/m）</td><td>1.340948</td><td>1.340948</td></tr><tr><td class="t">線載重 P = 50 kN/m</td><td>1.334530</td><td>1.334530</td></tr><tr><td class="t">寬 0.1 m、總量 50 kN/m 的均布載重</td><td>1.334530</td><td>1.334530</td></tr><tr><td class="t">載重在滑動體範圍外</td><td>1.368760</td><td>1.368760</td></tr><tr><td class="t">kH = 0.15，載重計入地震慣性力</td><td>1.001374</td><td>1.001374</td></tr><tr><td class="t">kH = 0.15，載重不計地震慣性力</td><td>1.025772</td><td>1.025772</td></tr></tbody>
+          </table></div>
+          <p class="hint">另檢查：坡面左右鏡射結果相同；自動搜尋時，坡頂均布載重 10、20、40 kPa 使 F<sub>s</sub> 由 1.026 依序降為 1.024、1.018、1.000，載重越大降幅越大。</p>
+        </section>
+
+        <section class="th-sec">
           <h3>符號</h3>
           <dl class="th-sym">
             <div><dt>W<sub>i</sub></dt><dd>切片自重 (kN/m)</dd></div>
@@ -657,6 +821,8 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
             <div><dt>f<sub>0</sub></dt><dd>修正係數</dd></div>
             <div><dt>d、L</dt><dd>滑動面最大垂直深度、兩端點直線距離</dd></div>
             <div><dt>G、DG</dt><dd>輔助泛函、利得（單段貢獻）</dd></div>
+            <div><dt>T、θ、S<sub>h</sub></dt><dd>補強拉力、構件向下傾角、水平間距</dd></div>
+            <div><dt>P<sub>x</sub>、P<sub>y</sub></dt><dd>補強力的水平、垂直分量（每公尺寬）</dd></div>
           </dl>
         </section>
       </article>
@@ -723,6 +889,11 @@ const SSA = (() => {
       if (!(L.c >= 0)) err.push(`「${L.name}」的凝聚力 c' 不可為負。`);
       if (!(L.phi >= 0 && L.phi < 90)) err.push(`「${L.name}」的摩擦角 φ' 需介於 0–90°。`);
     });
+    (model.walls || []).forEach((w, i) => {
+      if (w.on === false) return;
+      if (!Array.isArray(w.poly) || w.poly.length < 3) err.push(`擋土牆 ${i + 1} 的形狀至少需要 3 個頂點。`);
+      if (!(+w.gamma > 0)) err.push(`擋土牆 ${i + 1} 的單位重需大於 0。`);
+    });
     if (g.length >= 2) {
       const zmin = Math.min(...g.map(p => p[1]));
       if (!(model.zBase < zmin)) err.push('模型底部高程需低於地表最低點。');
@@ -742,7 +913,33 @@ const SSA = (() => {
       tanphi: Math.tan(+L.phi * Math.PI / 180), bedrock: !!L.bedrock, top: i ? T(L.top) : null
     }));
     const water = T(model.water);
-    const M = { mirror, ground, layers, water, zBase: +model.zBase, s };
+    const reinf = [];
+    (model.reinf || []).forEach((r, idx) => {
+      if (r.on === false || !(+r.L > 0) || !(+r.Sh > 0)) return;
+      const th = (+r.theta || 0) * Math.PI / 180;
+      reinf.push({
+        idx, type: r.type === 'anchor' ? 'anchor' : 'nail', name: r.name || '',
+        hx: mirror ? -r.x : +r.x, hz: +r.z, dx: Math.cos(th), dz: -Math.sin(th), cos: Math.cos(th), sin: Math.sin(th),
+        L: +r.L, Lf: r.type === 'anchor' ? Math.max(0, +r.Lfree || 0) : 0, Sh: +r.Sh,
+        Tt: +r.Tt || 0, q: +r.q || 0, Tf: +r.Tf || 0, P: r.type === 'anchor' ? (+r.P || 0) : 0
+      });
+    });
+    reinf.forEach(m => { m.x0 = Math.min(m.hx, m.hx + m.L * m.dx); m.x1 = Math.max(m.hx, m.hx + m.L * m.dx); });
+    const walls = [];
+    (model.walls || []).forEach((w, idx) => {
+      if (w.on === false || !Array.isArray(w.poly) || w.poly.length < 3 || !(+w.gamma > 0)) return;
+      const P = w.poly.filter(p => isFinite(p[0]) && isFinite(p[1])).map(([x, z]) => [mirror ? -x : +x, +z]);
+      if (P.length < 3) return;
+      walls.push({ idx, name: w.name || '', g: +w.gamma, P, x0: Math.min(...P.map(p => p[0])), x1: Math.max(...P.map(p => p[0])) });
+    });
+    const loads = [];
+    (model.loads || []).forEach((l, idx) => {
+      if (l.on === false) return;
+      const X = x => (mirror ? -x : +x);
+      if (l.type === 'line') { if (isFinite(l.x) && +l.P) loads.push({ idx, type: 'line', x: X(l.x), P: +l.P, seis: l.seis !== false }); }
+      else if (isFinite(l.x1) && isFinite(l.x2) && +l.q) { const a = X(l.x1), b = X(l.x2); if (Math.abs(b - a) > 1e-9) loads.push({ idx, type: 'udl', xa: Math.min(a, b), xb: Math.max(a, b), q: +l.q, seis: l.seis !== false }); }
+    });
+    const M = { mirror, ground, layers, water, zBase: +model.zBase, s, reinf, walls, loads };
     const N = Math.max(8, Math.round(s.nCol)), NS = Math.max(12, Math.round(s.nState)), nSub = Math.max(1, Math.round(s.nSub));
     const margin = 3;
     const x0 = ground[0][0], x1 = ground[ground.length - 1][0];
@@ -754,13 +951,13 @@ const SSA = (() => {
     const cols = [];
     for (let k = 0; k < N; k++) {
       const pr = profileAt(M, xs[k]);
-      let dz = (pr.zg - pr.zb) / (NS - 1 - margin);
+      let dz = (pr.zs - pr.zb) / (NS - 1 - margin);
       if (!(dz > Hmin / NS)) dz = Hmin / NS;
       const z = new Float64Array(NS);
       for (let j = 0; j < NS; j++) z[j] = pr.zb + j * dz;
       const allow = new Uint8Array(NS);
       const edge = (k === 0 || k === N - 1) && s.noBoundary;
-      for (let j = 0; j < NS; j++) allow[j] = edge ? (z[j] >= pr.zg - 1e-9 ? 1 : 0) : 1;
+      for (let j = 0; j < NS; j++) allow[j] = edge ? (z[j] >= pr.zs - 1e-9 ? 1 : 0) : 1;
       cols.push({ x: xs[k], zg: pr.zg, zb: pr.zb, z, allow });
     }
     const gaps = [];
@@ -768,9 +965,10 @@ const SSA = (() => {
       const dx = xs[k + 1] - xs[k], b = dx / nSub, subs = [];
       for (let q = 0; q < nSub; q++) {
         const xc = xs[k] + (q + 0.5) * b;
-        subs.push({ xc, off: (q + 0.5) * b, pr: profileAt(M, xc) });
+        const ld = loadOn(M, xs[k] + q * b, xs[k] + (q + 1) * b, q === nSub - 1 && k === N - 2);
+        subs.push({ xc, off: (q + 0.5) * b, pr: profileAt(M, xc), Q: ld.Q, Qs: ld.Qs });
       }
-      gaps.push({ dx, b, subs });
+      gaps.push({ dx, b, subs, mem: reinf.filter(m => m.x1 >= xs[k] - 1e-9 && m.x0 <= xs[k + 1] + 1e-9), walls: walls.filter(w => w.x1 >= xs[k] && w.x0 <= xs[k + 1]) });
     }
     return { M, N, NS, xs, cols, gaps, s, gw: +s.gw };
   }
@@ -802,39 +1000,174 @@ const SSA = (() => {
     }
     let cum = 0;
     for (const v of iv) { v.cum = cum; cum += v.g * (v.zt - Math.max(v.zbot, -1e6)); }
-    return { zg, zb, zw, cw, iv, tops };
+    // retaining walls: vertical intervals of each polygon at x
+    const wiv = [];
+    let zs = zg;
+    for (const w of (M.walls || [])) {
+      if (x < w.x0 || x > w.x1) continue;
+      const zz = [], P = w.P, n = P.length;
+      for (let i = 0; i < n; i++) {
+        const a = P[i], b = P[(i + 1) % n];
+        if ((a[0] <= x && b[0] > x) || (b[0] <= x && a[0] > x)) zz.push(a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]));
+      }
+      zz.sort((p, q) => p - q);
+      for (let i = 0; i + 1 < zz.length; i += 2) { wiv.push({ zlo: zz[i], zhi: zz[i + 1], g: w.g, idx: w.idx }); zs = Math.max(zs, zz[i + 1]); }
+    }
+    return { zg, zb, zw, cw, iv, tops, wiv, zs };
+  }
+  /* does the straight piece (ax,az)-(bx,bz) pass through the interior of polygon P? (touching an edge is allowed) */
+  function segHitsPoly(P, ax, az, bx, bz) {
+    const n = P.length, eps = 1e-7;
+    const inside = (x, z) => { let c = false; for (let i = 0, j = n - 1; i < n; j = i++) { const a = P[i], b = P[j]; if ((a[1] > z) !== (b[1] > z) && x < (b[0] - a[0]) * (z - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; };
+    const onEdge = (x, z) => { for (let i = 0; i < n; i++) { const a = P[i], b = P[(i + 1) % n]; const ex = b[0] - a[0], ez = b[1] - a[1], L2 = ex * ex + ez * ez; const t = L2 ? Math.max(0, Math.min(1, ((x - a[0]) * ex + (z - a[1]) * ez) / L2)) : 0; if (Math.hypot(x - a[0] - t * ex, z - a[1] - t * ez) < 1e-6) return true; } return false; };
+    // sample the segment between all edge crossings; any interior sample point means it passes through
+    const ts = [0, 1];
+    const dx = bx - ax, dz = bz - az;
+    for (let i = 0; i < n; i++) {
+      const a = P[i], b = P[(i + 1) % n], ex = b[0] - a[0], ez = b[1] - a[1];
+      const det = dx * ez - dz * ex; if (Math.abs(det) < 1e-12) continue;
+      const t = ((a[0] - ax) * ez - (a[1] - az) * ex) / det, u = ((a[0] - ax) * dz - (a[1] - az) * dx) / det;
+      if (t > eps && t < 1 - eps && u >= -eps && u <= 1 + eps) ts.push(t);
+    }
+    ts.sort((p, q) => p - q);
+    for (let i = 0; i + 1 < ts.length; i++) {
+      const t = (ts[i] + ts[i + 1]) / 2, x = ax + t * dx, z = az + t * dz;
+      if (ts[i + 1] - ts[i] > 1e-9 && inside(x, z) && !onEdge(x, z)) return true;
+    }
+    return false;
+  }
+  /* external vertical load acting on the slice top between xl and xr (line loads counted once, at [xl, xr)) */
+  function loadOn(M, xl, xr, lastIncl) {
+    let Q = 0, Qs = 0;
+    for (const l of (M.loads || [])) {
+      let v = 0;
+      if (l.type === 'line') { if (l.x >= xl && (l.x < xr || (lastIncl && l.x <= xr))) v = l.P; }
+      else { const o = Math.min(xr, l.xb) - Math.max(xl, l.xa); if (o > 0) v = l.q * o; }
+      Q += v; if (l.seis) Qs += v;
+    }
+    return { Q, Qs };
+  }
+  /* soil weight per unit width between the ground surface and elevation z */
+  function soilCum(pr, z) {
+    if (z >= pr.zg) return 0;
+    for (let m = 0; m < pr.iv.length; m++) { const v = pr.iv[m]; if (z >= v.zbot) return v.cum + v.g * (v.zt - z); }
+    const v = pr.iv[pr.iv.length - 1]; return v ? v.cum + v.g * (v.zt - z) : 0;
+  }
+  /* extra weight per unit width that walls add above elevation zc (wall weight minus the soil it replaces) */
+  function wallExtra(pr, zc) {
+    let e = 0;
+    for (const w of pr.wiv) {
+      const lo = Math.max(w.zlo, zc); if (w.zhi <= lo) continue;
+      e += w.g * (w.zhi - lo);
+      const sLo = lo, sHi = Math.min(w.zhi, pr.zg);
+      if (sHi > sLo) e -= soilCum(pr, sLo) - soilCum(pr, sHi);
+    }
+    return e;
+  }
+
+  /* available force of a reinforcement member crossed at distance sAlong from its head */
+  function memForce(m, sAlong) {
+    const Le = m.L - Math.max(sAlong, m.Lf);
+    if (!(Le > 0)) return { T: 0, Tm: 0, Le: Math.max(0, Le), ctrl: m.type === 'anchor' ? '錨碇段在滑動體內' : '未穿出滑動面' };
+    const cand = [[m.q * Le, '拉拔']];
+    if (m.Tt > 0) cand.push([m.Tt, '抗拉']);
+    if (m.type === 'nail' && m.Tf > 0) cand.push([m.Tf, '面版']);
+    if (m.type === 'anchor' && m.P > 0) cand.push([m.P, '設計錨力']);
+    let best = cand[0];
+    for (const c of cand) if (c[0] < best[0]) best = c;
+    return { T: best[0], Tm: best[0] / m.Sh, Le, ctrl: best[1] };
+  }
+  /* intersection of slip segment (ax,az)-(bx,bz), u in [0,1), with member m; returns distance along member or -1 */
+  function crossMember(m, ax, az, bx, bz) {
+    const ex = bx - ax, ez = bz - az;
+    const det = -ex * m.dz + m.dx * ez;
+    if (Math.abs(det) < 1e-12) return null;
+    const rx = m.hx - ax, rz = m.hz - az;
+    const u = (-rx * m.dz + m.dx * rz) / det;
+    const sA = (ex * rz - ez * rx) / det;
+    if (u < 0 || u >= 1 || sA <= 0 || sA > m.L) return null;
+    return { u, s: sA, xi: ax + u * ex, zi: az + u * ez };
+  }
+  /* forces from all members crossing one straight piece of slip surface */
+  function segForces(mems, ax, az, bx, bz, list) {
+    for (let i = 0; i < mems.length; i++) {
+      const c = crossMember(mems[i], ax, az, bx, bz);
+      if (!c) continue;
+      const f = memForce(mems[i], c.s);
+      if (f.Tm > 0 || list.detail) list.push({ m: mems[i], xi: c.xi, zi: c.zi, s: c.s, ...f, Px: f.Tm * mems[i].cos, Py: f.Tm * mems[i].sin });
+    }
+  }
+
+  /* one slice: returns resisting and driving terms (reinforcement Py added to weight, Px handled by caller) */
+  function sliceTerm(ctx, pr, b, zc, t, ca, sa, F, Py, out, Q, Qs) {
+    Q = Q || 0; Qs = Qs || 0;
+    const M = ctx.M, s = ctx.s;
+    out.act = false;
+    if (pr.wiv.length) for (const w of pr.wiv) if (zc > w.zlo - 1e-9 && zc < w.zhi + 1e-9) { out.ok = false; out.wall = true; return; }
+    if (zc >= pr.zg) { out.ok = true; return; }
+    out.act = true;
+    if (zc < pr.zb - 1e-6) { out.ok = false; return; }
+    let v = null;
+    for (let m = 0; m < pr.iv.length; m++) if (zc >= pr.iv[m].zbot) { v = pr.iv[m]; break; }
+    if (!v) { out.ok = false; return; }
+    const L = M.layers[v.L];
+    if (L.bedrock) { out.ok = false; return; }
+    const W = b * (v.cum + v.g * (v.zt - zc) + (pr.wiv.length ? wallExtra(pr, zc) : 0));
+    const Wv = W * (1 + s.kv) + Py + Q + s.kv * Qs;
+    const hw = pr.zw > zc ? pr.zw - zc : 0;
+    const U = ctx.gw * hw * pr.cw * b;
+    const tp = L.tanphi;
+    const ma = ca + sa * tp / F;
+    if (sa < 0 && ma < 0.2) { out.ok = false; return; }
+    out.ok = true; out.W = W; out.U = U; out.hw = hw; out.L = L; out.ma = ma; out.Q = Q;
+    out.res = (L.c * b + Math.max(0, Wv - U) * tp) / (ca * ma);
+    out.drv = Wv * t + s.kh * (W + Qs);
   }
 
   /* evaluate one straight segment of the slip surface between column k (zl) and k+1 (zr) */
-  function segEval(ctx, k, zl, zr, F, out, rows) {
-    const gp = ctx.gaps[k], M = ctx.M, s = ctx.s, gw = ctx.gw;
+  const _st = {}, _fl = [];
+  function segEval(ctx, k, zl, zr, F, out, rows, mlist) {
+    const gp = ctx.gaps[k], s = ctx.s;
     const t = (zr - zl) / gp.dx, ca = 1 / Math.sqrt(1 + t * t), sa = t * ca;
     let A = 0, B = 0, act = false;
-    const kh = s.kh, kv = s.kv, b = gp.b;
-    for (let q = 0; q < gp.subs.length; q++) {
-      const sb = gp.subs[q], pr = sb.pr;
-      const zc = zl + sb.off * t;
-      if (zc >= pr.zg) continue;
-      act = true;
-      if (zc < pr.zb - 1e-6) { out.ok = false; return; }
-      let v = null;
-      for (let m = 0; m < pr.iv.length; m++) if (zc >= pr.iv[m].zbot) { v = pr.iv[m]; break; }
-      if (!v) { out.ok = false; return; }
-      const L = M.layers[v.L];
-      if (L.bedrock) { out.ok = false; return; }
-      const W = b * (v.cum + v.g * (v.zt - zc));
-      const Wv = W * (1 + kv);
-      const hw = pr.zw > zc ? pr.zw - zc : 0;
-      const U = gw * hw * pr.cw * b;
-      const tp = L.tanphi;
-      const ma = ca + sa * tp / F;
-      if (sa < 0 && ma < 0.2) { out.ok = false; return; }
-      const res = (L.c * b + Math.max(0, Wv - U) * tp) / (ca * ma);
-      A += res;
-      const drv = Wv * t + kh * W;
-      B += drv;
-      if (rows) rows.push({ xc: sb.xc, b, zc, zg: pr.zg, alpha: Math.atan(t) * 180 / Math.PI, W, U, u: U / b, hw, c: L.c, phi: L.phi, layer: L.name, ma, res, drv });
+    const b = gp.b, nq = gp.subs.length;
+    if (gp.walls.length) for (const w of gp.walls) if (segHitsPoly(w.P, ctx.xs[k], zl, ctx.xs[k + 1], zr)) { out.ok = false; out.wall = true; return; }
+    // reinforcement crossings on this segment
+    let fl = null;
+    if (gp.mem.length) {
+      _fl.length = 0; _fl.detail = !!mlist;
+      segForces(gp.mem, ctx.xs[k], zl, ctx.xs[k + 1], zr, _fl);
+      if (_fl.length) fl = _fl;
     }
+    let pyq = null, pxSum = 0;
+    if (fl) {
+      pyq = new Float64Array(nq);
+      // assign each crossing to its sub-slice; move to nearest active sub-slice if needed
+      for (const f of fl) {
+        let q = Math.min(nq - 1, Math.max(0, Math.floor((f.xi - ctx.xs[k]) / b)));
+        f.q = q;
+      }
+    }
+    const pxq = fl ? new Float64Array(nq) : null;
+    if (fl) for (const f of fl) { pyq[f.q] += f.Py; pxq[f.q] += f.Px; }
+    for (let q = 0; q < nq; q++) {
+      const sb = gp.subs[q];
+      const zc = zl + sb.off * t;
+      sliceTerm(ctx, sb.pr, b, zc, t, ca, sa, F, pyq ? pyq[q] : 0, _st, sb.Q, sb.Qs);
+      if (!_st.ok) { out.ok = false; return; }
+      if (!_st.act) {
+        // force landed on an above-ground sub-slice: shift it to the neighbour
+        if (pxq && (pxq[q] || pyq[q])) { const nq2 = q + 1 < nq ? q + 1 : q - 1; if (nq2 >= 0) { pxq[nq2] += pxq[q]; pyq[nq2] += pyq[q]; } pxq[q] = 0; pyq[q] = 0; }
+        continue;
+      }
+      act = true;
+      let res = _st.res, drv = _st.drv;
+      const px = pxq ? pxq[q] : 0;
+      if (px) { if (s.reinfMode === 'passive') res += px; else drv -= px; }
+      A += res; B += drv;
+      if (rows) rows.push({ Q: sb.Q, xc: sb.xc, b, zc, zg: sb.pr.zg, alpha: Math.atan(t) * 180 / Math.PI, W: _st.W, U: _st.U, u: _st.U / b, hw: _st.hw, c: _st.L.c, phi: _st.L.phi, layer: _st.L.name, ma: _st.ma, res, drv, Px: px, Py: pyq ? pyq[q] : 0 });
+    }
+    if (mlist && fl) for (const f of fl) mlist.push({ ...f });
     out.ok = true; out.act = act; out.A = A; out.B = B;
   }
 
@@ -943,8 +1276,9 @@ const SSA = (() => {
 
   function finalize(ctx, best, hist) {
     const { M, N, cols, gaps, xs } = ctx, z = best.z, F = best.F;
-    const rows = [];
-    const sm = sums(ctx, z, F, rows);
+    const rows = [], mlist = [];
+    let sm = { A: 0, B: 0 };
+    { const o2 = {}; for (let k = 0; k < N - 1; k++) { segEval(ctx, k, z[k], z[k + 1], F, o2, rows, mlist); sm.A += o2.A; sm.B += o2.B; } }
     const zgAt = x => interp(M.ground, x);
     const chord = (k, x) => z[k] + (z[k + 1] - z[k]) * (x - xs[k]) / gaps[k].dx;
     // active range
@@ -984,8 +1318,19 @@ const SSA = (() => {
       if (!found) pts.push([xs[k1 + 1], z[k1 + 1]]);
     } else { pts.push([xs[k1 + 1], z[k1 + 1]]); pts.push([xs[k1 + 1], cols[k1 + 1].zg]); }
 
-    // area, depth, Janbu f0
-    const slip = pts;
+    const out = summarize(ctx, pts, rows, F, mlist);
+    out.hist = hist; out.sumA = sm.A; out.sumB = sm.B; out.mode = 'search';
+    out.path = mapOut(M, Array.from(z).map((zz, k) => [xs[k], zz]));
+    out.grid = cols.map(c => ({ x: M.mirror ? -c.x : c.x, z: Array.from(c.z) }));
+    return out;
+  }
+
+  function mapOut(M, P) { const q = P.map(([x, zz]) => [M.mirror ? -x : x, zz]); return M.mirror ? q.reverse() : q; }
+
+  /* area, depth, f0 and output mapping, shared by the search and the specified-surface check */
+  function summarize(ctx, slip, rows, F, mlist) {
+    const M = ctx.M;
+    const zgAt = x => interp(M.ground, x);
     const xa = slip[0][0], xb = slip[slip.length - 1][0];
     let area = 0, dmaxV = 0;
     const nA = 600;
@@ -1006,21 +1351,102 @@ const SSA = (() => {
     const dl = Lc > 0 ? dperp / Lc : 0;
     const f0type = ctx.s.f0type === 'janbu' ? 'janbu' : 'pwri';
     const f0 = f0type === 'janbu' ? 1 + b1 * (dl - 1.4 * dl * dl) : (dl > 0 ? Math.pow(50 * dl, 0.03) : 1);
-
     const X = x => (M.mirror ? -x : x);
-    const mapP = P => { const q = P.map(([x, zz]) => [X(x), zz]); return M.mirror ? q.reverse() : q; };
     const rowsOut = rows.map(r => ({ ...r, xc: X(r.xc), alpha: M.mirror ? -r.alpha : r.alpha }));
     if (M.mirror) rowsOut.reverse();
-    const grid = cols.map(c => ({ x: X(c.x), z: Array.from(c.z) }));
+    // members: one entry per member (first crossing from its head)
+    const seen = new Map();
+    for (const f of (mlist || [])) { const prev = seen.get(f.m.idx); if (!prev || f.s < prev.s) seen.set(f.m.idx, f); }
+    const members = M.reinf.map(m => {
+      const f = seen.get(m.idx);
+      if (!f) return { idx: m.idx, type: m.type, name: m.name, crossed: false, T: 0, Tm: 0, Px: 0, Py: 0, ctrl: '未穿過滑動面' };
+      return { idx: m.idx, type: m.type, name: m.name, crossed: true, xi: X(f.xi), zi: f.zi, s: f.s, Le: f.Le, T: f.T, Tm: f.Tm, ctrl: f.ctrl, Px: f.Px, Py: f.Py };
+    });
+    const Qtot = rows.reduce((a, r) => a + (r.Q || 0), 0);
     return {
-      ok: true, F, f0, f0type, Fc: F * f0, b1, dL: dl, area, dmaxV, Lc,
-      slip: mapP(slip), path: mapP(Array.from(z).map((zz, k) => [xs[k], zz])),
-      rows: rowsOut, sumA: sm ? sm.A : NaN, sumB: sm ? sm.B : NaN, hist, grid, mirror: M.mirror,
+      ok: true, F, f0, f0type, Fc: F * f0, b1, dL: dl, area, dmaxV, Lc, Qtot, nLoads: (M.loads || []).length,
+      slip: mapOut(M, slip), rows: rowsOut, members, mirror: M.mirror, reinfMode: ctx.s.reinfMode === 'passive' ? 'passive' : 'active',
       facing: M.mirror ? '坡面朝右（向右滑動）' : '坡面朝左（向左滑動）'
     };
   }
 
-  return { solve, validate, interp, sortP, profileAt };
+  /* safety factor of one user-specified slip surface (no search) */
+  function evaluate(model, polyIn, nSlice) {
+    const ctx = prepare(Object.assign({}, model, { settings: Object.assign({}, model.settings, { nCol: 8, nState: 12 }) }));
+    const M = ctx.M, s = ctx.s;
+    let poly = sortP(polyIn);
+    if (poly.length < 2) return { ok: false, msg: '指定滑動面至少需要 2 個點。' };
+    if (M.mirror) poly = poly.map(([x, z]) => [-x, z]).reverse();
+    // clip to the part below the ground surface
+    const zgAt = x => interp(M.ground, x);
+    const gx0 = M.ground[0][0], gx1 = M.ground[M.ground.length - 1][0];
+    const px0 = Math.max(poly[0][0], gx0), px1 = Math.min(poly[poly.length - 1][0], gx1);
+    const h = x => interp(poly, x) - zgAt(x);
+    const ns = 4000; let ia = -1, ib = -1;
+    for (let i = 0; i <= ns; i++) { const x = px0 + (px1 - px0) * i / ns; if (h(x) < -1e-9) { if (ia < 0) ia = i; ib = i; } }
+    if (ia < 0) return { ok: false, msg: '指定滑動面沒有低於地表的部分。' };
+    const bis = (a, b) => { let fa = h(a); for (let k = 0; k < 60; k++) { const m = (a + b) / 2, fm = h(m); if ((fa >= 0) === (fm >= 0)) { a = m; fa = fm; } else b = m; } return (a + b) / 2; };
+    const xa = ia > 0 ? bis(px0 + (px1 - px0) * (ia - 1) / ns, px0 + (px1 - px0) * ia / ns) : px0;
+    const xb = ib < ns ? bis(px0 + (px1 - px0) * (ib + 1) / ns, px0 + (px1 - px0) * ib / ns) : px1;
+    const slip = [[xa, interp(poly, xa)], ...poly.filter(p => p[0] > xa + 1e-9 && p[0] < xb - 1e-9), [xb, interp(poly, xb)]];
+    if (ia === 0) slip.unshift([xa, zgAt(xa)]);
+    if (ib === ns) slip.push([xb, zgAt(xb)]);
+    for (const w of M.walls) for (let j = 0; j < slip.length - 1; j++) if (segHitsPoly(w.P, slip[j][0], slip[j][1], slip[j + 1][0], slip[j + 1][1])) return { ok: false, msg: '指定滑動面穿過擋土牆。擋土牆設為不可穿越，請讓滑動面從牆底下或牆後方通過。' };
+    // slices: uniform, but split at every geometric break so piecewise-linear weights are integrated exactly
+    const n = Math.max(50, nSlice || 400), h0 = (xb - xa) / n;
+    const brk = new Set([xa, xb]);
+    const addB = P => (P || []).forEach(p => { if (p[0] > xa && p[0] < xb) brk.add(p[0]); });
+    addB(slip); addB(M.ground); addB(M.water); M.layers.forEach(L => addB(L.top)); M.walls.forEach(w => addB(w.P));
+    M.loads.forEach(l => addB(l.type === 'line' ? [[l.x, 0]] : [[l.xa, 0], [l.xb, 0]]));
+    const bx = [...brk].sort((p, q) => p - q), edges = [];
+    for (let i = 0; i + 1 < bx.length; i++) { const m = Math.max(1, Math.ceil((bx[i + 1] - bx[i]) / h0 - 1e-9)); for (let q = 0; q < m; q++) edges.push(bx[i] + (bx[i + 1] - bx[i]) * q / m); }
+    edges.push(xb);
+    const sl = [];
+    for (let i = 0; i + 1 < edges.length; i++) {
+      const xc = (edges[i] + edges[i + 1]) / 2, bw = edges[i + 1] - edges[i];
+      let j = 0; while (j < slip.length - 2 && slip[j + 1][0] <= xc) j++;
+      const dxs = slip[j + 1][0] - slip[j][0];
+      const t = dxs > 1e-12 ? (slip[j + 1][1] - slip[j][1]) / dxs : 0;
+      const ld = loadOn(M, edges[i], edges[i + 1], i + 2 === edges.length);
+      sl.push({ xc, b: bw, x0: edges[i], zc: interp(slip, xc), t, ca: 1 / Math.sqrt(1 + t * t), sa: t / Math.sqrt(1 + t * t), pr: profileAt(M, xc), Px: 0, Py: 0, Q: ld.Q, Qs: ld.Qs });
+    }
+    const mlist = []; mlist.detail = true;
+    for (let j = 0; j < slip.length - 1; j++) segForces(M.reinf, slip[j][0], slip[j][1], slip[j + 1][0], slip[j + 1][1], mlist);
+    // keep the first crossing of each member
+    const first = new Map();
+    for (const f of mlist) { const p = first.get(f.m.idx); if (!p || f.s < p.s) first.set(f.m.idx, f); }
+    for (const f of first.values()) { let i = 0; while (i < sl.length - 1 && sl[i + 1].x0 <= f.xi) i++; sl[i].Px += f.Px; sl[i].Py += f.Py; }
+    const st = {};
+    const run = (F, rows) => {
+      st.wall = false;
+      let A = 0, B = 0;
+      for (const c of sl) {
+        sliceTerm(ctx, c.pr, c.b, c.zc, c.t, c.ca, c.sa, F, c.Py, st, c.Q, c.Qs);
+        if (!st.ok) return null;
+        if (!st.act) continue;
+        let res = st.res, drv = st.drv;
+        if (c.Px) { if (s.reinfMode === 'passive') res += c.Px; else drv -= c.Px; }
+        A += res; B += drv;
+        if (rows) rows.push({ Q: c.Q, xc: c.xc, b: c.b, zc: c.zc, zg: c.pr.zg, alpha: Math.atan(c.t) * 180 / Math.PI, W: st.W, U: st.U, u: st.U / c.b, hw: st.hw, c: st.L.c, phi: st.L.phi, layer: st.L.name, ma: st.ma, res, drv, Px: c.Px, Py: c.Py });
+      }
+      return { A, B };
+    };
+    let F = +s.F0 > 0 ? +s.F0 : 1.5, r = null;
+    for (let it = 0; it < 500; it++) {
+      r = run(F);
+      if (!r) return { ok: false, msg: st.wall ? '指定滑動面穿過擋土牆。擋土牆設為不可穿越，請讓滑動面從牆底下或牆後方通過。' : '指定滑動面穿過岩盤、低於模型底部，或坡趾處切片的 mα 過小，無法計算。' };
+      if (!(r.B > 0)) return { ok: false, msg: '這條滑動面的滑動力小於等於零（補強力大於滑動力），安全係數無意義。' };
+      const Fn = r.A / r.B;
+      if (Math.abs(Fn - F) < 1e-9) { F = Fn; break; }
+      F = it > 50 ? 0.5 * (F + Fn) : Fn;
+    }
+    const rows = []; const fin = run(F, rows);
+    const out = summarize(ctx, slip, rows, F, Array.from(first.values()));
+    out.sumA = fin.A; out.sumB = fin.B; out.hist = []; out.mode = 'trial';
+    return out;
+  }
+
+  return { solve, evaluate, validate, interp, sortP, profileAt };
 })();
 if (typeof module !== 'undefined') module.exports = SSA;
 </script>
@@ -1037,7 +1463,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
   const dispN = v => String(Math.round(v * 1000) / 1000);
   const fmt = (v, d = 2) => (v == null || !isFinite(v)) ? '—' : (+v).toFixed(d);
 
-  const DEF_SET = { kh: 0, kv: 0, gw: 9.81, cos2: false, nCol: 60, nState: 80, nSub: 4, dmin: 1, convex: true, noBoundary: true, tol: 0.0001, maxIter: 30, F0: 2, Freq: 1.5, useF0: false, f0type: 'pwri', unitG: 'kN', unitC: 'kPa' };
+  const DEF_SET = { kh: 0, kv: 0, gw: 9.81, cos2: false, nCol: 60, nState: 80, nSub: 4, dmin: 1, convex: true, noBoundary: true, tol: 0.0001, maxIter: 30, F0: 2, Freq: 1.5, useF0: false, f0type: 'pwri', unitG: 'kN', unitC: 'kPa', reinfMode: 'active', compare: true, compareLoad: true };
   const TF = 9.80665;
   const SAMPLE = {
     ground: [[0, 10], [20, 10], [40, 20], [55, 27], [80, 28]],
@@ -1048,8 +1474,14 @@ if (typeof module !== 'undefined') module.exports = SSA;
     ],
     water: [[0, 10], [20, 10.2], [40, 16], [55, 22], [80, 24]],
     zBase: 0,
+    reinf: [],
+    walls: [],
+    loads: [],
+    trial: [],
     settings: DEF_SET
   };
+  const NAIL = { type: 'nail', on: true, theta: 15, L: 9, Lfree: 0, Sh: 1.5, Tt: 180, q: 40, Tf: 150, P: 0 };
+  const ANCHOR = { type: 'anchor', on: true, theta: 25, L: 20, Lfree: 8, Sh: 2.5, Tt: 600, q: 150, Tf: 0, P: 300 };
 
   function save() { }
   function sanitize(m) {
@@ -1064,6 +1496,21 @@ if (typeof module !== 'undefined') module.exports = SSA;
         top: i ? P(L.top) : null
       })),
       water: P(m.water),
+      trial: P(m.trial),
+      reinf: (Array.isArray(m.reinf) ? m.reinf : []).filter(r => r && isFinite(r.x) && isFinite(r.z)).map(r => {
+        const d = r.type === 'anchor' ? ANCHOR : NAIL, o = {};
+        for (const k of Object.keys(d)) o[k] = k === 'type' ? d.type : k === 'on' ? r.on !== false : (isFinite(+r[k]) ? +r[k] : d[k]);
+        o.x = +r.x; o.z = +r.z; return o;
+      }),
+      loads: (Array.isArray(m.loads) ? m.loads : []).filter(l => l && (l.type === 'line' ? isFinite(l.x) : isFinite(l.x1) && isFinite(l.x2))).map((l, i) => ({
+        name: String(l.name || `載重 ${i + 1}`), type: l.type === 'line' ? 'line' : 'udl', on: l.on !== false, seis: l.seis !== false,
+        x1: +l.x1, x2: +l.x2, x: +l.x, q: isFinite(+l.q) ? +l.q : 10, P: isFinite(+l.P) ? +l.P : 50
+      })),
+      walls: (Array.isArray(m.walls) ? m.walls : []).filter(w => w && Array.isArray(w.poly)).map((w, i) => ({
+        name: String(w.name || `擋土牆 ${i + 1}`), on: w.on !== false, gamma: +w.gamma > 0 ? +w.gamma : 23.5,
+        poly: w.poly.filter(p => Array.isArray(p) && isFinite(p[0]) && isFinite(p[1])).map(p => [+p[0], +p[1]]),
+        par: w.par && typeof w.par === 'object' ? { x0: +w.par.x0, z0: +w.par.z0, H: +w.par.H, B: +w.par.B, b: +w.par.b } : null
+      })),
       zBase: isFinite(m.zBase) ? +m.zBase : Math.min(...P(m.ground).map(p => p[1])) - 10,
       settings: Object.assign({}, DEF_SET, m.settings || {})
     };
@@ -1081,19 +1528,21 @@ if (typeof module !== 'undefined') module.exports = SSA;
     const a = [{ key: 'ground', label: '地表線', kind: 'ground' }];
     model.layers.forEach((L, i) => { if (i) a.push({ key: 'L' + i, label: `${L.name} 頂面`, kind: 'bound', color: L.color }); });
     a.push({ key: 'water', label: '地下水位線', kind: 'water' });
+    a.push({ key: 'trial', label: '指定滑動面（試算用）', kind: 'trial' });
     return a;
   }
   function getPts(key) {
     if (key === 'ground') return model.ground;
     if (key === 'water') return model.water;
+    if (key === 'trial') return model.trial;
     const L = model.layers[+key.slice(1)];
     return L ? L.top : null;
   }
   function setPts(key, P) {
     P.sort((a, b) => a[0] - b[0]);
-    if (key === 'ground') model.ground = P; else if (key === 'water') model.water = P; else model.layers[+key.slice(1)].top = P;
+    if (key === 'ground') model.ground = P; else if (key === 'water') model.water = P; else if (key === 'trial') model.trial = P; else model.layers[+key.slice(1)].top = P;
   }
-  function minPts(key) { return key === 'water' ? 0 : 2; }
+  function minPts(key) { return key === 'water' || key === 'trial' ? 0 : 2; }
 
   function pushUndo() { undoStack.push(JSON.stringify(model)); if (undoStack.length > 60) undoStack.shift(); $('#btnUndo').disabled = false; }
   function doUndo() {
@@ -1105,7 +1554,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
   }
   function changed(full) {
     stale = !!result; save();
-    if (full) { renderLines(); renderLayers(); renderSettings(); }
+    if (full) { renderLines(); renderLayers(); renderSettings(); renderReinf(); renderWalls(); renderLoads(); }
     else renderLines();
     renderCoords(); draw(); renderResults(); renderGuide();
   }
@@ -1115,12 +1564,13 @@ if (typeof module !== 'undefined') module.exports = SSA;
     const box = $('#lineList');
     box.innerHTML = lineDefs().map(d => {
       const n = (getPts(d.key) || []).length;
-      const sw = d.kind === 'water' ? '<span class="sw water"></span>' : d.kind === 'bound' ? `<span class="sw bound" style="border-top-color:${d.color}"></span>` : '<span class="sw"></span>';
+      const sw = d.kind === 'water' ? '<span class="sw water"></span>' : d.kind === 'trial' ? '<span class="sw trial"></span>' : d.kind === 'bound' ? `<span class="sw bound" style="border-top-color:${d.color}"></span>` : '<span class="sw"></span>';
       return `<button class="lrow" type="button" data-key="${d.key}" aria-pressed="${d.key === active}">${sw}<span>${esc(d.label)}</span><span class="cnt">${n} 點</span></button>`;
     }).join('');
     const d = lineDefs().find(x => x.key === active);
     $('#coordTitle').textContent = `座標：${d ? d.label : ''}（x　z）`;
-    $('#btnClearLine').hidden = active !== 'water';
+    $('#btnClearLine').hidden = !(active === 'water' || active === 'trial');
+    $('#btnCopyCrit').hidden = !(active === 'trial' && result && result.ok);
     $('#btnMakeWater').hidden = !(active === 'water' && !model.water.length);
     $('#activeInfo').textContent = `編輯中：${d ? d.label : ''}`;
   }
@@ -1169,6 +1619,134 @@ if (typeof module !== 'undefined') module.exports = SSA;
     });
     $('#lbl-gw').textContent = `水的單位重 γw (${uG()})`;
     $('#zBase').value = model.zBase;
+  }
+
+  /* ---------- reinforcement ---------- */
+  const intoDir = () => { const g = model.ground; return g.length > 1 && g[0][1] > g[g.length - 1][1] ? -1 : 1; };
+  const uT = () => gTF() ? 'tf' : 'kN', uQ = () => gTF() ? 'tf/m' : 'kN/m';
+  function faceX(frac) {
+    const g = model.ground; if (g.length < 2) return 0;
+    const zs = g.map(p => p[1]), z0 = Math.min(...zs), zt = z0 + frac * (Math.max(...zs) - z0);
+    let best = g[0][0], bd = Infinity;
+    for (let i = 0; i <= 400; i++) { const x = g[0][0] + (g[g.length - 1][0] - g[0][0]) * i / 400, d = Math.abs(interp(g, x) - zt); if (d < bd) { bd = d; best = x; } }
+    return Math.round(best * 10) / 10;
+  }
+  function midFaceX() {
+    const g = model.ground; if (g.length < 2) return 0;
+    const zs = g.map(p => p[1]), zm = (Math.min(...zs) + Math.max(...zs)) / 2;
+    let best = g[0][0], bd = Infinity;
+    for (let i = 0; i <= 400; i++) { const x = g[0][0] + (g[g.length - 1][0] - g[0][0]) * i / 400, d = Math.abs(interp(g, x) - zm); if (d < bd) { bd = d; best = x; } }
+    return Math.round(best * 10) / 10;
+  }
+  function renderReinf() {
+    const box = $('#reinfList');
+    if ($('#rbXa').value === '') { const a = faceX(0.15), b = faceX(0.85); $('#rbXa').value = Math.min(a, b); $('#rbXb').value = Math.max(a, b); }
+    if (!model.reinf.length) { box.innerHTML = '<p class="hint">尚未加入補強構件。按下方按鈕新增土釘或地錨，或用「整排配置」一次加入多支。</p>'; return; }
+    const crossed = result && result.ok && !stale && result.members ? result.members : null;
+    box.innerHTML = model.reinf.map((r, i) => {
+      const fld = (f, lab, v, step, conv) => `<div class="field"><label>${lab}</label><input type="number" step="${step}" value="${dispN(conv ? toG(v) : v)}" data-f="${f}"${conv ? ' data-conv="1"' : ''}></div>`;
+      const m = crossed && crossed.find(c => c.idx === i);
+      const info = m ? (m.crossed ? `穿過滑動面・T = ${fmt(toG(m.Tm), 2)} ${uF()}（${m.ctrl}）` : '未穿過臨界滑動面') : '';
+      return `<div class="rcard${r.on ? '' : ' off'}" data-r="${i}">
+        <div class="rcard-head">
+          <span class="no">${i + 1}</span>
+          <select data-f="type" aria-label="類型"><option value="nail"${r.type === 'nail' ? ' selected' : ''}>土釘</option><option value="anchor"${r.type === 'anchor' ? ' selected' : ''}>地錨</option></select>
+          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-f="on"${r.on ? ' checked' : ''} style="margin:0"><span>啟用</span></label>
+          <span class="sp"></span>
+          <button class="btn small ghost" data-act="snap" type="button" title="把頭部高程設為該處地表高程">貼齊</button>
+          <button class="btn small ghost" data-act="dup" type="button">複製</button>
+          <button class="btn small ghost" data-act="del" type="button">刪除</button>
+        </div>
+        <div class="grid3">
+          ${fld('x', '頭部 x (m)', r.x, 0.5)}${fld('z', '頭部 z (m)', r.z, 0.5)}${fld('theta', '傾角 θ (°)', r.theta, 1)}
+          ${fld('L', '總長 L (m)', r.L, 0.5)}${fld('Sh', '間距 Sh (m)', r.Sh, 0.1)}${fld('Tt', `抗拉 (${uT()})`, r.Tt, 10, 1)}
+          ${fld('q', `拉拔 q (${uQ()})`, r.q, 5, 1)}
+          ${r.type === 'anchor' ? fld('Lfree', '自由段 (m)', r.Lfree, 0.5) + fld('P', `錨力 P (${uT()})`, r.P, 10, 1) : fld('Tf', `面版 (${uT()})`, r.Tf, 10, 1)}
+        </div>
+        ${info ? `<span class="idx">${info}</span>` : ''}
+      </div>`;
+    }).join('');
+  }
+  function addMember(tpl, x) {
+    const o = clone(tpl); o.x = x; o.z = Math.round(interp(model.ground, x) * 100) / 100; o.on = true;
+    model.reinf.push(o);
+  }
+
+  /* ---------- surface loads ---------- */
+  const LOAD_TPL = {
+    road: { name: '道路車載', type: 'udl', seis: false },
+    bldg: { name: '建築物', type: 'udl', seis: true },
+    pile: { name: '堆置物', type: 'udl', seis: true },
+    wallL: { name: '圍牆或構造物', type: 'line', seis: true }
+  };
+  function crestX() { return faceX(0.6); }
+  function renderLoads() {
+    const box = $('#loadList');
+    if (!model.loads.length) { box.innerHTML = '<p class="hint">尚未加入載重。</p>'; return; }
+    box.innerHTML = model.loads.map((l, i) => {
+      const fld = (f, lab, v, step, kind) => `<div class="field"><label>${lab}</label><input type="number" step="${step}" value="${isFinite(v) ? dispN(kind === 'C' ? toC(v) : kind === 'G' ? toG(v) : v) : ''}" data-lf="${f}"${kind ? ` data-lk="${kind}"` : ''}></div>`;
+      return `<div class="rcard${l.on ? '' : ' off'}" data-l="${i}">
+        <div class="rcard-head">
+          <span class="no">Q${i + 1}</span>
+          <input type="text" value="${esc(l.name)}" data-lf="name" aria-label="名稱" style="flex:1;min-width:80px;border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--canvas);font-size:13px">
+          <select data-lf="type" aria-label="類型"><option value="udl"${l.type === 'udl' ? ' selected' : ''}>均布</option><option value="line"${l.type === 'line' ? ' selected' : ''}>線載重</option></select>
+          <button class="btn small ghost" data-lact="del" type="button">刪除</button>
+        </div>
+        <div class="grid3">
+          ${l.type === 'udl' ? fld('x1', '起點 x (m)', l.x1, 0.5) + fld('x2', '終點 x (m)', l.x2, 0.5) + fld('q', `q (${uC()})`, l.q, 1, 'C') : fld('x', '作用點 x (m)', l.x, 0.5) + fld('P', `P (${uF()})`, l.P, 5, 'G')}
+        </div>
+        <div class="row">
+          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-lf="seis"${l.seis ? ' checked' : ''} style="margin:0"><span>計入地震慣性力</span></label>
+          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-lf="on"${l.on ? ' checked' : ''} style="margin:0"><span>啟用</span></label>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  function addLoad(tplKey) {
+    const t = LOAD_TPL[tplKey] || LOAD_TPL.bldg, d = intoDir(), xc = crestX();
+    const o = { name: t.name, type: t.type, on: true, seis: t.seis, q: 10, P: 50, x1: r3(xc), x2: r3(xc + d * 6), x: r3(xc + d * 2) };
+    model.loads.push(o);
+  }
+
+  /* ---------- retaining walls ---------- */
+  function toeX() {
+    const g = model.ground; if (g.length < 2) return 0;
+    const zs = g.map(p => p[1]), z0 = Math.min(...zs), tol = 1e-3 * (Math.max(...zs) - z0 || 1);
+    const xa = g[0][0], xb = g[g.length - 1][0], d = intoDir();
+    let best = d > 0 ? xa : xb;
+    for (let i = 0; i <= 1000; i++) { const x = xa + (xb - xa) * i / 1000; if (interp(g, x) <= z0 + tol) { if (d > 0 ? x > best : x < best) best = x; } }
+    return Math.round(best * 100) / 100;
+  }
+  function wallPoly(p) {
+    const d = intoDir(), x0 = p.x0, z0 = p.z0, xb = x0 + d * p.B;
+    return [[x0, z0], [xb, z0], [xb, z0 + p.H], [xb - d * Math.min(p.b, p.B), z0 + p.H]].map(q => [r3(q[0]), r3(q[1])]);
+  }
+  function renderWalls() {
+    const box = $('#wallList');
+    if (!model.walls.length) { box.innerHTML = '<p class="hint">尚未加入擋土牆。</p>'; return; }
+    box.innerHTML = model.walls.map((w, i) => {
+      const p = w.par || {};
+      const fld = (f, lab, v, step) => `<div class="field"><label>${lab}</label><input type="number" step="${step}" value="${isFinite(v) ? dispN(v) : ''}" data-p="${f}"></div>`;
+      return `<div class="rcard${w.on ? '' : ' off'}" data-w="${i}">
+        <div class="rcard-head">
+          <span class="no">W${i + 1}</span>
+          <input type="text" value="${esc(w.name)}" data-wf="name" aria-label="名稱" style="flex:1;min-width:80px;border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--canvas);font-size:13px">
+          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-wf="on"${w.on ? ' checked' : ''} style="margin:0"><span>啟用</span></label>
+          <button class="btn small ghost" data-wact="del" type="button">刪除</button>
+        </div>
+        <div class="grid3">
+          <div class="field"><label>單位重 (${uG()})</label><input type="number" step="${gTF() ? 0.01 : 0.1}" value="${dispN(toG(w.gamma))}" data-wf="gamma"></div>
+        </div>
+        <span class="idx">參數式斷面（前趾在坡下側，背面垂直）${w.par ? '' : '・目前為自訂形狀，填入全部參數可改回參數式'}</span>
+        <div class="grid3">
+          ${fld('x0', '前趾 x (m)', p.x0, 0.5)}${fld('z0', '底面 z (m)', p.z0, 0.5)}${fld('H', '牆高 H (m)', p.H, 0.5)}
+          ${fld('B', '底寬 B (m)', p.B, 0.1)}${fld('b', '頂寬 b (m)', p.b, 0.1)}
+        </div>
+        <span class="idx">頂點座標（x　z，可改成任意形狀，例如懸臂式 L 型牆）</span>
+        <textarea rows="4" spellcheck="false" data-wf="poly" aria-label="擋土牆頂點座標">${w.poly.map(q => `${r3(q[0])}\t${r3(q[1])}`).join('\n')}</textarea>
+        <div class="row"><button class="btn small" data-wact="apply" type="button">套用頂點座標</button></div>
+      </div>`;
+    }).join('');
   }
 
   /* ---------- search-grid guide ---------- */
@@ -1235,6 +1813,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
   function allPts() {
     const a = [...model.ground, ...model.water];
     model.layers.forEach(L => { if (L.top) a.push(...L.top); });
+    model.walls.forEach(w => a.push(...w.poly));
     return a;
   }
   function fit() {
@@ -1283,6 +1862,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
     out.push(`<defs>
       <pattern id="hatchRock" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)" class="hatch"><line x1="0" y1="0" x2="0" y2="8"/></pattern>
       <pattern id="hatchBase" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)" class="hatch"><line x1="0" y1="0" x2="0" y2="7"/></pattern>
+      <pattern id="hatchWall" width="6" height="6" patternUnits="userSpaceOnUse" class="hatch"><circle cx="1.5" cy="1.5" r=".7" class="dot"/><circle cx="4.5" cy="4.5" r=".5" class="dot"/></pattern>
       <clipPath id="clipIn"><rect x="${pad.l}" y="${pad.t}" width="${W - pad.l - pad.r}" height="${H - pad.t - pad.b}"/></clipPath>
     </defs>`);
     // axes & grid
@@ -1342,6 +1922,9 @@ if (typeof module !== 'undefined') module.exports = SSA;
       result.grid.forEach(c => c.z.forEach(z => { d += `M${T.X(c.x).toFixed(1)},${T.Z(z).toFixed(1)}h1.6v1.6h-1.6z`; }));
       out.push(`<path class="gridpts" d="${d}"/>`);
     }
+    // baseline (no reinforcement) slip surface
+    if (result && result.ok && result.base && result.base.ok) out.push(`<polyline class="slip-base" points="${poly(result.base.slip)}"/>`);
+    if (result && result.ok && result.baseLoad && result.baseLoad.ok) out.push(`<polyline class="slip-base2" points="${poly(result.baseLoad.slip)}"/>`);
     // result
     if (result && result.ok) {
       const S = result.slip;
@@ -1361,6 +1944,46 @@ if (typeof module !== 'undefined') module.exports = SSA;
       }
       out.push(`<polyline class="slip" points="${poly(S)}"/>`);
     }
+    // retaining walls
+    model.walls.forEach(w => { if (w.poly.length >= 3) out.push(`<polygon class="wall${w.on ? '' : ' off'}" points="${poly(w.poly)}"/><polygon points="${poly(w.poly)}" fill="url(#hatchWall)" opacity="${w.on ? 1 : .4}"/>`); });
+    // surface loads
+    model.loads.forEach((l, i) => {
+      const cls = `load${l.on ? '' : ' off'}`, AL = 28;
+      const tip = x => [T.X(x), T.Z(interp(model.ground, x))];
+      const arrow = (x, len, w) => { const [px, py] = tip(x); return `<line class="${cls}" x1="${px}" y1="${py - len}" x2="${px}" y2="${py - 3}" stroke-width="${w}"/><path class="${cls} head" d="M${px - 4},${py - 9} L${px + 4},${py - 9} L${px},${py - 1} Z"/>`; };
+      if (l.type === 'line') {
+        out.push(arrow(l.x, AL + 12, 2.6));
+        const [px, py] = tip(l.x);
+        out.push(`<text class="load-lbl" x="${px + 6}" y="${py - AL - 4}">P = ${fmt(toG(l.P), 1)} ${uF()}</text><circle class="lhandle" cx="${px}" cy="${py - AL - 12}" r="4.5"/>`);
+      } else {
+        const xa = Math.min(l.x1, l.x2), xb = Math.max(l.x1, l.x2);
+        const n = Math.max(2, Math.round((T.X(xb) - T.X(xa)) / 16));
+        let topPts = [];
+        for (let k = 0; k <= n; k++) { const x = xa + (xb - xa) * k / n; out.push(arrow(x, AL, 1.3)); const [px, py] = tip(x); topPts.push(`${px},${py - AL}`); }
+        out.push(`<polyline class="${cls}" fill="none" stroke-width="1.6" points="${topPts.join(' ')}"/>`);
+        const [mx, my] = tip((xa + xb) / 2);
+        out.push(`<text class="load-lbl" x="${mx}" y="${my - AL - 6}" text-anchor="middle">${esc(l.name)}　q = ${fmt(toC(l.q), 1)} ${uC()}</text>`);
+        const [ax, ay] = tip(l.x1), [bx, by] = tip(l.x2);
+        out.push(`<circle class="lhandle" cx="${ax}" cy="${ay - AL}" r="4.5"/><circle class="lhandle" cx="${bx}" cy="${by - AL}" r="4.5"/>`);
+      }
+    });
+    // specified slip surface
+    if (model.trial.length >= 2) out.push(`<polyline class="tline" points="${poly(model.trial)}"/>`);
+    // reinforcement members
+    if (model.reinf.length) {
+      const dir = intoDir(), mem = result && result.ok && !stale && result.members ? result.members : [];
+      model.reinf.forEach((r, i) => {
+        const th = r.theta * Math.PI / 180, ux = dir * Math.cos(th), uz = -Math.sin(th);
+        const P = s => [r.x + ux * s, r.z + uz * s];
+        const m = mem.find(c => c.idx === i), on = m && m.crossed && m.Tm > 0;
+        const cls = `mem${on ? ' on' : ''}${r.on ? '' : ' off'}`;
+        const a = P(0), f = P(r.type === 'anchor' ? Math.min(r.Lfree, r.L) : 0), e = P(r.L);
+        if (r.type === 'anchor' && r.Lfree > 0) out.push(`<line class="${cls}" x1="${T.X(a[0])}" y1="${T.Z(a[1])}" x2="${T.X(f[0])}" y2="${T.Z(f[1])}"/>`);
+        out.push(`<line class="${cls}${r.type === 'anchor' ? ' bond' : ''}" x1="${T.X(f[0])}" y1="${T.Z(f[1])}" x2="${T.X(e[0])}" y2="${T.Z(e[1])}"/>`);
+        out.push(`<text class="mem-lbl" x="${T.X(a[0]) - (dir > 0 ? 12 : -4)}" y="${T.Z(a[1]) - 3}">${i + 1}</text>`);
+        if (on) out.push(`<circle class="mem-x" cx="${T.X(m.xi)}" cy="${T.Z(m.zi)}" r="3.6"/>`);
+      });
+    }
     // ground on top
     if (g.length >= 2) out.push(`<polyline class="ground" points="${poly(g)}"/>`);
     out.push('</g>');
@@ -1375,7 +1998,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
     // active vertices
     const def = lineDefs().find(d => d.key === active);
     const AP = getPts(active) || [];
-    const stroke = def && def.kind === 'water' ? 'var(--water)' : def && def.kind === 'bound' ? 'var(--ink)' : 'var(--ink)';
+    const stroke = def && def.kind === 'water' ? 'var(--water)' : def && def.kind === 'trial' ? 'var(--slip)' : def && def.kind === 'bound' ? 'var(--ink)' : 'var(--ink)';
     AP.forEach((p, i) => {
       const isHot = (drag && drag.i === i) || (hover && hover.key === active && hover.i === i);
       out.push(`<circle class="vtx${isHot ? ' hot' : ''}" cx="${T.X(p[0]).toFixed(1)}" cy="${T.Z(p[1]).toFixed(1)}" r="${isHot ? 6.5 : 5}" stroke="${stroke}"/>`);
@@ -1404,11 +2027,26 @@ if (typeof module !== 'undefined') module.exports = SSA;
     }
     return best;
   }
+  let ldrag = null;
+  function nearestLoadHandle(px, py) {
+    let best = null;
+    model.loads.forEach((l, i) => {
+      const keys = l.type === 'line' ? [['x', 40]] : [['x1', 28], ['x2', 28]];
+      for (const [k, off] of keys) {
+        const x = l[k], hx = T.X(x), hy = T.Z(interp(model.ground, x)) - off;
+        const d = Math.hypot(hx - px, hy - py);
+        if (d < 11 && (!best || d < best.d)) best = { i, k, d };
+      }
+    });
+    return best;
+  }
   function onDown(e) {
     if (running) return;
     const { px, py } = evtPt(e);
     const svg = $('#cv');
     if (mode === 'drag') {
+      const lh = nearestLoadHandle(px, py);
+      if (lh) { pushUndo(); ldrag = Object.assign(lh, { moved: false }); svg.setPointerCapture(e.pointerId); e.preventDefault(); return; }
       let n = nearest(px, py, [active]);
       if (!n) { n = nearest(px, py, lineDefs().map(d => d.key)); if (n) { active = n.key; renderLines(); renderCoords(); } }
       if (n) { pushUndo(); drag = { key: n.key, i: n.i, moved: false }; svg.setPointerCapture(e.pointerId); draw(); }
@@ -1433,6 +2071,10 @@ if (typeof module !== 'undefined') module.exports = SSA;
     if (!T) return;
     const { px, py } = evtPt(e);
     $('#hud').textContent = `x ${fmt(T.ix(px), 2)}　z ${fmt(T.iz(py), 2)}`;
+    if (ldrag) {
+      const x = snapV(T.ix(px)); model.loads[ldrag.i][ldrag.k] = x; ldrag.moved = true;
+      $('#hud').textContent = `載重位置 x = ${fmt(x, 2)}`; stale = !!result; draw(); return;
+    }
     if (drag) {
       const P = getPts(drag.key);
       let x = snapV(T.ix(px)), z = snapV(T.iz(py));
@@ -1448,6 +2090,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
     if ((h && (!hover || hover.i !== h.i)) || (!h && hover)) { hover = h; draw(); }
   }
   function onUp() {
+    if (ldrag) { const m = ldrag.moved; ldrag = null; if (m) { renderLoads(); renderResults(); draw(); } else { undoStack.pop(); $('#btnUndo').disabled = !undoStack.length; } return; }
     if (!drag) return;
     const moved = drag.moved; drag = null;
     if (moved) changed(false); else { undoStack.pop(); $('#btnUndo').disabled = !undoStack.length; draw(); }
@@ -1455,36 +2098,71 @@ if (typeof module !== 'undefined') module.exports = SSA;
 
   /* ---------- run ---------- */
   function status(t) { $('#status').textContent = t; }
-  function currentModel() {
-    return { ground: model.ground, layers: model.layers, water: model.water.length >= 2 ? model.water : [], zBase: model.zBase, settings: model.settings };
+  function currentModel(noReinf, noLoad) {
+    return { ground: model.ground, layers: model.layers, water: model.water.length >= 2 ? model.water : [], zBase: model.zBase, settings: model.settings, reinf: noReinf ? [] : model.reinf, walls: noReinf ? [] : model.walls, loads: noLoad ? [] : model.loads };
   }
+  const hasLoads = () => model.loads.some(l => l.on && (l.type === 'line' ? l.P : l.q));
+  const hasReinf = () => model.reinf.some(r => r.on && r.L > 0 && r.Sh > 0) || model.walls.some(w => w.on && w.poly.length >= 3);
   let errors = [];
+  function setBusy(on, label) {
+    running = on;
+    const btn = $('#btnRun'), bt = $('#btnTrial');
+    btn.disabled = on; bt.disabled = on;
+    btn.textContent = on && label ? label : '計算最危險滑動面';
+  }
+  function runSearch(m, tag, done) {
+    let gen;
+    try { gen = SSA.solve(clone(m)); } catch (e) { done({ ok: false, msg: String(e.message || e) }); return; }
+    const step = () => {
+      try {
+        const n = gen.next();
+        if (n.done) { done(n.value); return; }
+        status(`${tag}第 ${n.value.it} 輪：F = ${fmt(n.value.F, 4)}`);
+        setTimeout(step, 0);
+      } catch (e) { done({ ok: false, msg: '計算失敗：' + (e.message || e) }); }
+    };
+    setTimeout(step, 20);
+  }
   function run() {
     if (running) return;
     errors = SSA.validate(currentModel());
     if (errors.length) { result = null; renderResults(); draw(); status('輸入有誤，請依提示修正'); return; }
-    running = true;
-    const btn = $('#btnRun'); btn.disabled = true; btn.textContent = '計算中…';
-    const t0 = performance.now();
-    let gen;
-    try { gen = SSA.solve(clone(currentModel())); } catch (e) { finish({ ok: false, msg: String(e.message || e) }, t0); return; }
-    const step = () => {
-      try {
-        const n = gen.next();
-        if (n.done) { finish(n.value, t0); return; }
-        status(`第 ${n.value.it} 輪：F = ${fmt(n.value.F, 4)}`);
-        setTimeout(step, 0);
-      } catch (e) { finish({ ok: false, msg: '計算失敗：' + (e.message || e) }, t0); }
+    setBusy(true, '計算中…');
+    const t0 = performance.now(), cmp = model.settings.compare && hasReinf(), cmpL = model.settings.compareLoad && hasLoads();
+    const jobs = [];
+    if (cmp) jobs.push(['base', currentModel(true, false), '無補強措施：']);
+    if (cmpL) jobs.push(['baseLoad', currentModel(false, true), '無載重：']);
+    const got = {};
+    const next = () => {
+      const j = jobs.shift();
+      if (!j) { runSearch(currentModel(), jobs.length || cmp || cmpL ? '目前條件：' : '', r => { Object.assign(r, got); finish(r, t0); }); return; }
+      runSearch(j[1], j[2], r => { got[j[0]] = r; next(); });
     };
-    setTimeout(step, 20);
+    next();
+  }
+  function runTrial() {
+    if (running) return;
+    errors = SSA.validate(currentModel());
+    if (errors.length) { result = null; renderResults(); draw(); status('輸入有誤，請依提示修正'); return; }
+    if (model.trial.length < 2) {
+      status('請先在「剖面」頁選「指定滑動面（試算用）」，畫出或貼上滑動面座標。');
+      $('#tab-geo').click(); active = 'trial'; renderLines(); renderCoords(); draw(); return;
+    }
+    const t0 = performance.now();
+    let r;
+    try {
+      r = SSA.evaluate(clone(currentModel()), model.trial);
+      if (r.ok && model.settings.compare && hasReinf()) r.base = SSA.evaluate(clone(currentModel(true, false)), model.trial);
+      if (r.ok && model.settings.compareLoad && hasLoads()) r.baseLoad = SSA.evaluate(clone(currentModel(false, true)), model.trial);
+    } catch (e) { r = { ok: false, msg: '計算失敗：' + (e.message || e) }; }
+    finish(r, t0);
   }
   function finish(r, t0) {
-    running = false;
-    const btn = $('#btnRun'); btn.disabled = false; btn.textContent = '計算最危險滑動面';
+    setBusy(false);
     r.ms = performance.now() - t0;
     result = r; stale = false;
-    status(r.ok ? `完成：${r.hist.length} 輪、${fmt(r.ms / 1000, 2)} 秒` : '未找到滑動面');
-    draw(); renderResults();
+    status(!r.ok ? (r.mode === 'trial' ? '指定滑動面無法計算' : '未找到滑動面') : r.mode === 'trial' ? `指定滑動面試算完成：Fs = ${fmt(r.F, 3)}` : `完成：${r.hist.length} 輪、${fmt(r.ms / 1000, 2)} 秒`);
+    draw(); renderResults(); renderReinf(); renderLines();
   }
 
   function renderResults() {
@@ -1508,9 +2186,11 @@ if (typeof module !== 'undefined') module.exports = SSA;
     box.innerHTML = `
       <div class="res-top">
         <div class="fsbox">
-          <span class="lbl">安全係數 Fs（簡易 Janbu）</span>
+          <span class="lbl">安全係數 Fs（簡易 Janbu）<span class="mode-chip">${r.mode === 'trial' ? '指定滑動面' : '自動搜尋'}</span></span>
           <span class="big">${fmt(r.F, 3)}</span>
           <span class="sub">修正後 f0·Fs = <span class="num">${fmt(r.Fc, 3)}</span>（f0 = ${fmt(r.f0, 3)}，${r.f0type === 'janbu' ? 'Janbu 曲線' : '(50d/L)<sup>0.03</sup>'}）</span>
+          ${r.baseLoad ? (r.baseLoad.ok ? `<span class="base-line">無載重 Fs = <b>${fmt(r.baseLoad.F, 3)}</b>，加載後${r.F >= r.baseLoad.F ? '提高' : '降低'} <b>${fmt(Math.abs(r.F / r.baseLoad.F - 1) * 100, 1)}%</b></span>` : `<span class="base-line">無載重情況：${esc(r.baseLoad.msg || '無法計算')}</span>`) : ''}
+          ${r.base ? (r.base.ok ? `<span class="base-line">無補強措施 Fs = <b>${fmt(r.base.F, 3)}</b>，補強後${r.F >= r.base.F ? '提高' : '降低'} <b>${fmt(Math.abs(r.F / r.base.F - 1) * 100, 1)}%</b></span>` : `<span class="base-line">無補強措施情況：${esc(r.base.msg || '無法計算')}</span>`) : ''}
           ${chip}
         </div>
         <dl class="stats">
@@ -1520,19 +2200,27 @@ if (typeof module !== 'undefined') module.exports = SSA;
           <div><dt>坡頂入口 (x, z)</dt><dd>${fmt(head[0], 2)}, ${fmt(head[1], 2)}</dd></div>
           <div><dt>ΣR 抵抗力</dt><dd>${fmt(toG(r.sumA), gTF() ? 2 : 1)} ${uF()}</dd></div>
           <div><dt>ΣD 滑動力</dt><dd>${fmt(toG(r.sumB), gTF() ? 2 : 1)} ${uF()}</dd></div>
+          ${r.nLoads ? `<div><dt>滑動體上的載重 ΣQ</dt><dd>${fmt(toG(r.Qtot), gTF() ? 2 : 1)} ${uF()}</dd></div>` : ''}
           <div><dt>d / L</dt><dd>${fmt(r.dL, 3)}${r.f0type === 'janbu' ? `（b1 = ${fmt(r.b1, 2)}）` : ''}</dd></div>
-          <div><dt>迭代・耗時</dt><dd>${r.hist.length} 輪・${fmt(r.ms / 1000, 2)} s</dd></div>
+          <div><dt>迭代・耗時</dt><dd>${r.mode === 'trial' ? '單一滑動面' : r.hist.length + ' 輪'}・${fmt(r.ms / 1000, 2)} s</dd></div>
         </dl>
       </div>
+      ${r.members && r.members.length ? `<details open>
+        <summary>補強構件（${r.members.filter(m => m.crossed && m.Tm > 0).length} / ${r.members.length} 支發揮作用・${r.reinfMode === 'passive' ? '被動法' : '主動法'}）</summary>
+        <div class="tblwrap"><table>
+          <thead><tr><th>編號</th><th class="t">類型</th><th>交點 x</th><th>交點 z</th><th>有效長 Le (m)</th><th>可用拉力 (${uT()})</th><th>每公尺 T (${uF()})</th><th class="t">控制</th><th>Px (${uF()})</th><th>Py (${uF()})</th></tr></thead>
+          <tbody>${r.members.map(m => `<tr><td>${m.idx + 1}</td><td class="t">${m.type === 'anchor' ? '地錨' : '土釘'}</td><td>${m.crossed ? fmt(m.xi, 2) : '—'}</td><td>${m.crossed ? fmt(m.zi, 2) : '—'}</td><td>${m.crossed ? fmt(m.Le, 2) : '—'}</td><td>${fmt(toG(m.T), 1)}</td><td>${fmt(toG(m.Tm), 2)}</td><td class="t">${esc(m.ctrl)}</td><td>${fmt(toG(m.Px), 2)}</td><td>${fmt(toG(m.Py), 2)}</td></tr>`).join('')}</tbody>
+        </table></div>
+      </details>` : ''}
       <details>
         <summary>切片明細（${r.rows.length} 片）</summary>
         <div class="row" style="margin-top:8px"><button class="btn small" id="btnCopyRows" type="button">複製切片表 (CSV)</button><button class="btn small" id="btnCopySlip" type="button">複製滑動面座標</button></div>
         <div class="tblwrap"><table>
-          <thead><tr><th>x 中點</th><th>寬 b</th><th>底部 z</th><th>α (°)</th><th>W (${uF()})</th><th>hw (m)</th><th>u (${uC()})</th><th>c' (${uC()})</th><th>φ' (°)</th><th class="t">土層</th><th>mα</th><th>R (${uF()})</th><th>D (${uF()})</th></tr></thead>
-          <tbody>${r.rows.map(x => `<tr><td>${fmt(x.xc, 2)}</td><td>${fmt(x.b, 2)}</td><td>${fmt(x.zc, 2)}</td><td>${fmt(x.alpha, 1)}</td><td>${fmt(toG(x.W), gTF() ? 2 : 1)}</td><td>${fmt(x.hw, 2)}</td><td>${fmt(toC(x.u), cTF() ? 2 : 1)}</td><td>${fmt(toC(x.c), cTF() ? 2 : 1)}</td><td>${fmt(x.phi, 1)}</td><td class="t">${esc(x.layer)}</td><td>${fmt(x.ma, 3)}</td><td>${fmt(toG(x.res), gTF() ? 2 : 1)}</td><td>${fmt(toG(x.drv), gTF() ? 2 : 1)}</td></tr>`).join('')}</tbody>
+          <thead><tr><th>x 中點</th><th>寬 b</th><th>底部 z</th><th>α (°)</th><th>W (${uF()})</th><th>hw (m)</th><th>u (${uC()})</th><th>c' (${uC()})</th><th>φ' (°)</th><th class="t">土層</th><th>mα</th>${r.nLoads ? `<th>Q (${uF()})</th>` : ''}<th>R (${uF()})</th><th>D (${uF()})</th>${r.members && r.members.length ? `<th>Px</th><th>Py</th>` : ''}</tr></thead>
+          <tbody>${r.rows.map(x => `<tr><td>${fmt(x.xc, 2)}</td><td>${fmt(x.b, 2)}</td><td>${fmt(x.zc, 2)}</td><td>${fmt(x.alpha, 1)}</td><td>${fmt(toG(x.W), gTF() ? 2 : 1)}</td><td>${fmt(x.hw, 2)}</td><td>${fmt(toC(x.u), cTF() ? 2 : 1)}</td><td>${fmt(toC(x.c), cTF() ? 2 : 1)}</td><td>${fmt(x.phi, 1)}</td><td class="t">${esc(x.layer)}</td><td>${fmt(x.ma, 3)}</td>${r.nLoads ? `<td>${x.Q ? fmt(toG(x.Q), 2) : ''}</td>` : ''}<td>${fmt(toG(x.res), gTF() ? 2 : 1)}</td><td>${fmt(toG(x.drv), gTF() ? 2 : 1)}</td>${r.members && r.members.length ? `<td>${x.Px ? fmt(toG(x.Px), 2) : ''}</td><td>${x.Py ? fmt(toG(x.Py), 2) : ''}</td>` : ''}</tr>`).join('')}</tbody>
         </table></div>
       </details>
-      <details>
+      <details${r.mode === 'trial' ? ' hidden' : ''}>
         <summary>迭代紀錄</summary>
         <div class="tblwrap"><table>
           <thead><tr><th>輪次</th><th>搜尋用 F (λ)</th><th>該輪滑動面 Fs</th><th>G 最小值</th></tr></thead>
@@ -1541,8 +2229,8 @@ if (typeof module !== 'undefined') module.exports = SSA;
       </details>`;
     $('#btnCopyRows').onclick = ev => {
       const fu = gTF() ? 'tf_m' : 'kN_m', su = cTF() ? 'tf_m2' : 'kPa';
-      const head = `x,b,z_base,alpha_deg,W_${fu},hw_m,u_${su},c_${su},phi_deg,layer,m_alpha,R_${fu},D_${fu}`;
-      copyText([head, ...r.rows.map(x => [x.xc, x.b, x.zc, x.alpha, toG(x.W), x.hw, toC(x.u), toC(x.c), x.phi, x.layer, x.ma, toG(x.res), toG(x.drv)].map(v => typeof v === 'number' ? r3(v) : v).join(','))].join('\n'), ev.currentTarget);
+      const head = `x,b,z_base,alpha_deg,W_${fu},hw_m,u_${su},c_${su},phi_deg,layer,m_alpha,R_${fu},D_${fu},Px_${fu},Py_${fu},Q_${fu}`;
+      copyText([head, ...r.rows.map(x => [x.xc, x.b, x.zc, x.alpha, toG(x.W), x.hw, toC(x.u), toC(x.c), x.phi, x.layer, x.ma, toG(x.res), toG(x.drv), toG(x.Px || 0), toG(x.Py || 0), toG(x.Q || 0)].map(v => typeof v === 'number' ? r3(v) : v).join(','))].join('\n'), ev.currentTarget);
     };
     $('#btnCopySlip').onclick = ev => copyText(['x,z', ...r.slip.map(p => `${r3(p[0])},${r3(p[1])}`)].join('\n'), ev.currentTarget);
   }
@@ -1643,7 +2331,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
       if (P.length < minPts(active)) { status('至少需要 2 個點。'); return; }
       pushUndo(); setPts(active, P); fit(); changed(false); status('已套用座標');
     });
-    $('#btnClearLine').addEventListener('click', () => { pushUndo(); model.water = []; changed(false); status('已清除地下水位線'); });
+    $('#btnClearLine').addEventListener('click', () => { pushUndo(); if (active === 'trial') model.trial = []; else model.water = []; changed(false); status(active === 'trial' ? '已清除指定滑動面' : '已清除地下水位線'); });
     $('#btnMakeWater').addEventListener('click', () => { pushUndo(); model.water = model.ground.map(p => [p[0], Math.max(model.zBase, p[1] - 2)]); changed(false); });
     $('#zBase').addEventListener('change', e => { const v = +e.target.value; if (!isFinite(v)) return; pushUndo(); model.zBase = v; fit(); changed(false); });
 
@@ -1681,7 +2369,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
       if (k === 'gw' && typeof v === 'number') v = fromG(v);
       model.settings[k] = v;
       if (k === 'unitG' || k === 'unitC') {
-        renderLayers(); renderSettings(); renderResults();
+        renderLayers(); renderReinf(); renderWalls(); renderLoads(); renderSettings(); renderResults();
         status(`單位已切換為 ${uG()}、${uC()}，數值已自動換算`);
         return;
       }
@@ -1694,6 +2382,120 @@ if (typeof module !== 'undefined') module.exports = SSA;
     ['#optEqual', '#optSlices', '#optGrid'].forEach(s => $(s).addEventListener('change', draw));
     $('#btnFit').addEventListener('click', () => { fit(); draw(); });
     $('#btnRun').addEventListener('click', run);
+    $('#btnTrial').addEventListener('click', runTrial);
+    $('#btnCopyCrit').addEventListener('click', () => {
+      if (!result || !result.ok) return;
+      pushUndo(); model.trial = result.slip.map(p => [r3(p[0]), r3(p[1])]); changed(false);
+      status('已把目前的臨界滑動面複製為指定滑動面，可再拖曳修改後按「試算指定滑動面」。');
+    });
+    // reinforcement editing
+    const rl = $('#reinfList');
+    rl.addEventListener('focusin', e => { if (e.target.dataset.f) { const s = JSON.stringify(model); if (undoStack[undoStack.length - 1] !== s) pushUndo(); } });
+    rl.addEventListener('input', e => {
+      const card = e.target.closest('.rcard'), f = e.target.dataset.f; if (!card || !f || f === 'type' || f === 'on') return;
+      const r = model.reinf[+card.dataset.r], v = parseFloat(e.target.value);
+      if (!isFinite(v)) return;
+      r[f] = e.target.dataset.conv ? fromG(v) : v;
+      stale = !!result; draw(); renderResults();
+    });
+    rl.addEventListener('change', e => {
+      const card = e.target.closest('.rcard'), f = e.target.dataset.f; if (!card) return;
+      const r = model.reinf[+card.dataset.r];
+      if (f === 'type') { const d = e.target.value === 'anchor' ? ANCHOR : NAIL; Object.assign(r, clone(d), { x: r.x, z: r.z, on: r.on }); }
+      else if (f === 'on') r.on = e.target.checked;
+      else return;
+      stale = !!result; renderReinf(); draw(); renderResults();
+    });
+    rl.addEventListener('click', e => {
+      const b = e.target.closest('[data-act]'); if (!b) return;
+      const i = +b.closest('.rcard').dataset.r, r = model.reinf[i];
+      pushUndo();
+      if (b.dataset.act === 'del') model.reinf.splice(i, 1);
+      else if (b.dataset.act === 'dup') { const o = clone(r); o.x = r3(r.x + 2 * intoDir() * -1); o.z = r3(interp(model.ground, o.x)); model.reinf.splice(i + 1, 0, o); }
+      else if (b.dataset.act === 'snap') r.z = r3(interp(model.ground, r.x));
+      stale = !!result; renderReinf(); draw(); renderResults();
+    });
+    const ll = $('#loadList');
+    ll.addEventListener('focusin', e => { if (e.target.dataset.lf) { const s = JSON.stringify(model); if (undoStack[undoStack.length - 1] !== s) pushUndo(); } });
+    ll.addEventListener('input', e => {
+      const card = e.target.closest('.rcard'), f = e.target.dataset.lf; if (!card || !f || ['type', 'on', 'seis'].includes(f)) return;
+      const l = model.loads[+card.dataset.l];
+      if (f === 'name') l.name = e.target.value;
+      else { const v = parseFloat(e.target.value); if (!isFinite(v)) return; const k = e.target.dataset.lk; l[f] = k === 'C' ? fromC(v) : k === 'G' ? fromG(v) : v; }
+      stale = !!result; draw(); renderResults();
+    });
+    ll.addEventListener('change', e => {
+      const card = e.target.closest('.rcard'), f = e.target.dataset.lf; if (!card || !['type', 'on', 'seis'].includes(f)) return;
+      const l = model.loads[+card.dataset.l];
+      if (f === 'type') l.type = e.target.value; else l[f] = e.target.checked;
+      stale = !!result; renderLoads(); draw(); renderResults();
+    });
+    ll.addEventListener('click', e => {
+      const bt = e.target.closest('[data-lact]'); if (!bt) return;
+      pushUndo(); model.loads.splice(+bt.closest('.rcard').dataset.l, 1);
+      stale = !!result; renderLoads(); draw(); renderResults();
+    });
+    $('#btnAddLoad').addEventListener('click', () => {
+      pushUndo(); addLoad($('#loadTpl').value); stale = !!result; renderLoads(); draw(); renderResults();
+      status('已在坡肩附近加入載重，強度 10 為佔位數字，請依設計規範輸入。可在圖上拖曳載重端點調整範圍。');
+    });
+    const wl = $('#wallList');
+    wl.addEventListener('focusin', e => { if (e.target.dataset.wf || e.target.dataset.p) { const s = JSON.stringify(model); if (undoStack[undoStack.length - 1] !== s) pushUndo(); } });
+    wl.addEventListener('input', e => {
+      const card = e.target.closest('.rcard'); if (!card) return;
+      const w = model.walls[+card.dataset.w], f = e.target.dataset.wf, pf = e.target.dataset.p;
+      if (f === 'name') w.name = e.target.value;
+      else if (f === 'gamma') { const v = parseFloat(e.target.value); if (v > 0) w.gamma = fromG(v); else return; }
+      else if (pf) {
+        const v = parseFloat(e.target.value); if (!isFinite(v)) return;
+        w.par = w.par || {}; w.par[pf] = v;
+        const p = w.par;
+        if ([p.x0, p.z0, p.H, p.B, p.b].every(isFinite) && p.H > 0 && p.B > 0 && p.b > 0) {
+          w.poly = wallPoly(p);
+          const ta = card.querySelector('textarea'); if (ta) ta.value = w.poly.map(q => `${r3(q[0])}\t${r3(q[1])}`).join('\n');
+        }
+      } else return;
+      stale = !!result; draw(); renderResults();
+    });
+    wl.addEventListener('change', e => {
+      const card = e.target.closest('.rcard'); if (!card || e.target.dataset.wf !== 'on') return;
+      model.walls[+card.dataset.w].on = e.target.checked; stale = !!result; renderWalls(); draw(); renderResults();
+    });
+    wl.addEventListener('click', e => {
+      const bt = e.target.closest('[data-wact]'); if (!bt) return;
+      const card = bt.closest('.rcard'), i = +card.dataset.w;
+      if (bt.dataset.wact === 'del') { pushUndo(); model.walls.splice(i, 1); }
+      else if (bt.dataset.wact === 'apply') {
+        const P = parseCoords(card.querySelector('textarea').value);
+        if (P.length < 3) { status('擋土牆至少需要 3 個頂點。'); return; }
+        pushUndo(); model.walls[i].poly = P; model.walls[i].par = null;
+        status('已套用擋土牆頂點座標。');
+      }
+      stale = !!result; fit(); renderWalls(); draw(); renderResults();
+    });
+    $('#btnAddWall').addEventListener('click', () => {
+      pushUndo();
+      const d = intoDir(), toe = toeX(), B = 2.0;
+      const x0 = r3(toe - d * B), z0 = r3(interp(model.ground, x0) - 1);
+      const par = { x0, z0, H: 3, B, b: 0.6 };
+      model.walls.push({ name: `擋土牆 ${model.walls.length + 1}`, on: true, gamma: 23.5, par, poly: wallPoly(par) });
+      stale = !!result; fit(); renderWalls(); draw(); renderResults();
+      status('已在坡趾前加入一座重力式擋土牆（埋入 1 m）。若牆後有回填，請同步修改地表線，讓地表通過牆頂。');
+    });
+    $('#btnAddNail').addEventListener('click', () => { pushUndo(); addMember(NAIL, midFaceX()); stale = !!result; renderReinf(); draw(); renderResults(); status('已加入一支土釘，請調整位置與參數。'); });
+    $('#btnAddAnchor').addEventListener('click', () => { pushUndo(); addMember(ANCHOR, midFaceX()); stale = !!result; renderReinf(); draw(); renderResults(); status('已加入一支地錨，請調整位置與參數。'); });
+    const batch = replace => {
+      const xa = parseFloat($('#rbXa').value), xb = parseFloat($('#rbXb').value), n = Math.round(+$('#rbN').value);
+      if (!isFinite(xa) || !isFinite(xb) || !(n >= 1)) { status('請輸入整排配置的起點 x、終點 x 與支數。'); return; }
+      const tpl = model.reinf.length ? model.reinf[model.reinf.length - 1] : NAIL;
+      pushUndo();
+      if (replace) model.reinf = [];
+      for (let i = 0; i < n; i++) addMember(tpl, r3(n === 1 ? xa : xa + (xb - xa) * i / (n - 1)));
+      stale = !!result; renderReinf(); draw(); renderResults();
+      status(`已配置 ${n} 支${tpl.type === 'anchor' ? '地錨' : '土釘'}，參數沿用範本。`);
+    };
+    $('#btnBatchAdd').addEventListener('click', () => batch(false));
+    $('#btnBatchReplace').addEventListener('click', () => batch(true));
     $('#btnCite').addEventListener('click', e => copyText($('#citeText').textContent.trim(), e.currentTarget));
     $('#btnBib').addEventListener('click', e => copyText(`@inproceedings{chen2013landslide,
   author    = {Chen, C. Y. and Ikkanda, S. and Fujita, M. and Tsutsumi, D.},
@@ -1772,7 +2574,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
   bind();
   visitCounter();
   $('#btnUndo').disabled = true;
-  fit(); renderLines(); renderCoords(); renderLayers(); renderSettings(); draw(); renderResults(); renderGuide();
+  fit(); renderLines(); renderCoords(); renderLayers(); renderSettings(); renderReinf(); renderWalls(); renderLoads(); draw(); renderResults(); renderGuide();
   run();
 })();
 </script>
