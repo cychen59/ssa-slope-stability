@@ -417,7 +417,7 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
       <div class="pane" data-pane="load" hidden>
         <div class="sec">
           <h3>地表載重</h3>
-          <p class="hint">均布載重 q 作用在地表一段 x 範圍，線載重 P 作用在一點，都以每公尺寬計。只有落在滑動土體上方的部分會計入，作用方式和土重相同，同時增加正向力與滑動力。</p>
+          <p class="hint">均布載重 q 作用在地表一段 x 範圍（起點與終點的 q 可以不同，成為梯形分布），線載重 P 作用在一點，都以每公尺寬計。只有落在滑動土體上方的部分會計入，作用方式和土重相同，同時增加正向力與滑動力。</p>
           <label class="check"><input type="checkbox" id="s-compareLoad" data-s="compareLoad"><span>同時計算無載重的情況<small>並列有、無載重的 Fs，並以點線畫出無載重時的臨界滑動面。</small></span></label>
           <div id="loadList" class="sec"></div>
           <div class="row">
@@ -523,7 +523,7 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
             </div>
           </div>
           <p class="hint">分割線數與節點數越多越精細，但計算量約與「分割線數 × 節點數²」成正比，節點數加倍，時間約變 4 倍。</p>
-          <label class="check"><input type="checkbox" id="s-convex" data-s="convex"><span>限制滑動面為凹形<small>滑動面坡度沿滑動方向單調變化，排除運動學上不合理的形狀（原程式 ktotu）。</small></span></label>
+          <label class="check"><input type="checkbox" id="s-convex" data-s="convex"><span>限制滑動面為凹形<small>滑動面坡度沿滑動方向單調變化，排除運動學上不合理的形狀（原程式 ktotu）。網頁版把狀態依「目前最陡坡度」分級後再做動態規劃，並容許節點離散造成的微小誤差，薄弱夾層也能正確追蹤。</small></span></label>
           <label class="check"><input type="checkbox" id="s-noBoundary" data-s="noBoundary"><span>滑動面不穿越模型左右邊界<small>兩端的分割線只允許在地表以上（原程式 kconc 的推廣）。</small></span></label>
         </div>
         <div class="sec">
@@ -793,7 +793,7 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
 
         <section class="th-sec">
           <h3>九、地表載重</h3>
-          <p>均布載重 q 與線載重 P 都視為作用在切片頂面的垂直外力。每個切片承受的載重 Q 為 q 乘以切片寬度與載重範圍重疊的長度，線載重則整個加在它所在的切片。只有滑動土體上方的切片會計入，Q 與土重一樣同時進入正向力與滑動力：</p>
+          <p>均布載重 q 與線載重 P 都視為作用在切片頂面的垂直外力。每個切片承受的載重 Q 為 q 在切片寬度與載重範圍重疊段的積分（均布時即 q 乘以重疊長度，梯形分布時以兩端 q 的平均值乘以重疊長度），線載重則整個加在它所在的切片。只有滑動土體上方的切片會計入，Q 與土重一樣同時進入正向力與滑動力：</p>
           <div class="eqn eq-key"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><mrow><mo>[</mo><msup><mi>c</mi><mo>′</mo></msup><mi>b</mi><mo>+</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><msup><mi>Q</mi><mo>*</mo></msup><mo>−</mo><mi>u</mi><mi>b</mi><mo>)</mo><mi>tan</mi><msup><mi>φ</mi><mo>′</mo></msup><mo>]</mo></mrow><mo>/</mo><msub><mi>n</mi><mi>α</mi></msub></mrow><mrow><mo>∑</mo><mrow><mo>[</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><msup><mi>Q</mi><mo>*</mo></msup><mo>)</mo><mi>tan</mi><mi>α</mi><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><mo>(</mo><mi>W</mi><mo>+</mo><msup><mi>Q</mi><mo>*</mo></msup><mo>)</mo><mo>]</mo></mrow></mrow></mfrac></math><span class="eqno">(R5)</span></div>
           <p>Q<sup>*</sup> 是勾選「計入地震慣性力」的載重。坡頂載重落在 α 為正的區段，增加的滑動力大於抵抗力，F<sub>s</sub> 下降；坡趾載重落在 α 接近 0 或為負的區段，主要增加抵抗力，F<sub>s</sub> 上升。動態規劃會自動找出載重影響下最危險的滑動面，包括繞到坡頂載重後方的滑動面，或從坡趾載重後方出露、避開壓腳效果的滑動面。</p>
           <p>驗證案例沿用第七節的平面滑動塊體，載重 Q 加在塊體上方，封閉解為：</p>
@@ -801,9 +801,9 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
           <p class="hint">W′ 為受地震力作用的重量：載重計入地震慣性力時 W′ = W + Q，否則 W′ = W。</p>
           <div class="tblwrap" style="max-height:none"><table>
             <thead><tr><th class="t">驗證情況</th><th>封閉解</th><th>本工具</th></tr></thead>
-            <tbody><tr><td class="t">無載重</td><td>1.368760</td><td>1.368760</td></tr><tr><td class="t">均布載重 q = 20 kPa，整段在滑動體上（Q = 60 kN/m）</td><td>1.328306</td><td>1.328306</td></tr><tr><td class="t">均布載重只有 2 m 在滑動體上（Q = 40 kN/m）</td><td>1.340948</td><td>1.340948</td></tr><tr><td class="t">線載重 P = 50 kN/m</td><td>1.334530</td><td>1.334530</td></tr><tr><td class="t">寬 0.1 m、總量 50 kN/m 的均布載重</td><td>1.334530</td><td>1.334530</td></tr><tr><td class="t">載重在滑動體範圍外</td><td>1.368760</td><td>1.368760</td></tr><tr><td class="t">kH = 0.15，載重計入地震慣性力</td><td>1.001374</td><td>1.001374</td></tr><tr><td class="t">kH = 0.15，載重不計地震慣性力</td><td>1.025772</td><td>1.025772</td></tr></tbody>
+            <tbody><tr><td class="t">無載重</td><td>1.368760</td><td>1.368760</td></tr><tr><td class="t">均布載重 q = 20 kPa，整段在滑動體上（Q = 60 kN/m）</td><td>1.328306</td><td>1.328306</td></tr><tr><td class="t">梯形載重 0 → 40 kPa，整段在滑動體上（Q = 60 kN/m）</td><td>1.328306</td><td>1.328306</td></tr><tr><td class="t">均布載重只有 2 m 在滑動體上（Q = 40 kN/m）</td><td>1.340948</td><td>1.340948</td></tr><tr><td class="t">線載重 P = 50 kN/m</td><td>1.334530</td><td>1.334530</td></tr><tr><td class="t">寬 0.1 m、總量 50 kN/m 的均布載重</td><td>1.334530</td><td>1.334530</td></tr><tr><td class="t">載重在滑動體範圍外</td><td>1.368760</td><td>1.368760</td></tr><tr><td class="t">kH = 0.15，載重計入地震慣性力</td><td>1.001374</td><td>1.001374</td></tr><tr><td class="t">kH = 0.15，載重不計地震慣性力</td><td>1.025772</td><td>1.025772</td></tr></tbody>
           </table></div>
-          <p class="hint">另檢查：坡面左右鏡射結果相同；自動搜尋時，坡頂均布載重 10、20、40 kPa 使 F<sub>s</sub> 由 1.026 依序降為 1.024、1.018、1.000，載重越大降幅越大。</p>
+          <p class="hint">另檢查：坡面左右鏡射結果相同；自動搜尋時，坡頂均布載重 10、20、40 kPa 使 F<sub>s</sub> 由 1.025 依序降為 1.022、1.016、0.998，載重越大降幅越大。</p>
         </section>
 
         <section class="th-sec">
@@ -937,7 +937,10 @@ const SSA = (() => {
       if (l.on === false) return;
       const X = x => (mirror ? -x : +x);
       if (l.type === 'line') { if (isFinite(l.x) && +l.P) loads.push({ idx, type: 'line', x: X(l.x), P: +l.P, seis: l.seis !== false }); }
-      else if (isFinite(l.x1) && isFinite(l.x2) && +l.q) { const a = X(l.x1), b = X(l.x2); if (Math.abs(b - a) > 1e-9) loads.push({ idx, type: 'udl', xa: Math.min(a, b), xb: Math.max(a, b), q: +l.q, seis: l.seis !== false }); }
+      else if (isFinite(l.x1) && isFinite(l.x2)) {
+        const a = X(l.x1), b = X(l.x2), q1 = +l.q || 0, q2 = (l.q2 === undefined || l.q2 === '' || l.q2 === null || !isFinite(+l.q2)) ? q1 : +l.q2;
+        if (Math.abs(b - a) > 1e-9 && (q1 || q2)) loads.push({ idx, type: 'udl', xa: Math.min(a, b), xb: Math.max(a, b), qa: a < b ? q1 : q2, qb: a < b ? q2 : q1, q: (q1 + q2) / 2, seis: l.seis !== false });
+      }
     });
     const M = { mirror, ground, layers, water, zBase: +model.zBase, s, reinf, walls, loads };
     const N = Math.max(8, Math.round(s.nCol)), NS = Math.max(12, Math.round(s.nState)), nSub = Math.max(1, Math.round(s.nSub));
@@ -958,7 +961,7 @@ const SSA = (() => {
       const allow = new Uint8Array(NS);
       const edge = (k === 0 || k === N - 1) && s.noBoundary;
       for (let j = 0; j < NS; j++) allow[j] = edge ? (z[j] >= pr.zs - 1e-9 ? 1 : 0) : 1;
-      cols.push({ x: xs[k], zg: pr.zg, zb: pr.zb, z, allow });
+      cols.push({ x: xs[k], zg: pr.zg, zb: pr.zb, z, allow, dz });
     }
     const gaps = [];
     for (let k = 0; k < N - 1; k++) {
@@ -1042,7 +1045,7 @@ const SSA = (() => {
     for (const l of (M.loads || [])) {
       let v = 0;
       if (l.type === 'line') { if (l.x >= xl && (l.x < xr || (lastIncl && l.x <= xr))) v = l.P; }
-      else { const o = Math.min(xr, l.xb) - Math.max(xl, l.xa); if (o > 0) v = l.q * o; }
+      else { const lo = Math.max(xl, l.xa), hi = Math.min(xr, l.xb); if (hi > lo) { const qx = x => l.qa + (l.qb - l.qa) * (x - l.xa) / (l.xb - l.xa); v = 0.5 * (qx(lo) + qx(hi)) * (hi - lo); } }
       Q += v; if (l.seis) Qs += v;
     }
     return { Q, Qs };
@@ -1175,58 +1178,80 @@ const SSA = (() => {
      phases 0 = not yet entered, 1 = inside (min depth not reached), 2 = inside (depth reached), 3 = exited */
   function dp(ctx, lam) {
     const { N, NS, cols, gaps, s } = ctx;
-    const P = 4, S = NS * P, INF = Infinity, dmin = Math.max(0, +s.dmin || 0);
+    // state = (column, node, phase, slope class). Phases: 0 not entered, 1 inside (shallow), 2 inside (deep enough), 3 exited.
+    // With the concavity constraint each phase-1/2 state is split into K classes of the steepest slope reached so far (m).
+    // A step is allowed when its slope is not below m by more than the slope error caused by rounding both ends to the
+    // node grid; m never decreases, so the tolerance cannot accumulate into a concave shape.
+    const P = 4, K = s.convex ? 36 : 1, PK = P * K, S = NS * PK, INF = Infinity, dmin = Math.max(0, +s.dmin || 0);
     const g = new Float64Array(N * S).fill(INF);
     const pred = new Int32Array(N * S).fill(-1);
-    for (let j = 0; j < NS; j++) if (cols[0].allow[j]) g[j * P] = 0;
+    const slp = K > 1 ? new Float64Array(N * S) : null;
+    const act1 = new Int32Array(K), act2 = new Int32Array(K);
+    const cls = sc => { const b = Math.floor((Math.atan(sc) / Math.PI + 0.5) * K); return b < 0 ? 0 : b >= K ? K - 1 : b; };
+    for (let j = 0; j < NS; j++) if (cols[0].allow[j]) g[j * PK] = 0;
     const out = {};
     for (let k = 0; k < N - 1; k++) {
       const ca = cols[k], cb = cols[k + 1], base = k * S, nb = (k + 1) * S;
-      const dxPrev = k > 0 ? gaps[k - 1].dx : 1, dx = gaps[k].dx;
+      const dx = gaps[k].dx;
       for (let i = 0; i < NS; i++) {
-        const o = base + i * P;
-        const g0 = g[o], g1 = g[o + 1], g2 = g[o + 2], g3 = g[o + 3];
-        if (g0 === INF && g1 === INF && g2 === INF && g3 === INF) continue;
+        const o = base + i * PK;
+        let any = false;
+        for (let q = 0; q < PK; q++) if (g[o + q] !== INF) { any = true; break; }
+        if (!any) continue;
         const zi = ca.z[i];
-        let s1 = -INF, s2 = -INF;
-        if (s.convex && k > 0) {
-          if (g1 !== INF) { const p = pred[o + 1]; if (p >= 0) s1 = (zi - cols[k - 1].z[(p / P) | 0]) / dxPrev; }
-          if (g2 !== INF) { const p = pred[o + 2]; if (p >= 0) s2 = (zi - cols[k - 1].z[(p / P) | 0]) / dxPrev; }
-        }
+        const g0 = g[o], g3 = g[o + 3 * K];
+        // active slope classes of this node (most classes are empty), so the inner loop stays short
+        let n1 = 0, n2 = 0;
+        if (slp) for (let b = 0; b < K; b++) { if (g[o + K + b] !== INF) act1[n1++] = o + K + b; if (g[o + 2 * K + b] !== INF) act2[n2++] = o + 2 * K + b; }
         for (let j = 0; j < NS; j++) {
           if (!cb.allow[j]) continue;
           const zj = cb.z[j];
           segEval(ctx, k, zi, zj, lam, out, null);
           if (!out.ok) continue;
+          const tj = nb + j * PK;
           if (out.act) {
             const c = out.A - lam * out.B;
             const deep = cb.zg - zj >= dmin || dmin === 0;
-            const sc = (zj - zi) / dx;
-            const idA = nb + j * P + (deep ? 2 : 1), idB = nb + j * P + 2;
-            if (g0 !== INF && g0 + c < g[idA]) { g[idA] = g0 + c; pred[idA] = i * P; }
-            if (g1 !== INF && sc >= s1 - 1e-9 && g1 + c < g[idA]) { g[idA] = g1 + c; pred[idA] = i * P + 1; }
-            if (g2 !== INF && sc >= s2 - 1e-9 && g2 + c < g[idB]) { g[idB] = g2 + c; pred[idB] = i * P + 2; }
+            const sc = (zj - zi) / dx, ph = deep ? 2 : 1;
+            if (!slp) {
+              const idA = tj + ph, idB = tj + 2;
+              if (g0 !== INF && g0 + c < g[idA]) { g[idA] = g0 + c; pred[idA] = i * PK; }
+              const v1 = g[o + 1], v2 = g[o + 2];
+              if (v1 !== INF && v1 + c < g[idA]) { g[idA] = v1 + c; pred[idA] = i * PK + 1; }
+              if (v2 !== INF && v2 + c < g[idB]) { g[idB] = v2 + c; pred[idB] = i * PK + 2; }
+              continue;
+            }
+            const tol = 0.5 * (ca.dz + cb.dz) / dx + 1e-9;
+            { const id = tj + ph * K + cls(sc); if (g0 !== INF && g0 + c < g[id]) { g[id] = g0 + c; pred[id] = i * PK; slp[id] = sc; } }
+            for (let q = 0; q < n1; q++) {
+              const o1 = act1[q], s1 = slp[o1];
+              if (sc >= s1 - tol) { const v1 = g[o1], m = sc > s1 ? sc : s1, id = tj + ph * K + cls(m); if (v1 + c < g[id]) { g[id] = v1 + c; pred[id] = o1 - base; slp[id] = m; } }
+            }
+            for (let q = 0; q < n2; q++) {
+              const o2 = act2[q], s2 = slp[o2];
+              if (sc >= s2 - tol) { const v2 = g[o2], m = sc > s2 ? sc : s2, id = tj + 2 * K + cls(m); if (v2 + c < g[id]) { g[id] = v2 + c; pred[id] = o2 - base; slp[id] = m; } }
+            }
           } else {
-            let id = nb + j * P;
-            if (g0 < g[id]) { g[id] = g0; pred[id] = i * P; }
-            id = nb + j * P + 3;
-            if (g2 < g[id]) { g[id] = g2; pred[id] = i * P + 2; }
-            if (g3 < g[id]) { g[id] = g3; pred[id] = i * P + 3; }
+            let id = tj;
+            if (g0 < g[id]) { g[id] = g0; pred[id] = i * PK; }
+            id = tj + 3 * K;
+            for (let b = 0; b < K; b++) { const v2 = g[o + 2 * K + b]; if (v2 < g[id]) { g[id] = v2; pred[id] = i * PK + 2 * K + b; } }
+            if (g3 < g[id]) { g[id] = g3; pred[id] = i * PK + 3 * K; }
           }
         }
       }
     }
     let best = INF, bi = -1;
     const lb = (N - 1) * S;
-    for (let j = 0; j < NS; j++) for (const ph of [2, 3]) {
-      const v = g[lb + j * P + ph];
-      if (v < best) { best = v; bi = j * P + ph; }
+    for (let j = 0; j < NS; j++) for (let q = 2 * K; q < 3 * K + 1; q++) {
+      const v = g[lb + j * PK + q];
+      if (v < best) { best = v; bi = j * PK + q; }
     }
     if (bi < 0) return null;
     const z = new Float64Array(N), idx = new Int32Array(N);
     let cur = bi;
     for (let k = N - 1; k >= 0; k--) {
-      idx[k] = (cur / P) | 0; z[k] = cols[k].z[idx[k]];
+      idx[k] = (cur / PK) | 0; z[k] = cols[k].z[idx[k]];
       if (k > 0) cur = pred[k * S + cur];
     }
     return { G: best, z, idx };
@@ -1504,7 +1529,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
       }),
       loads: (Array.isArray(m.loads) ? m.loads : []).filter(l => l && (l.type === 'line' ? isFinite(l.x) : isFinite(l.x1) && isFinite(l.x2))).map((l, i) => ({
         name: String(l.name || `載重 ${i + 1}`), type: l.type === 'line' ? 'line' : 'udl', on: l.on !== false, seis: l.seis !== false,
-        x1: +l.x1, x2: +l.x2, x: +l.x, q: isFinite(+l.q) ? +l.q : 10, P: isFinite(+l.P) ? +l.P : 50
+        x1: +l.x1, x2: +l.x2, x: +l.x, q: isFinite(+l.q) ? +l.q : 10, q2: (l.q2 === null || l.q2 === undefined || l.q2 === '' || !isFinite(+l.q2)) ? null : +l.q2, P: isFinite(+l.P) ? +l.P : 50
       })),
       walls: (Array.isArray(m.walls) ? m.walls : []).filter(w => w && Array.isArray(w.poly)).map((w, i) => ({
         name: String(w.name || `擋土牆 ${i + 1}`), on: w.on !== false, gamma: +w.gamma > 0 ? +w.gamma : 23.5,
@@ -1689,11 +1714,11 @@ if (typeof module !== 'undefined') module.exports = SSA;
         <div class="rcard-head">
           <span class="no">Q${i + 1}</span>
           <input type="text" value="${esc(l.name)}" data-lf="name" aria-label="名稱" style="flex:1;min-width:80px;border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--canvas);font-size:13px">
-          <select data-lf="type" aria-label="類型"><option value="udl"${l.type === 'udl' ? ' selected' : ''}>均布</option><option value="line"${l.type === 'line' ? ' selected' : ''}>線載重</option></select>
+          <select data-lf="type" aria-label="類型"><option value="udl"${l.type === 'udl' ? ' selected' : ''}>均布／梯形</option><option value="line"${l.type === 'line' ? ' selected' : ''}>線載重</option></select>
           <button class="btn small ghost" data-lact="del" type="button">刪除</button>
         </div>
         <div class="grid3">
-          ${l.type === 'udl' ? fld('x1', '起點 x (m)', l.x1, 0.5) + fld('x2', '終點 x (m)', l.x2, 0.5) + fld('q', `q (${uC()})`, l.q, 1, 'C') : fld('x', '作用點 x (m)', l.x, 0.5) + fld('P', `P (${uF()})`, l.P, 5, 'G')}
+          ${l.type === 'udl' ? fld('x1', '起點 x (m)', l.x1, 0.5) + fld('x2', '終點 x (m)', l.x2, 0.5) + fld('q', `起點 q (${uC()})`, l.q, 1, 'C') + fld('q2', `終點 q (${uC()})，空白＝均布`, l.q2 === null ? NaN : l.q2, 1, 'C') : fld('x', '作用點 x (m)', l.x, 0.5) + fld('P', `P (${uF()})`, l.P, 5, 'G')}
         </div>
         <div class="row">
           <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-lf="seis"${l.seis ? ' checked' : ''} style="margin:0"><span>計入地震慣性力</span></label>
@@ -1959,10 +1984,12 @@ if (typeof module !== 'undefined') module.exports = SSA;
         const xa = Math.min(l.x1, l.x2), xb = Math.max(l.x1, l.x2);
         const n = Math.max(2, Math.round((T.X(xb) - T.X(xa)) / 16));
         let topPts = [];
-        for (let k = 0; k <= n; k++) { const x = xa + (xb - xa) * k / n; out.push(arrow(x, AL, 1.3)); const [px, py] = tip(x); topPts.push(`${px},${py - AL}`); }
+        const trap = l.q2 !== null && l.q2 !== undefined && l.q2 !== l.q, qm = Math.max(Math.abs(l.q), Math.abs(trap ? l.q2 : l.q)) || 1;
+        const qAt = x => trap ? l.q + (l.q2 - l.q) * (x - l.x1) / ((l.x2 - l.x1) || 1) : l.q;
+        for (let k = 0; k <= n; k++) { const x = xa + (xb - xa) * k / n, len = trap ? Math.max(10, AL * Math.abs(qAt(x)) / qm) : AL; out.push(arrow(x, len, 1.3)); const [px, py] = tip(x); topPts.push(`${px},${py - len}`); }
         out.push(`<polyline class="${cls}" fill="none" stroke-width="1.6" points="${topPts.join(' ')}"/>`);
         const [mx, my] = tip((xa + xb) / 2);
-        out.push(`<text class="load-lbl" x="${mx}" y="${my - AL - 6}" text-anchor="middle">${esc(l.name)}　q = ${fmt(toC(l.q), 1)} ${uC()}</text>`);
+        out.push(`<text class="load-lbl" x="${mx}" y="${my - AL - 6}" text-anchor="middle">${esc(l.name)}　q = ${fmt(toC(l.q), 1)}${trap ? ' → ' + fmt(toC(l.q2), 1) : ''} ${uC()}</text>`);
         const [ax, ay] = tip(l.x1), [bx, by] = tip(l.x2);
         out.push(`<circle class="lhandle" cx="${ax}" cy="${ay - AL}" r="4.5"/><circle class="lhandle" cx="${bx}" cy="${by - AL}" r="4.5"/>`);
       }
@@ -2101,7 +2128,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
   function currentModel(noReinf, noLoad) {
     return { ground: model.ground, layers: model.layers, water: model.water.length >= 2 ? model.water : [], zBase: model.zBase, settings: model.settings, reinf: noReinf ? [] : model.reinf, walls: noReinf ? [] : model.walls, loads: noLoad ? [] : model.loads };
   }
-  const hasLoads = () => model.loads.some(l => l.on && (l.type === 'line' ? l.P : l.q));
+  const hasLoads = () => model.loads.some(l => l.on && (l.type === 'line' ? l.P : (l.q || l.q2)));
   const hasReinf = () => model.reinf.some(r => r.on && r.L > 0 && r.Sh > 0) || model.walls.some(w => w.on && w.poly.length >= 3);
   let errors = [];
   function setBusy(on, label) {
@@ -2421,6 +2448,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
       const card = e.target.closest('.rcard'), f = e.target.dataset.lf; if (!card || !f || ['type', 'on', 'seis'].includes(f)) return;
       const l = model.loads[+card.dataset.l];
       if (f === 'name') l.name = e.target.value;
+      else if (f === 'q2' && e.target.value.trim() === '') l.q2 = null;
       else { const v = parseFloat(e.target.value); if (!isFinite(v)) return; const k = e.target.dataset.lk; l[f] = k === 'C' ? fromC(v) : k === 'G' ? fromG(v) : v; }
       stale = !!result; draw(); renderResults();
     });
