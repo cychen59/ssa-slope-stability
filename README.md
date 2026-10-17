@@ -84,17 +84,27 @@ x,z
 
 使用本工具的分析結果發表報告或論文時，請引用：
 
-> Chen, C. Y., Ikkanda, S., Fujita, M., and Tsutsumi, D. (2013): A study on mechanism of large-scale landslides and the prediction, Proceeding of 12th International Symposium on River Sedimentation, pp.109-118.
+> 陳振宇、藤田正治、堤大三(2014)，「基岩位置及土層特性對降雨逕流與大規模崩塌之影響」，中華水土保持學報，45(4)，pp.243-256。（[全文 PDF](https://www.cswcs.org.tw/AllDataPos/JournalPos/VOL45/NO4/jcswc45(4)243-256_04.pdf)）
+
+> Chen, C. Y., Fujita, M., and Tsutsumi, D. (2014). "The Influence of Bedrock Location and Soil Characteristics on Rainfall-Runoff and Large-Scale Landslides." Journal of Chinese Soil and Water Conservation, 45(4), 243-256. (in Chinese)
 
 ```bibtex
-@inproceedings{chen2013landslide,
-  author    = {Chen, C. Y. and Ikkanda, S. and Fujita, M. and Tsutsumi, D.},
-  title     = {A study on mechanism of large-scale landslides and the prediction},
-  booktitle = {Proceedings of the 12th International Symposium on River Sedimentation},
-  pages     = {109--118},
-  year      = {2013}
+@article{chen2014bedrock,
+  author  = {Chen, Chen-Yu and Fujita, Masaharu and Tsutsumi, Daizo},
+  title   = {The Influence of Bedrock Location and Soil Characteristics on Rainfall-Runoff and Large-Scale Landslides},
+  journal = {Journal of Chinese Soil and Water Conservation},
+  volume  = {45},
+  number  = {4},
+  pages   = {243--256},
+  year    = {2014},
+  note    = {in Chinese},
+  url     = {https://www.cswcs.org.tw/AllDataPos/JournalPos/VOL45/NO4/jcswc45(4)243-256_04.pdf}
 }
 ```
+
+## 關於作者
+
+陳振宇。學經歷與研究成果請見[作者介紹頁](https://cychen59.blogspot.com/p/education-2014.html)，使用上的問題或建議歡迎來信 <cychen59@gmail.com>，或在 GitHub 開 Issue。
 
 ## 參考文獻
 
@@ -125,4 +135,4 @@ x,z
 
 **SSA Slope Stability Analysis (web edition)** is a browser-based tool for 2D limit-equilibrium slope stability analysis. Users draw the slope profile, soil layer boundaries and groundwater table (or import them from CSV), enter unit weights and shear strength parameters, and the tool searches for the critical non-circular slip surface using dynamic programming (Baker, 1980) combined with the simplified Janbu method. Pore pressure is computed directly from the groundwater table. Pseudo-static seismic coefficients are supported. Models can be saved to and restored from JSON files. Everything runs locally in the browser.
 
-Live: <https://cychen59.github.io/ssa-slope-stability/> · License: GPL-3.0 · Please cite Chen et al. (2013) above.
+Live: <https://cychen59.github.io/ssa-slope-stability/> · License: GPL-3.0 · Please cite Chen et al. (2014) above. Contact: cychen59@gmail.com

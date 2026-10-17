@@ -332,6 +332,7 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
       <button class="btn" id="btnSample" type="button">載入範例</button>
       <a class="btn" href="#theory">原理與公式</a>
       <a class="btn" href="#cite">如何引用</a>
+      <a class="btn" href="https://cychen59.blogspot.com/p/education-2014.html" target="_blank" rel="noopener">關於作者</a>
     </div>
   </header>
 
@@ -830,12 +831,16 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
       <section class="cite" id="cite">
         <h2>引用本程式</h2>
         <p>使用本工具的分析結果發表報告或論文時，請引用下列文獻：</p>
-        <blockquote class="cite-main" id="citeText">Chen, C. Y., Ikkanda, S., Fujita, M., and Tsutsumi, D. (2013): A study on mechanism of large-scale landslides and the prediction, Proceeding of 12th International Symposium on River Sedimentation, pp.109-118.</blockquote>
+        <blockquote class="cite-main" id="citeText">陳振宇、藤田正治、堤大三(2014)，「基岩位置及土層特性對降雨逕流與大規模崩塌之影響」，中華水土保持學報，45(4)，pp.243-256。</blockquote>
+        <blockquote class="cite-main" id="citeTextEn">Chen, C. Y., Fujita, M., and Tsutsumi, D. (2014). "The Influence of Bedrock Location and Soil Characteristics on Rainfall-Runoff and Large-Scale Landslides." Journal of Chinese Soil and Water Conservation, 45(4), 243-256. (in Chinese)</blockquote>
         <div class="row">
-          <button class="btn small" id="btnCite" type="button">複製引用文字</button>
+          <button class="btn small" id="btnCite" type="button">複製中文引用</button>
+          <button class="btn small" id="btnCiteEn" type="button">複製英文引用</button>
           <button class="btn small" id="btnBib" type="button">複製 BibTeX</button>
-          <a class="btn small" href="https://app.box.com/s/zrey81xhpm4jitn9qszz" target="_blank" rel="noopener">開啟論文全文 ↗</a>
+          <a class="btn small" href="https://www.cswcs.org.tw/AllDataPos/JournalPos/VOL45/NO4/jcswc45(4)243-256_04.pdf" target="_blank" rel="noopener">下載論文全文 (PDF) ↗</a>
         </div>
+        <h3>關於作者</h3>
+        <p>作者陳振宇的學經歷與研究成果請見<a href="https://cychen59.blogspot.com/p/education-2014.html" target="_blank" rel="noopener">作者介紹頁 ↗</a>，使用上的問題或建議歡迎來信 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a>。</p>
         <h3>方法來源與參考文獻</h3>
         <ol class="refs">
           <li>中村浩之、久保田哲也（1987）：動的計画法を用いた臨界すべり面解析法，土木研究所資料第 2425 号，建設省土木研究所砂防部地すべり研究室。</li>
@@ -849,7 +854,7 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
     </section>
   </main>
   <footer class="site-foot">
-    <p>SSA 邊坡穩定分析以 <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GNU GPL-3.0</a> 授權開放使用。原始碼與問題回報：<a href="https://github.com/cychen59/ssa-slope-stability" target="_blank" rel="noopener">github.com/cychen59/ssa-slope-stability</a>。使用本工具的結果請引用 <a href="#cite">Chen et al. (2013)</a>。</p>
+    <p>SSA 邊坡穩定分析以 <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GNU GPL-3.0</a> 授權開放使用。原始碼與問題回報：<a href="https://github.com/cychen59/ssa-slope-stability" target="_blank" rel="noopener">github.com/cychen59/ssa-slope-stability</a>。使用本工具的結果請引用<a href="#cite">陳振宇等（2014）</a>。作者：<a href="https://cychen59.blogspot.com/p/education-2014.html" target="_blank" rel="noopener">陳振宇</a>，聯絡信箱 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a>。</p>
     <p>使用人數由 <a href="https://jasoncameron.dev/abacus/" target="_blank" rel="noopener">Abacus</a> 計數服務統計，只記錄次數，不蒐集個人資料。</p>
     <p>本工具為二維極限平衡分析的輔助工具，計算結果僅供參考，實際工程判斷與設計仍應由專業人員依現地調查與相關規範負責。</p>
   </footer>
@@ -2525,13 +2530,17 @@ if (typeof module !== 'undefined') module.exports = SSA;
     $('#btnBatchAdd').addEventListener('click', () => batch(false));
     $('#btnBatchReplace').addEventListener('click', () => batch(true));
     $('#btnCite').addEventListener('click', e => copyText($('#citeText').textContent.trim(), e.currentTarget));
-    $('#btnBib').addEventListener('click', e => copyText(`@inproceedings{chen2013landslide,
-  author    = {Chen, C. Y. and Ikkanda, S. and Fujita, M. and Tsutsumi, D.},
-  title     = {A study on mechanism of large-scale landslides and the prediction},
-  booktitle = {Proceedings of the 12th International Symposium on River Sedimentation},
-  pages     = {109--118},
-  year      = {2013},
-  url       = {https://app.box.com/s/zrey81xhpm4jitn9qszz}
+    $('#btnCiteEn').addEventListener('click', e => copyText($('#citeTextEn').textContent.trim(), e.currentTarget));
+    $('#btnBib').addEventListener('click', e => copyText(`@article{chen2014bedrock,
+  author  = {Chen, Chen-Yu and Fujita, Masaharu and Tsutsumi, Daizo},
+  title   = {The Influence of Bedrock Location and Soil Characteristics on Rainfall-Runoff and Large-Scale Landslides},
+  journal = {Journal of Chinese Soil and Water Conservation},
+  volume  = {45},
+  number  = {4},
+  pages   = {243--256},
+  year    = {2014},
+  note    = {in Chinese},
+  url     = {https://www.cswcs.org.tw/AllDataPos/JournalPos/VOL45/NO4/jcswc45(4)243-256_04.pdf}
 }`, e.currentTarget));
     $('#gridChip').addEventListener('click', () => { $('#tab-set').click(); $('#searchGuide').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); });
     $('#btnUndo').addEventListener('click', doUndo);

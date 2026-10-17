@@ -4,7 +4,8 @@ title: "SSA Slope Stability Analysis (web edition)"
 type: software
 authors:
   - family-names: Chen
-    given-names: C. Y.
+    given-names: Chen-Yu
+    email: cychen59@gmail.com
 license: GPL-3.0-only
 repository-code: "https://github.com/cychen59/ssa-slope-stability"
 url: "https://cychen59.github.io/ssa-slope-stability/"
@@ -15,19 +16,20 @@ keywords:
   - critical slip surface
   - landslide
 preferred-citation:
-  type: conference-paper
+  type: article
   authors:
     - family-names: Chen
-      given-names: C. Y.
-    - family-names: Ikkanda
-      given-names: S.
+      given-names: Chen-Yu
     - family-names: Fujita
-      given-names: M.
+      given-names: Masaharu
     - family-names: Tsutsumi
-      given-names: D.
-  title: "A study on mechanism of large-scale landslides and the prediction"
-  collection-title: "Proceedings of the 12th International Symposium on River Sedimentation"
-  year: 2013
-  start: 109
-  end: 118
-  url: "https://app.box.com/s/zrey81xhpm4jitn9qszz"
+      given-names: Daizo
+  title: "The Influence of Bedrock Location and Soil Characteristics on Rainfall-Runoff and Large-Scale Landslides"
+  journal: "Journal of Chinese Soil and Water Conservation"
+  volume: 45
+  issue: 4
+  start: 243
+  end: 256
+  year: 2014
+  languages: ["zh"]
+  url: "https://www.cswcs.org.tw/AllDataPos/JournalPos/VOL45/NO4/jcswc45(4)243-256_04.pdf"
