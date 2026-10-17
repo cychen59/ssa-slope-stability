@@ -315,6 +315,7 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
 .slip-base2{fill:none;stroke:var(--faint);stroke-width:2;stroke-dasharray:2 4;stroke-linecap:round}
 #fallback{display:none}
 #fallback.show{display:block}
+.lang-btn{font-weight:600;min-width:52px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -323,242 +324,243 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
   <header class="top">
     <div class="brand">
       <span class="mark">SSA</span>
-      <h1>邊坡穩定分析</h1>
-      <p>動態規劃搜尋非圓弧滑動面・簡易 Janbu 法・由地下水位換算孔隙水壓</p>
+      <h1 data-i18n="k1">邊坡穩定分析</h1>
+      <p data-i18n="k2">動態規劃搜尋非圓弧滑動面・簡易 Janbu 法・由地下水位換算孔隙水壓</p>
     </div>
     <div class="top-actions">
-      <span class="visits" id="visitCount" hidden title="使用人數以瀏覽器計算，同一個瀏覽器只算一次"></span>
-      <button class="btn" id="btnUndo" type="button" title="復原上一步（Ctrl+Z）">↶ 復原</button>
-      <button class="btn" id="btnSample" type="button">載入範例</button>
-      <a class="btn" href="#theory">原理與公式</a>
-      <a class="btn" href="#cite">如何引用</a>
-      <a class="btn" href="https://cychen59.blogspot.com/p/education-2014.html" target="_blank" rel="noopener">關於作者</a>
+      <span data-i18n-attr="title:a262" class="visits" id="visitCount" hidden title="使用人數以瀏覽器計算，同一個瀏覽器只算一次"></span>
+      <button data-i18n="k3" data-i18n-attr="title:a263" class="btn" id="btnUndo" type="button" title="復原上一步（Ctrl+Z）">↶ 復原</button>
+      <button data-i18n="k4" class="btn" id="btnSample" type="button">載入範例</button>
+      <a data-i18n="k5" class="btn" href="#theory">原理與公式</a>
+      <a data-i18n="k6" class="btn" href="#cite">如何引用</a>
+      <a data-i18n="k7" class="btn" href="https://cychen59.blogspot.com/p/education-2014.html" target="_blank" rel="noopener">關於作者</a>
+      <button class="btn lang-btn" id="btnLang" type="button" title="Switch to English" lang="en">EN</button>
     </div>
   </header>
 
   <main class="layout">
     <aside class="side">
       <div class="tabs" role="tablist">
-        <button role="tab" aria-selected="true" data-tab="geo" id="tab-geo" type="button">剖面</button>
-        <button role="tab" aria-selected="false" data-tab="soil" id="tab-soil" type="button">土層</button>
-        <button role="tab" aria-selected="false" data-tab="load" id="tab-load" type="button">載重</button>
-        <button role="tab" aria-selected="false" data-tab="reinf" id="tab-reinf" type="button">補強</button>
-        <button role="tab" aria-selected="false" data-tab="set" id="tab-set" type="button">設定</button>
-        <button role="tab" aria-selected="false" data-tab="doc" id="tab-doc" type="button">說明</button>
+        <button data-i18n="k8" role="tab" aria-selected="true" data-tab="geo" id="tab-geo" type="button">剖面</button>
+        <button data-i18n="k9" role="tab" aria-selected="false" data-tab="soil" id="tab-soil" type="button">土層</button>
+        <button data-i18n="k10" role="tab" aria-selected="false" data-tab="load" id="tab-load" type="button">載重</button>
+        <button data-i18n="k11" role="tab" aria-selected="false" data-tab="reinf" id="tab-reinf" type="button">補強</button>
+        <button data-i18n="k12" role="tab" aria-selected="false" data-tab="set" id="tab-set" type="button">設定</button>
+        <button data-i18n="k13" role="tab" aria-selected="false" data-tab="doc" id="tab-doc" type="button">說明</button>
       </div>
 
       <!-- geometry -->
       <div class="pane" data-pane="geo">
         <div class="sec">
-          <h3>編輯中的線</h3>
+          <h3 data-i18n="k14">編輯中的線</h3>
           <div class="linelist" id="lineList"></div>
-          <p class="hint">點選一條線後，可在右側圖上拖曳節點、加點或刪點。每條線都以 x 由小到大排序。</p>
+          <p data-i18n="k15" class="hint">點選一條線後，可在右側圖上拖曳節點、加點或刪點。每條線都以 x 由小到大排序。</p>
         </div>
         <div class="sec">
           <h3 id="coordTitle">座標（x　z）</h3>
-          <textarea id="coords" rows="9" spellcheck="false" aria-label="目前線段的座標"></textarea>
+          <textarea data-i18n-attr="aria-label:a264" id="coords" rows="9" spellcheck="false" aria-label="目前線段的座標"></textarea>
           <div class="row">
-            <button class="btn small" id="btnApply" type="button">套用座標</button>
-            <button class="btn small ghost" id="btnClearLine" type="button">清除此線</button>
-            <button class="btn small ghost" id="btnCopyCrit" type="button">複製目前的臨界滑動面</button>
-            <button class="btn small ghost" id="btnMakeWater" type="button">由地表下 2 m 建立水位線</button>
+            <button data-i18n="k17" class="btn small" id="btnApply" type="button">套用座標</button>
+            <button data-i18n="k18" class="btn small ghost" id="btnClearLine" type="button">清除此線</button>
+            <button data-i18n="k19" class="btn small ghost" id="btnCopyCrit" type="button">複製目前的臨界滑動面</button>
+            <button data-i18n="k20" class="btn small ghost" id="btnMakeWater" type="button">由地表下 2 m 建立水位線</button>
           </div>
-          <p class="hint">每行一點，x 與 z 以空白、逗號或 Tab 分隔，可直接從 Excel 貼上。單位 m。</p>
+          <p data-i18n="k21" class="hint">每行一點，x 與 z 以空白、逗號或 Tab 分隔，可直接從 Excel 貼上。單位 m。</p>
         </div>
         <div class="sec">
-          <h3>模型範圍</h3>
+          <h3 data-i18n="k22">模型範圍</h3>
           <div class="grid2">
-            <div class="field"><label for="zBase">模型底部高程 (m)</label><input type="number" id="zBase" step="0.5"></div>
+            <div class="field"><label data-i18n="k23" for="zBase">模型底部高程 (m)</label><input type="number" id="zBase" step="0.5"></div>
           </div>
-          <p class="hint">滑動面不會低於此高程，也不會進入勾選為「岩盤」的土層。</p>
+          <p data-i18n="k24" class="hint">滑動面不會低於此高程，也不會進入勾選為「岩盤」的土層。</p>
           <p class="hint" id="rangeInfo"></p>
         </div>
         <div class="sec">
-          <h3>匯入地形 CSV</h3>
+          <h3 data-i18n="k25">匯入地形 CSV</h3>
           <div class="row">
-            <label class="btn small" for="csvIn">選擇 CSV 檔…</label>
+            <label data-i18n="k26" class="btn small" for="csvIn">選擇 CSV 檔…</label>
             <input type="file" id="csvIn" accept=".csv,.txt,text/csv,text/plain" hidden>
           </div>
-          <p class="hint">可接受兩種格式，第一列可以是欄名。以 Excel 另存為 CSV（UTF-8 或 Big5）皆可。</p>
+          <p data-i18n="k27" class="hint">可接受兩種格式，第一列可以是欄名。以 Excel 另存為 CSV（UTF-8 或 Big5）皆可。</p>
           <ul class="hint-list">
-            <li><strong>兩欄（x, z）</strong>：匯入到上方目前選取的線，預設是地表線。</li>
-            <li><strong>三欄以上（整個剖面）</strong>：第 1 欄 x，第 2 欄地表高程，之後各欄依序為第 2、3…層的頂面高程。欄名含「水」字的欄視為地下水位線。某條線在該 x 沒有資料時留空即可。</li>
+            <li data-i18n="k28"><strong>兩欄（x, z）</strong>：匯入到上方目前選取的線，預設是地表線。</li>
+            <li data-i18n="k29"><strong>三欄以上（整個剖面）</strong>：第 1 欄 x，第 2 欄地表高程，之後各欄依序為第 2、3…層的頂面高程。欄名含「水」字的欄視為地下水位線。某條線在該 x 沒有資料時留空即可。</li>
           </ul>
           <details class="sample">
-            <summary>範例檔</summary>
-            <p class="hint">整個剖面（即本頁預設範例）：</p>
+            <summary data-i18n="k30">範例檔</summary>
+            <p data-i18n="k31" class="hint">整個剖面（即本頁預設範例）：</p>
             <pre id="csvSampleFull"></pre>
-            <div class="row"><button class="btn small" id="btnDlFull" type="button">下載 SSA-剖面範例.csv</button><button class="btn small ghost" id="btnCpFull" type="button">複製</button></div>
-            <p class="hint">單一地表線：</p>
+            <div class="row"><button data-i18n="k32" class="btn small" id="btnDlFull" type="button">下載 SSA-剖面範例.csv</button><button data-i18n="k33" class="btn small ghost" id="btnCpFull" type="button">複製</button></div>
+            <p data-i18n="k34" class="hint">單一地表線：</p>
             <pre id="csvSampleGround"></pre>
-            <div class="row"><button class="btn small" id="btnDlGround" type="button">下載 SSA-地表線範例.csv</button><button class="btn small ghost" id="btnCpGround" type="button">複製</button></div>
+            <div class="row"><button data-i18n="k35" class="btn small" id="btnDlGround" type="button">下載 SSA-地表線範例.csv</button><button data-i18n="k36" class="btn small ghost" id="btnCpGround" type="button">複製</button></div>
           </details>
         </div>
         <div class="sec savenote">
-          <h3>保存與接續分析</h3>
-          <p class="hint">在「設定」頁籤最下方的「模型存取」，可以把這次的所有模型參數存成一個 JSON 檔，內容包含地形、各土層界面、地下水位、土層參數與分析設定。下次開啟本工具時，在同一處選擇這個 JSON 檔匯入，就能接續上次的模型繼續分析。本工具每次開啟都會從預設範例開始，不會自動保留上次的內容，請記得存檔。</p>
-          <div class="row"><button class="btn small" id="btnGoSave" type="button">前往「模型存取」</button></div>
+          <h3 data-i18n="k37">保存與接續分析</h3>
+          <p data-i18n="k38" class="hint">在「設定」頁籤最下方的「模型存取」，可以把這次的所有模型參數存成一個 JSON 檔，內容包含地形、各土層界面、地下水位、土層參數與分析設定。下次開啟本工具時，在同一處選擇這個 JSON 檔匯入，就能接續上次的模型繼續分析。本工具每次開啟都會從預設範例開始，不會自動保留上次的內容，請記得存檔。</p>
+          <div class="row"><button data-i18n="k39" class="btn small" id="btnGoSave" type="button">前往「模型存取」</button></div>
         </div>
       </div>
 
       <!-- soil layers -->
       <div class="pane" data-pane="soil" hidden>
         <div class="grid2">
-          <div class="field"><label for="s-unitG">單位重 γ、γsat</label>
+          <div class="field"><label data-i18n="k40" for="s-unitG">單位重 γ、γsat</label>
             <select id="s-unitG" data-s="unitG"><option value="kN">kN/m³</option><option value="tf">tf/m³</option></select></div>
-          <div class="field"><label for="s-unitC">凝聚力 c'</label>
+          <div class="field"><label data-i18n="k41" for="s-unitC">凝聚力 c'</label>
             <select id="s-unitC" data-s="unitC"><option value="kPa">kPa</option><option value="tf">tf/m²</option></select></div>
         </div>
-        <p class="hint">土層由上往下排列。第 1 層的頂面就是地表，其餘各層的頂面在「剖面」頁編輯。φ' 單位為度。換算採 1 tf = 9.80665 kN，切換單位時數值會自動換算，計算結果也以相同單位顯示。</p>
+        <p data-i18n="k42" class="hint">土層由上往下排列。第 1 層的頂面就是地表，其餘各層的頂面在「剖面」頁編輯。φ' 單位為度。換算採 1 tf = 9.80665 kN，切換單位時數值會自動換算，計算結果也以相同單位顯示。</p>
         <div id="layerList" class="sec"></div>
-        <button class="btn" id="btnAddLayer" type="button">＋ 新增土層（加在最下方）</button>
+        <button data-i18n="k43" class="btn" id="btnAddLayer" type="button">＋ 新增土層（加在最下方）</button>
       </div>
 
       <!-- settings -->
       <div class="pane" data-pane="load" hidden>
         <div class="sec">
-          <h3>地表載重</h3>
-          <p class="hint">均布載重 q 作用在地表一段 x 範圍（起點與終點的 q 可以不同，成為梯形分布），線載重 P 作用在一點，都以每公尺寬計。只有落在滑動土體上方的部分會計入，作用方式和土重相同，同時增加正向力與滑動力。</p>
-          <label class="check"><input type="checkbox" id="s-compareLoad" data-s="compareLoad"><span>同時計算無載重的情況<small>並列有、無載重的 Fs，並以點線畫出無載重時的臨界滑動面。</small></span></label>
+          <h3 data-i18n="k44">地表載重</h3>
+          <p data-i18n="k45" class="hint">均布載重 q 作用在地表一段 x 範圍（起點與終點的 q 可以不同，成為梯形分布），線載重 P 作用在一點，都以每公尺寬計。只有落在滑動土體上方的部分會計入，作用方式和土重相同，同時增加正向力與滑動力。</p>
+          <label class="check"><input type="checkbox" id="s-compareLoad" data-s="compareLoad"><span data-i18n="k46">同時計算無載重的情況<small>並列有、無載重的 Fs，並以點線畫出無載重時的臨界滑動面。</small></span></label>
           <div id="loadList" class="sec"></div>
           <div class="row">
-            <select id="loadTpl" aria-label="載重範本" style="border:1px solid var(--line);border-radius:6px;padding:5px 6px;background:var(--canvas)">
-              <option value="road">道路車載（均布，不計地震力）</option>
-              <option value="bldg">建築物（均布）</option>
-              <option value="pile">堆置物（均布）</option>
-              <option value="wallL">圍牆或構造物（線載重）</option>
+            <select data-i18n-attr="aria-label:a265" id="loadTpl" aria-label="載重範本" style="border:1px solid var(--line);border-radius:6px;padding:5px 6px;background:var(--canvas)">
+              <option data-i18n="k47" value="road">道路車載（均布，不計地震力）</option>
+              <option data-i18n="k48" value="bldg">建築物（均布）</option>
+              <option data-i18n="k49" value="pile">堆置物（均布）</option>
+              <option data-i18n="k50" value="wallL">圍牆或構造物（線載重）</option>
             </select>
-            <button class="btn" id="btnAddLoad" type="button">＋ 加入載重</button>
+            <button data-i18n="k51" class="btn" id="btnAddLoad" type="button">＋ 加入載重</button>
           </div>
-          <p class="hint">新加入的載重強度都是佔位數字，請依設計規範與現地狀況輸入。可在圖上拖曳載重端點調整位置。</p>
+          <p data-i18n="k52" class="hint">新加入的載重強度都是佔位數字，請依設計規範與現地狀況輸入。可在圖上拖曳載重端點調整位置。</p>
         </div>
         <div class="sec">
-          <h3>使用提醒</h3>
+          <h3 data-i18n="k53">使用提醒</h3>
           <ul class="hint-list">
-            <li>坡頂（上邊坡）的載重通常會降低 Fs；坡趾（下邊坡）的載重通常會提高 Fs，也就是壓腳效果。</li>
-            <li>坡趾的載重若可能被移走（停車、臨時堆料），不應依賴它提高安全係數，請分別計算有、無載重兩種情況，取較低的 Fs。</li>
-            <li>填土本身有強度，滑動面也可能穿過它，請修改地表線並加入填土土層，不要用載重代表。</li>
-            <li>道路車載等臨時載重，一般不計入地震慣性力；結構物等永久載重則應計入。</li>
+            <li data-i18n="k54">坡頂（上邊坡）的載重通常會降低 Fs；坡趾（下邊坡）的載重通常會提高 Fs，也就是壓腳效果。</li>
+            <li data-i18n="k55">坡趾的載重若可能被移走（停車、臨時堆料），不應依賴它提高安全係數，請分別計算有、無載重兩種情況，取較低的 Fs。</li>
+            <li data-i18n="k56">填土本身有強度，滑動面也可能穿過它，請修改地表線並加入填土土層，不要用載重代表。</li>
+            <li data-i18n="k57">道路車載等臨時載重，一般不計入地震慣性力；結構物等永久載重則應計入。</li>
           </ul>
         </div>
       </div>
 
       <div class="pane" data-pane="reinf" hidden>
         <div class="sec">
-          <h3>補強力計入方式</h3>
-          <div class="field"><label for="s-reinfMode">計入方式</label>
+          <h3 data-i18n="k58">補強力計入方式</h3>
+          <div class="field"><label data-i18n="k59" for="s-reinfMode">計入方式</label>
             <select id="s-reinfMode" data-s="reinfMode">
-              <option value="active">主動法：補強力抵減滑動力（預力地錨常用）</option>
-              <option value="passive">被動法：補強力加入抵抗力（土釘常用，較保守）</option>
+              <option data-i18n="k60" value="active">主動法：補強力抵減滑動力（預力地錨常用）</option>
+              <option data-i18n="k61" value="passive">被動法：補強力加入抵抗力（土釘常用，較保守）</option>
             </select></div>
-          <label class="check"><input type="checkbox" id="s-compare" data-s="compare"><span>同時計算無補強措施的情況<small>另外計算不含補強構件與擋土牆的情況，並列兩個 Fs，並以灰色虛線畫出原本的臨界滑動面。</small></span></label>
-          <p class="hint">每支構件在滑動面交點提供拉力 T，取抗拉、拉拔（q × 穿出滑動面的有效長度）、面版或設計錨力的最小值，再除以水平間距換算為每公尺寬。地錨只有錨碇段能提供拉拔阻抗。</p>
+          <label class="check"><input type="checkbox" id="s-compare" data-s="compare"><span data-i18n="k62">同時計算無補強措施的情況<small>另外計算不含補強構件與擋土牆的情況，並列兩個 Fs，並以灰色虛線畫出原本的臨界滑動面。</small></span></label>
+          <p data-i18n="k63" class="hint">每支構件在滑動面交點提供拉力 T，取抗拉、拉拔（q × 穿出滑動面的有效長度）、面版或設計錨力的最小值，再除以水平間距換算為每公尺寬。地錨只有錨碇段能提供拉拔阻抗。</p>
         </div>
         <div class="sec">
-          <h3>補強構件</h3>
-          <p class="hint">θ 為構件向下的傾角。抗拉、面版、錨力為每支構件的容量；拉拔 q 為每公尺有效長度的拉拔阻抗。數值請依設計採用的容許值或極限值一致輸入。</p>
+          <h3 data-i18n="k64">補強構件</h3>
+          <p data-i18n="k65" class="hint">θ 為構件向下的傾角。抗拉、面版、錨力為每支構件的容量；拉拔 q 為每公尺有效長度的拉拔阻抗。數值請依設計採用的容許值或極限值一致輸入。</p>
           <div id="reinfList" class="sec"></div>
           <div class="row">
-            <button class="btn" id="btnAddNail" type="button">＋ 土釘</button>
-            <button class="btn" id="btnAddAnchor" type="button">＋ 地錨</button>
+            <button data-i18n="k66" class="btn" id="btnAddNail" type="button">＋ 土釘</button>
+            <button data-i18n="k67" class="btn" id="btnAddAnchor" type="button">＋ 地錨</button>
           </div>
         </div>
         <div class="sec">
-          <h3>整排配置</h3>
-          <p class="hint">以清單中最後一支為範本，在坡面上 x 的範圍內平均配置多支，頭部自動貼齊地表。</p>
+          <h3 data-i18n="k68">整排配置</h3>
+          <p data-i18n="k69" class="hint">以清單中最後一支為範本，在坡面上 x 的範圍內平均配置多支，頭部自動貼齊地表。</p>
           <div class="grid2">
-            <div class="field"><label for="rbXa">起點 x (m)</label><input type="number" id="rbXa" step="0.5"></div>
-            <div class="field"><label for="rbXb">終點 x (m)</label><input type="number" id="rbXb" step="0.5"></div>
-            <div class="field"><label for="rbN">支數</label><input type="number" id="rbN" step="1" min="1" max="60" value="5"></div>
+            <div class="field"><label data-i18n="k70" for="rbXa">起點 x (m)</label><input type="number" id="rbXa" step="0.5"></div>
+            <div class="field"><label data-i18n="k71" for="rbXb">終點 x (m)</label><input type="number" id="rbXb" step="0.5"></div>
+            <div class="field"><label data-i18n="k72" for="rbN">支數</label><input type="number" id="rbN" step="1" min="1" max="60" value="5"></div>
           </div>
           <div class="row">
-            <button class="btn small" id="btnBatchAdd" type="button">加入這一排</button>
-            <button class="btn small ghost" id="btnBatchReplace" type="button">取代全部構件</button>
+            <button data-i18n="k73" class="btn small" id="btnBatchAdd" type="button">加入這一排</button>
+            <button data-i18n="k74" class="btn small ghost" id="btnBatchReplace" type="button">取代全部構件</button>
           </div>
         </div>
 
         <div class="sec">
-          <h3>擋土牆（整體穩定）</h3>
-          <p class="hint">擋土牆視為不可穿越、計入重量的結構物。滑動面只能從牆底下或牆後方通過，牆重計入切片重量。牆體本身的滑動、傾倒與承載力不在此計算，請依規範另行檢核。</p>
+          <h3 data-i18n="k75">擋土牆（整體穩定）</h3>
+          <p data-i18n="k76" class="hint">擋土牆視為不可穿越、計入重量的結構物。滑動面只能從牆底下或牆後方通過，牆重計入切片重量。牆體本身的滑動、傾倒與承載力不在此計算，請依規範另行檢核。</p>
           <div id="wallList" class="sec"></div>
           <div class="row">
-            <button class="btn" id="btnAddWall" type="button">＋ 重力式擋土牆</button>
+            <button data-i18n="k77" class="btn" id="btnAddWall" type="button">＋ 重力式擋土牆</button>
           </div>
         </div>
       </div>
 
       <div class="pane" data-pane="set" hidden>
         <div class="sec">
-          <h3>地震力（擬靜態）</h3>
+          <h3 data-i18n="k78">地震力（擬靜態）</h3>
           <div class="grid2">
-            <div class="field"><label for="s-kh">水平震度 kh</label><input type="number" id="s-kh" data-s="kh" step="0.01" min="0"></div>
-            <div class="field"><label for="s-kv">垂直震度 kv</label><input type="number" id="s-kv" data-s="kv" step="0.01"></div>
+            <div class="field"><label data-i18n="k79" for="s-kh">水平震度 kh</label><input type="number" id="s-kh" data-s="kh" step="0.01" min="0"></div>
+            <div class="field"><label data-i18n="k80" for="s-kv">垂直震度 kv</label><input type="number" id="s-kv" data-s="kv" step="0.01"></div>
           </div>
         </div>
         <div class="sec">
-          <h3>孔隙水壓</h3>
+          <h3 data-i18n="k81">孔隙水壓</h3>
           <div class="grid2">
             <div class="field"><label for="s-gw" id="lbl-gw">水的單位重 γw (kN/m³)</label><input type="number" id="s-gw" data-s="gw" step="0.01" min="0"></div>
           </div>
-          <label class="check"><input type="checkbox" id="s-cos2" data-s="cos2"><span>水位線傾斜修正 u = γw·hw·cos²θ<small>未勾選時採靜水壓 u = γw·hw，hw 為水位線到滑動面的鉛直距離。</small></span></label>
+          <label class="check"><input type="checkbox" id="s-cos2" data-s="cos2"><span data-i18n="k83">水位線傾斜修正 u = γw·hw·cos²θ<small>未勾選時採靜水壓 u = γw·hw，hw 為水位線到滑動面的鉛直距離。</small></span></label>
         </div>
         <div class="sec">
-          <h3>滑動面搜尋</h3>
+          <h3 data-i18n="k84">滑動面搜尋</h3>
           <div class="guide" id="searchGuide" aria-live="polite"></div>
           <div class="frows">
             <div class="frow">
-              <label for="s-nCol">垂直分割線數</label><input type="number" id="s-nCol" data-s="nCol" step="1" min="8" max="200">
-              <p class="fh">決定水平解析度。建議線距 1–2 m，約等於「水平長度 ÷ 1.5」。常用 60–120 條。</p>
+              <label data-i18n="k85" for="s-nCol">垂直分割線數</label><input type="number" id="s-nCol" data-s="nCol" step="1" min="8" max="200">
+              <p data-i18n="k86" class="fh">決定水平解析度。建議線距 1–2 m，約等於「水平長度 ÷ 1.5」。常用 60–120 條。</p>
             </div>
             <div class="frow">
-              <label for="s-nState">每線節點數</label><input type="number" id="s-nState" data-s="nState" step="1" min="12" max="250">
-              <p class="fh">決定垂直解析度。建議節點間距 0.3 m 左右，約等於「最大土層厚度 ÷ 0.3」。常用 80–120 個。</p>
+              <label data-i18n="k87" for="s-nState">每線節點數</label><input type="number" id="s-nState" data-s="nState" step="1" min="12" max="250">
+              <p data-i18n="k88" class="fh">決定垂直解析度。建議節點間距 0.3 m 左右，約等於「最大土層厚度 ÷ 0.3」。常用 80–120 個。</p>
             </div>
             <div class="frow">
-              <label for="s-nSub">每段切片數</label><input type="number" id="s-nSub" data-s="nSub" step="1" min="1" max="10">
-              <p class="fh">每兩條分割線之間再切幾片計算土重與水壓。一般 3–4，土層很薄或水位起伏大時用 5。</p>
+              <label data-i18n="k89" for="s-nSub">每段切片數</label><input type="number" id="s-nSub" data-s="nSub" step="1" min="1" max="10">
+              <p data-i18n="k90" class="fh">每兩條分割線之間再切幾片計算土重與水壓。一般 3–4，土層很薄或水位起伏大時用 5。</p>
             </div>
             <div class="frow">
-              <label for="s-dmin">最小滑動深度 (m)</label><input type="number" id="s-dmin" data-s="dmin" step="0.1" min="0">
-              <p class="fh">排除過淺的表層滑動。c'=0 的砂土或崩積層建議 1–2 m；要檢討淺層崩塌時設 0。</p>
+              <label data-i18n="k91" for="s-dmin">最小滑動深度 (m)</label><input type="number" id="s-dmin" data-s="dmin" step="0.1" min="0">
+              <p data-i18n="k92" class="fh">排除過淺的表層滑動。c'=0 的砂土或崩積層建議 1–2 m；要檢討淺層崩塌時設 0。</p>
             </div>
           </div>
-          <p class="hint">分割線數與節點數越多越精細，但計算量約與「分割線數 × 節點數²」成正比，節點數加倍，時間約變 4 倍。</p>
-          <label class="check"><input type="checkbox" id="s-convex" data-s="convex"><span>限制滑動面為凹形<small>滑動面坡度沿滑動方向單調變化，排除運動學上不合理的形狀（原程式 ktotu）。網頁版把狀態依「目前最陡坡度」分級後再做動態規劃，並容許節點離散造成的微小誤差，薄弱夾層也能正確追蹤。</small></span></label>
-          <label class="check"><input type="checkbox" id="s-noBoundary" data-s="noBoundary"><span>滑動面不穿越模型左右邊界<small>兩端的分割線只允許在地表以上（原程式 kconc 的推廣）。</small></span></label>
+          <p data-i18n="k93" class="hint">分割線數與節點數越多越精細，但計算量約與「分割線數 × 節點數²」成正比，節點數加倍，時間約變 4 倍。</p>
+          <label class="check"><input type="checkbox" id="s-convex" data-s="convex"><span data-i18n="k94">限制滑動面為凹形<small>滑動面坡度沿滑動方向單調變化，排除運動學上不合理的形狀（原程式 ktotu）。網頁版把狀態依「目前最陡坡度」分級後再做動態規劃，並容許節點離散造成的微小誤差，薄弱夾層也能正確追蹤。</small></span></label>
+          <label class="check"><input type="checkbox" id="s-noBoundary" data-s="noBoundary"><span data-i18n="k95">滑動面不穿越模型左右邊界<small>兩端的分割線只允許在地表以上（原程式 kconc 的推廣）。</small></span></label>
         </div>
         <div class="sec">
-          <h3>收斂與判定</h3>
+          <h3 data-i18n="k96">收斂與判定</h3>
           <div class="grid2">
-            <div class="field"><label for="s-tol">容許誤差 ΔF</label><input type="number" id="s-tol" data-s="tol" step="0.0001" min="0"></div>
-            <div class="field"><label for="s-maxIter">最大迭代次數</label><input type="number" id="s-maxIter" data-s="maxIter" step="1" min="1" max="200"></div>
-            <div class="field"><label for="s-F0">起始 F</label><input type="number" id="s-F0" data-s="F0" step="0.1" min="0.1"></div>
-            <div class="field"><label for="s-Freq">要求安全係數</label><input type="number" id="s-Freq" data-s="Freq" step="0.05" min="0"></div>
+            <div class="field"><label data-i18n="k97" for="s-tol">容許誤差 ΔF</label><input type="number" id="s-tol" data-s="tol" step="0.0001" min="0"></div>
+            <div class="field"><label data-i18n="k98" for="s-maxIter">最大迭代次數</label><input type="number" id="s-maxIter" data-s="maxIter" step="1" min="1" max="200"></div>
+            <div class="field"><label data-i18n="k99" for="s-F0">起始 F</label><input type="number" id="s-F0" data-s="F0" step="0.1" min="0.1"></div>
+            <div class="field"><label data-i18n="k100" for="s-Freq">要求安全係數</label><input type="number" id="s-Freq" data-s="Freq" step="0.05" min="0"></div>
           </div>
-          <div class="field"><label for="s-f0type">修正係數 f0 公式</label>
+          <div class="field"><label data-i18n="k101" for="s-f0type">修正係數 f0 公式</label>
             <select id="s-f0type" data-s="f0type">
-              <option value="pwri">f0 = (50d/L)^0.03（土研資料 1987，申・板垣 1983）</option>
-              <option value="janbu">f0 = 1 + b1[d/L − 1.4(d/L)²]（Janbu 修正曲線）</option>
+              <option data-i18n="k102" value="pwri">f0 = (50d/L)^0.03（土研資料 1987，申・板垣 1983）</option>
+              <option data-i18n="k103" value="janbu">f0 = 1 + b1[d/L − 1.4(d/L)²]（Janbu 修正曲線）</option>
             </select>
           </div>
-          <label class="check"><input type="checkbox" id="s-useF0" data-s="useF0"><span>以修正後 f0·Fs 判定<small>未勾選時以簡易 Janbu 未修正值判定，與原 SSA 程式定義相同、較保守。</small></span></label>
+          <label class="check"><input type="checkbox" id="s-useF0" data-s="useF0"><span data-i18n="k104">以修正後 f0·Fs 判定<small>未勾選時以簡易 Janbu 未修正值判定，與原 SSA 程式定義相同、較保守。</small></span></label>
         </div>
         <div class="sec">
-          <h3 id="saveSec">模型存取</h3>
-          <p class="hint">「儲存模型」會把地形、土層界面、地下水位、土層參數與分析設定全部存成一個 JSON 檔。下次開啟本工具時按「匯入模型」選擇這個檔案，就能接續上次的分析。</p>
+          <h3 data-i18n="k105" id="saveSec">模型存取</h3>
+          <p data-i18n="k106" class="hint">「儲存模型」會把地形、土層界面、地下水位、土層參數與分析設定全部存成一個 JSON 檔。下次開啟本工具時按「匯入模型」選擇這個檔案，就能接續上次的分析。</p>
           <div class="row">
-            <button class="btn" id="btnSaveJson" type="button">儲存模型（JSON 檔）</button>
-            <label class="btn" for="fileIn">匯入模型…</label>
+            <button data-i18n="k107" class="btn" id="btnSaveJson" type="button">儲存模型（JSON 檔）</button>
+            <label data-i18n="k108" class="btn" for="fileIn">匯入模型…</label>
             <input type="file" id="fileIn" accept=".json,application/json,text/plain" hidden>
           </div>
           <details class="sample">
-            <summary>以文字方式複製或貼上 JSON</summary>
+            <summary data-i18n="k109">以文字方式複製或貼上 JSON</summary>
             <div class="row" style="margin-top:8px">
-              <button class="btn small" id="btnExport" type="button">產生 JSON</button>
-              <button class="btn small" id="btnCopyJson" type="button">複製</button>
-              <button class="btn small" id="btnImport" type="button">從文字載入</button>
+              <button data-i18n="k110" class="btn small" id="btnExport" type="button">產生 JSON</button>
+              <button data-i18n="k111" class="btn small" id="btnCopyJson" type="button">複製</button>
+              <button data-i18n="k112" class="btn small" id="btnImport" type="button">從文字載入</button>
             </div>
-            <textarea id="jsonBox" rows="6" spellcheck="false" aria-label="模型 JSON"></textarea>
+            <textarea data-i18n-attr="aria-label:a266" id="jsonBox" rows="6" spellcheck="false" aria-label="模型 JSON"></textarea>
           </details>
         </div>
       </div>
@@ -566,31 +568,31 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
       <!-- doc -->
       <div class="pane" data-pane="doc" hidden>
         <div class="doc">
-          <p>完整的方法原理、公式與參考文獻放在頁面下方的<a href="#theory">「方法原理與公式」</a>。</p>
-          <h4>操作步驟</h4>
+          <p data-i18n="k113">完整的方法原理、公式與參考文獻放在頁面下方的<a href="#theory">「方法原理與公式」</a>。</p>
+          <h4 data-i18n="k114">操作步驟</h4>
           <ul>
-            <li>「剖面」頁編輯地表線、各土層頂面與地下水位線。</li>
-            <li>「土層」頁輸入 γ、γsat、c'、φ'，最下層可設為岩盤。</li>
-            <li>「設定」頁確認搜尋網格，再按「計算最危險滑動面」。</li>
+            <li data-i18n="k115">「剖面」頁編輯地表線、各土層頂面與地下水位線。</li>
+            <li data-i18n="k116">「土層」頁輸入 γ、γsat、c'、φ'，最下層可設為岩盤。</li>
+            <li data-i18n="k117">「設定」頁確認搜尋網格，再按「計算最危險滑動面」。</li>
           </ul>
-          <h4>與原 C++ 程式的差異</h4>
+          <h4 data-i18n="k118">與原 C++ 程式的差異</h4>
           <ul>
-            <li>原程式由 Richards 方程的有限元素解讀入壓力水頭，改為直接由地下水位線換算。</li>
-            <li>孔隙水壓改在每個切片中點計算，原程式每段只取一個中點值。</li>
-            <li>土層與水位交點改以切片取樣處理，避免原程式在層線轉折點附近漏算交點。</li>
-            <li>加入進出狀態，確保只有一個連續滑動體；凹形限制只套用在地表下的相鄰兩段，入口與出口的轉折不受限制。</li>
-            <li>加入最小滑動深度，避免 c'=0 時收斂到極淺的表層滑動。</li>
-            <li>原程式未套用修正係數 f0，本工具另列 f0·Fs 供參考。</li>
-            <li>單位改為 kN、kPa（1 tf/m² ≈ 9.81 kPa）。可自動判斷坡面朝左或朝右。</li>
+            <li data-i18n="k119">原程式由 Richards 方程的有限元素解讀入壓力水頭，改為直接由地下水位線換算。</li>
+            <li data-i18n="k120">孔隙水壓改在每個切片中點計算，原程式每段只取一個中點值。</li>
+            <li data-i18n="k121">土層與水位交點改以切片取樣處理，避免原程式在層線轉折點附近漏算交點。</li>
+            <li data-i18n="k122">加入進出狀態，確保只有一個連續滑動體；凹形限制只套用在地表下的相鄰兩段，入口與出口的轉折不受限制。</li>
+            <li data-i18n="k123">加入最小滑動深度，避免 c'=0 時收斂到極淺的表層滑動。</li>
+            <li data-i18n="k124">原程式未套用修正係數 f0，本工具另列 f0·Fs 供參考。</li>
+            <li data-i18n="k125">單位改為 kN、kPa（1 tf/m² ≈ 9.81 kPa）。可自動判斷坡面朝左或朝右。</li>
           </ul>
-          <h4>使用限制</h4>
+          <h4 data-i18n="k126">使用限制</h4>
           <ul>
-            <li>二維平面應變、極限平衡分析，不考慮基質吸力。</li>
-            <li>水位高於地表的積水載重與側向水壓未納入。</li>
-            <li>補強只考慮構件拉力，不計抗彎與抗剪。</li>
-            <li>擋土牆只做整體穩定，牆體外部穩定與結構強度需另行檢核。</li>
-            <li>載重只考慮垂直方向，不含傾斜載重、隨深度擴散，以及快速加載造成的超額孔隙水壓。</li>
-            <li>簡易 Janbu 法忽略切片間剪力，未修正值通常偏保守。</li>
+            <li data-i18n="k127">二維平面應變、極限平衡分析，不考慮基質吸力。</li>
+            <li data-i18n="k128">水位高於地表的積水載重與側向水壓未納入。</li>
+            <li data-i18n="k129">補強只考慮構件拉力，不計抗彎與抗剪。</li>
+            <li data-i18n="k130">擋土牆只做整體穩定，牆體外部穩定與結構強度需另行檢核。</li>
+            <li data-i18n="k131">載重只考慮垂直方向，不含傾斜載重、隨深度擴散，以及快速加載造成的超額孔隙水壓。</li>
+            <li data-i18n="k132">簡易 Janbu 法忽略切片間剪力，未修正值通常偏保守。</li>
           </ul>
         </div>
       </div>
@@ -599,48 +601,48 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
     <section class="stage">
       <div class="board">
         <div class="toolbar">
-          <div class="seg" role="group" aria-label="編輯模式">
-            <button class="btn" data-mode="drag" aria-pressed="true" type="button" title="拖曳節點">✥ 拖曳</button>
-            <button class="btn" data-mode="add" aria-pressed="false" type="button" title="點擊圖面新增節點">＋ 加點</button>
-            <button class="btn" data-mode="del" aria-pressed="false" type="button" title="點擊節點刪除">− 刪點</button>
+          <div data-i18n-attr="aria-label:a267" class="seg" role="group" aria-label="編輯模式">
+            <button data-i18n="k133" data-i18n-attr="title:a268" class="btn" data-mode="drag" aria-pressed="true" type="button" title="拖曳節點">✥ 拖曳</button>
+            <button data-i18n="k134" data-i18n-attr="title:a269" class="btn" data-mode="add" aria-pressed="false" type="button" title="點擊圖面新增節點">＋ 加點</button>
+            <button data-i18n="k135" data-i18n-attr="title:a270" class="btn" data-mode="del" aria-pressed="false" type="button" title="點擊節點刪除">− 刪點</button>
           </div>
-          <label class="tb-label">格點 <input type="number" id="snap" value="0.5" step="0.1" min="0"> m</label>
-          <label class="tb-label"><input type="checkbox" id="optEqual" checked> 等比例</label>
-          <label class="tb-label"><input type="checkbox" id="optSlices" checked> 切片</label>
-          <label class="tb-label"><input type="checkbox" id="optGrid"> 搜尋節點</label>
-          <button class="btn small" id="btnFit" type="button">全圖</button>
+          <label class="tb-label"><span data-i18n="k136">格點</span> <input type="number" id="snap" value="0.5" step="0.1" min="0"> m</label>
+          <label class="tb-label"><input type="checkbox" id="optEqual" checked> <span data-i18n="k137">等比例</span></label>
+          <label class="tb-label"><input type="checkbox" id="optSlices" checked> <span data-i18n="k138">切片</span></label>
+          <label class="tb-label"><input type="checkbox" id="optGrid"> <span data-i18n="k139">搜尋節點</span></label>
+          <button data-i18n="k140" class="btn small" id="btnFit" type="button">全圖</button>
           <span class="spacer"></span>
-          <button class="btn" id="btnTrial" type="button" title="只計算「剖面」頁的指定滑動面，不做搜尋">試算指定滑動面</button>
-          <button class="btn primary" id="btnRun" type="button">計算最危險滑動面</button>
+          <button data-i18n="k141" data-i18n-attr="title:a271" class="btn" id="btnTrial" type="button" title="只計算「剖面」頁的指定滑動面，不做搜尋">試算指定滑動面</button>
+          <button data-i18n="k142" class="btn primary" id="btnRun" type="button">計算最危險滑動面</button>
         </div>
         <div class="canvas-wrap">
-          <svg id="cv" aria-label="邊坡剖面圖"></svg>
+          <svg data-i18n-attr="aria-label:a272" id="cv" aria-label="邊坡剖面圖"></svg>
           <div class="hud" id="hud">x —　z —</div>
-          <div class="legend">
+          <div data-i18n="k143" class="legend">
             <span><i></i>地表</span>
             <span><i class="w"></i>地下水位</span>
             <span><i class="s"></i>臨界滑動面</span>
           </div>
         </div>
-        <div class="statusbar"><span id="status">就緒</span><button class="gridchip" id="gridChip" type="button" title="查看搜尋設定建議"></button><span id="activeInfo"></span></div>
+        <div class="statusbar"><span id="status">就緒</span><button data-i18n-attr="title:a273" class="gridchip" id="gridChip" type="button" title="查看搜尋設定建議"></button><span id="activeInfo"></span></div>
       </div>
 
       <div class="results" id="results"></div>
-      <textarea id="fallback" rows="5" readonly aria-label="複製內容"></textarea>
+      <textarea data-i18n-attr="aria-label:a274" id="fallback" rows="5" readonly aria-label="複製內容"></textarea>
       <article class="theory" id="theory">
         <header class="th-head">
-          <h2>方法原理與公式</h2>
-          <p>本工具的計算核心係參考日本建設省土木研究所地すべり研究室的「動的計画法を用いた臨界すべり面解析法」（中村・久保田，1987，土木研究所資料第 2425 號，程式 CSSDP1）。以動態規劃搜尋任意形狀的臨界滑動面，並以簡易 Janbu 法計算安全係數。下文式號與原報告相同，方便對照。</p>
+          <h2 data-i18n="k145">方法原理與公式</h2>
+          <p data-i18n="k146">本工具的計算核心係參考日本建設省土木研究所地すべり研究室的「動的計画法を用いた臨界すべり面解析法」（中村・久保田，1987，土木研究所資料第 2425 號，程式 CSSDP1）。以動態規劃搜尋任意形狀的臨界滑動面，並以簡易 Janbu 法計算安全係數。下文式號與原報告相同，方便對照。</p>
         </header>
 
         <section class="th-sec">
-          <h3>一、為什麼用動態規劃</h3>
-          <p>臨界滑動面分析是在給定的地形、地層與土壤條件下，找出安全係數最小的滑動面。傳統做法先假設圓弧或對數螺旋，再移動圓心與半徑試算；多層地盤、地形起伏大時，真正的臨界面往往不是圓弧。動態規劃（Dynamic Programming，DP）由 Bellman（1957）提出，把問題拆成多個階段逐段求最佳解，可以在搜尋範圍內找出任意形狀的滑動面，不必事先假設形狀。</p>
-          <p>DP 依據最佳化原理：不論初始狀態與第一步如何選擇，其餘的決策對第一步造成的狀態而言必須是最佳的。多階段問題因此化為遞迴式。</p>
+          <h3 data-i18n="k147">一、為什麼用動態規劃</h3>
+          <p data-i18n="k148">臨界滑動面分析是在給定的地形、地層與土壤條件下，找出安全係數最小的滑動面。傳統做法先假設圓弧或對數螺旋，再移動圓心與半徑試算；多層地盤、地形起伏大時，真正的臨界面往往不是圓弧。動態規劃（Dynamic Programming，DP）由 Bellman（1957）提出，把問題拆成多個階段逐段求最佳解，可以在搜尋範圍內找出任意形狀的滑動面，不必事先假設形狀。</p>
+          <p data-i18n="k149">DP 依據最佳化原理：不論初始狀態與第一步如何選擇，其餘的決策對第一步造成的狀態而言必須是最佳的。多階段問題因此化為遞迴式。</p>
           <div class="eqn"><math display="block"><msub><mi>f</mi><mi>n</mi></msub><mo>=</mo><mi>min</mi><mover><mi>G</mi><mo>‾</mo></mover><mo>=</mo><mi>min</mi><mrow><mo>[</mo><msub><mover><mi>G</mi><mo>‾</mo></mover><mn>0</mn></msub><mo>+</mo><msub><mi>f</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>]</mo></mrow></math><span class="eqno">(1)</span></div>
-          <p>放到邊坡上，每一條垂直分割線是一個「階段」（stage），線上的候選點是「狀態」（state）。滑動面就是從第一條線走到最後一條線、每條線各選一點所連成的折線。</p>
+          <p data-i18n="k150">放到邊坡上，每一條垂直分割線是一個「階段」（stage），線上的候選點是「狀態」（state）。滑動面就是從第一條線走到最後一條線、每條線各選一點所連成的折線。</p>
           <figure class="th-fig">
-            <svg viewBox="0 0 440 210" role="img" aria-label="動態規劃搜尋網格示意：垂直分割線為階段，線上節點為狀態，紅線為最小累積值的路徑">
+            <svg data-i18n-attr="aria-label:a275" viewBox="0 0 440 210" role="img" aria-label="動態規劃搜尋網格示意：垂直分割線為階段，線上節點為狀態，紅線為最小累積值的路徑">
               <g class="fg-grid">
                 <line x1="40" y1="20" x2="40" y2="180"/><line x1="100" y1="20" x2="100" y2="180"/><line x1="160" y1="20" x2="160" y2="180"/><line x1="220" y1="20" x2="220" y2="180"/><line x1="280" y1="20" x2="280" y2="180"/><line x1="340" y1="20" x2="340" y2="180"/><line x1="400" y1="20" x2="400" y2="180"/>
               </g>
@@ -655,20 +657,20 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
                 <circle cx="400" cy="28" r="2.6"/><circle cx="400" cy="50" r="2.6"/><circle cx="400" cy="72" r="2.6"/>
               </g>
               <polyline class="fg-path" points="40,140 100,140 160,140 220,136 280,92 340,32 400,28"/>
-              <text class="fg-lbl" x="220" y="198" text-anchor="middle">階段 i（垂直分割線）</text>
-              <text class="fg-lbl" x="226" y="152">狀態 j</text>
+              <text data-i18n="k151" class="fg-lbl" x="220" y="198" text-anchor="middle">階段 i（垂直分割線）</text>
+              <text data-i18n="k152" class="fg-lbl" x="226" y="152">狀態 j</text>
               <line class="fg-thin" x1="300" y1="146" x2="254" y2="117"/><text class="fg-acc" x="302" y="156">DG<tspan dy="3" font-size="9">i</tspan><tspan dy="-3">(K, j)</tspan></text>
-              <text class="fg-lbl" x="24" y="112">地表以上 DG = 0</text><line class="fg-thin" x1="60" y1="117" x2="70" y2="136"/>
+              <text data-i18n="k153" class="fg-lbl" x="24" y="112">地表以上 DG = 0</text><line class="fg-thin" x1="60" y1="117" x2="70" y2="136"/>
             </svg>
-            <figcaption>搜尋網格示意。紅線是累積值最小的路徑，地表以上的線段不計任何力，所以滑動面的起點與終點由計算自動決定。</figcaption>
+            <figcaption data-i18n="k154">搜尋網格示意。紅線是累積值最小的路徑，地表以上的線段不計任何力，所以滑動面的起點與終點由計算自動決定。</figcaption>
           </figure>
         </section>
 
         <section class="th-sec">
-          <h3>二、簡易 Janbu 法的安全係數</h3>
-          <p>把滑動土體切成 n 個垂直切片。第 i 片受到自重 W<sub>i</sub>、水平與垂直震度 k<sub>H</sub>、k<sub>V</sub>、滑動面上的正向力 N<sub>i</sub> 與抵抗力 T<sub>i</sub>，以及兩側的切片間水平力 E 與剪力 X。</p>
+          <h3 data-i18n="k155">二、簡易 Janbu 法的安全係數</h3>
+          <p data-i18n="k156">把滑動土體切成 n 個垂直切片。第 i 片受到自重 W<sub>i</sub>、水平與垂直震度 k<sub>H</sub>、k<sub>V</sub>、滑動面上的正向力 N<sub>i</sub> 與抵抗力 T<sub>i</sub>，以及兩側的切片間水平力 E 與剪力 X。</p>
           <figure class="th-fig th-fig-sm">
-            <svg viewBox="0 0 300 250" role="img" aria-label="切片受力圖：自重、震度力、正向力、抵抗力與切片間力">
+            <svg data-i18n-attr="aria-label:a276" viewBox="0 0 300 250" role="img" aria-label="切片受力圖：自重、震度力、正向力、抵抗力與切片間力">
               <defs>
                 <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fg-ah"/></marker>
                 <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fg-ah2"/></marker>
@@ -694,169 +696,169 @@ details.sample pre{margin:0;background:var(--canvas);border:1px solid var(--line
               <line class="fg-f" x1="78" y1="92" x2="78" y2="120" marker-end="url(#ah)"/>
               <text class="fg-lbl" x="12" y="86">X<tspan dy="3" font-size="9">i</tspan><tspan dy="-3">+ΔX</tspan><tspan dy="3" font-size="9">i</tspan></text>
             </svg>
-            <figcaption>第 i 個切片的受力（參考原報告圖 2）。土體向左下滑動，α<sub>i</sub> 為滑動面傾角。</figcaption>
+            <figcaption data-i18n="k157">第 i 個切片的受力（參考原報告圖 2）。土體向左下滑動，α<sub>i</sub> 為滑動面傾角。</figcaption>
           </figure>
-          <p>切片的垂直與水平力平衡：</p>
+          <p data-i18n="k158">切片的垂直與水平力平衡：</p>
           <div class="eqn"><math display="block"><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><msub><mi>W</mi><mi>i</mi></msub><mo>+</mo><mi>Δ</mi><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><msub><mi>T</mi><mi>i</mi></msub><mi>sin</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>N</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub></math><span class="eqno">(8)</span></div>
           <div class="eqn"><math display="block"><mi>Δ</mi><msub><mi>E</mi><mi>i</mi></msub><mo>=</mo><mo>−</mo><msub><mi>T</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>N</mi><mi>i</mi></msub><mi>sin</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><msub><mi>W</mi><mi>i</mi></msub></math><span class="eqno">(9)</span></div>
-          <p>滑動土體兩端不受外力，X<sub>1</sub> = X<sub>n+1</sub> = 0、E<sub>1</sub> = E<sub>n+1</sub> = 0，所以 ΣΔX<sub>i</sub> = 0、ΣΔE<sub>i</sub> = 0（式 12、15、16）。滑動面上的抵抗力由 Mohr–Coulomb 破壞準則與安全係數定義：</p>
+          <p data-i18n="k159">滑動土體兩端不受外力，X<sub>1</sub> = X<sub>n+1</sub> = 0、E<sub>1</sub> = E<sub>n+1</sub> = 0，所以 ΣΔX<sub>i</sub> = 0、ΣΔE<sub>i</sub> = 0（式 12、15、16）。滑動面上的抵抗力由 Mohr–Coulomb 破壞準則與安全係數定義：</p>
           <div class="eqn"><math display="block"><msub><mi>T</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msubsup><mi>c</mi><mi>i</mi><mo>′</mo></msubsup><msub><mi>ℓ</mi><mi>i</mi></msub><mo>+</mo><mo>(</mo><msub><mi>N</mi><mi>i</mi></msub><mo>−</mo><msub><mi>U</mi><mi>i</mi></msub><msub><mi>ℓ</mi><mi>i</mi></msub><mo>)</mo><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></mrow><msub><mi>F</mi><mi>s</mi></msub></mfrac></math><span class="eqno">(19)</span></div>
-          <p>由式 (8) 解出 N<sub>i</sub> 代入式 (19)，再代入整體水平力平衡，並採用簡易 Janbu 法的假設 ΔX<sub>i</sub> = 0（切片間垂直剪力變化忽略不計，式 25），得到：</p>
+          <p data-i18n="k160">由式 (8) 解出 N<sub>i</sub> 代入式 (19)，再代入整體水平力平衡，並採用簡易 Janbu 法的假設 ΔX<sub>i</sub> = 0（切片間垂直剪力變化忽略不計，式 25），得到：</p>
           <div class="eqn eq-key"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><msub><mi>f</mi><mn>0</mn></msub><mo>·</mo><mfrac><mrow><mo>∑</mo><msub><mi>A</mi><mi>i</mi></msub></mrow><mrow><mo>∑</mo><msub><mi>B</mi><mi>i</mi></msub></mrow></mfrac></math><span class="eqno">(27)</span></div>
           <div class="eqn"><math display="block"><msub><mi>A</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msubsup><mi>c</mi><mi>i</mi><mo>′</mo></msubsup><msub><mi>ℓ</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><mo>{</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><msub><mi>W</mi><mi>i</mi></msub><mo>−</mo><msub><mi>U</mi><mi>i</mi></msub><msub><mi>ℓ</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub><mo>}</mo><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></mrow><msub><mi>n</mi><mrow><mi>α</mi><mi>i</mi></mrow></msub></mfrac></math><span class="eqno">(28)</span></div>
           <div class="eqn"><math display="block"><msub><mi>B</mi><mi>i</mi></msub><mo>=</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><msub><mi>W</mi><mi>i</mi></msub><mi>tan</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><msub><mi>W</mi><mi>i</mi></msub></math><span class="eqno">(29)</span></div>
           <div class="eqn"><math display="block"><msub><mi>n</mi><mrow><mi>α</mi><mi>i</mi></mrow></msub><mo>=</mo><msup><mi>cos</mi><mn>2</mn></msup><msub><mi>α</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><mi>tan</mi><msub><mi>α</mi><mi>i</mi></msub><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></mrow><msub><mi>F</mi><mi>s</mi></msub></mfrac><mo>)</mo></mrow></math><span class="eqno">(23)</span></div>
-          <p>A<sub>i</sub> 是抵抗成分，B<sub>i</sub> 是滑動成分。ℓ<sub>i</sub>cosα<sub>i</sub> 就是切片寬度 b<sub>i</sub>。F<sub>s</sub> 同時出現在等號兩邊，需先假設初值再反覆計算到收斂。</p>
-          <p>f<sub>0</sub> 是補償 ΔX<sub>i</sub> = 0 假設的修正係數。原報告採用申・板垣（1983）的經驗式，L 為滑動面兩端點的直線距離，d 為平行此直線且與滑動面相切的直線到它的距離，也就是滑動面的最大垂直深度：</p>
+          <p data-i18n="k161">A<sub>i</sub> 是抵抗成分，B<sub>i</sub> 是滑動成分。ℓ<sub>i</sub>cosα<sub>i</sub> 就是切片寬度 b<sub>i</sub>。F<sub>s</sub> 同時出現在等號兩邊，需先假設初值再反覆計算到收斂。</p>
+          <p data-i18n="k162">f<sub>0</sub> 是補償 ΔX<sub>i</sub> = 0 假設的修正係數。原報告採用申・板垣（1983）的經驗式，L 為滑動面兩端點的直線距離，d 為平行此直線且與滑動面相切的直線到它的距離，也就是滑動面的最大垂直深度：</p>
           <div class="eqn"><math display="block"><msub><mi>f</mi><mn>0</mn></msub><mo>=</mo><msup><mrow><mo>(</mo><mn>50</mn><mi>d</mi><mo>/</mo><mi>L</mi><mo>)</mo></mrow><mn>0.03</mn></msup></math><span class="eqno">(30)</span></div>
         </section>
 
         <section class="th-sec">
-          <h3>三、孔隙水壓</h3>
-          <p>原報告以有效重量處理地下水，水位以下的土重改用水中單位重計算，式 (28) 因此改寫為：</p>
+          <h3 data-i18n="k163">三、孔隙水壓</h3>
+          <p data-i18n="k164">原報告以有效重量處理地下水，水位以下的土重改用水中單位重計算，式 (28) 因此改寫為：</p>
           <div class="eqn"><math display="block"><msub><mi>A</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msubsup><mi>c</mi><mi>i</mi><mo>′</mo></msubsup><msub><mi>ℓ</mi><mi>i</mi></msub><mi>cos</mi><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><mo>(</mo><msubsup><mi>W</mi><mi>i</mi><mo>′</mo></msubsup><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><msubsup><mi>W</mi><mi>i</mi><mo>′</mo></msubsup><mo>)</mo><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></mrow><msub><mi>n</mi><mrow><mi>α</mi><mi>i</mi></mrow></msub></mfrac></math><span class="eqno">(31)</span></div>
-          <p>本工具直接由使用者畫的地下水位線計算切片底部的孔隙水壓，u<sub>i</sub> = γ<sub>w</sub>h<sub>w</sub>，h<sub>w</sub> 為水位線到切片底部中點的鉛直距離。水位線以上的土以 γ 計重，以下以 γ<sub>sat</sub> 計重，再以 (W<sub>i</sub> − u<sub>i</sub>b<sub>i</sub>) 代入式 (28)。水位線水平時兩種寫法完全相同。勾選「水位線傾斜修正」時改用 u<sub>i</sub> = γ<sub>w</sub>h<sub>w</sub>cos²θ，θ 為水位線傾角。</p>
+          <p data-i18n="k165">本工具直接由使用者畫的地下水位線計算切片底部的孔隙水壓，u<sub>i</sub> = γ<sub>w</sub>h<sub>w</sub>，h<sub>w</sub> 為水位線到切片底部中點的鉛直距離。水位線以上的土以 γ 計重，以下以 γ<sub>sat</sub> 計重，再以 (W<sub>i</sub> − u<sub>i</sub>b<sub>i</sub>) 代入式 (28)。水位線水平時兩種寫法完全相同。勾選「水位線傾斜修正」時改用 u<sub>i</sub> = γ<sub>w</sub>h<sub>w</sub>cos²θ，θ 為水位線傾角。</p>
         </section>
 
         <section class="th-sec">
-          <h3>四、Baker 的輔助泛函</h3>
-          <p>DP 只能處理可以逐段相加的目標函數，而式 (27) 是兩個總和的比值，不能直接相加。Baker（1980）改以下列輔助泛函取代：</p>
+          <h3 data-i18n="k166">四、Baker 的輔助泛函</h3>
+          <p data-i18n="k167">DP 只能處理可以逐段相加的目標函數，而式 (27) 是兩個總和的比值，不能直接相加。Baker（1980）改以下列輔助泛函取代：</p>
           <div class="eqn eq-key"><math display="block"><mover><mi>G</mi><mo>‾</mo></mover><mo>=</mo><mo>∑</mo><mrow><mo>(</mo><msub><mi>A</mi><mi>i</mi></msub><mo>−</mo><msub><mi>F</mi><mi>s</mi></msub><mo>·</mo><msub><mi>B</mi><mi>i</mi></msub><mo>/</mo><msub><mi>f</mi><mn>0</mn></msub><mo>)</mo></mrow><mo>=</mo><mover><mi>A</mi><mo>‾</mo></mover><mo>−</mo><msub><mi>F</mi><mi>s</mi></msub><mover><mi>B</mi><mo>‾</mo></mover><mo>/</mo><msub><mi>f</mi><mn>0</mn></msub></math><span class="eqno">(34)</span></div>
-          <p>以變分法比較兩者，在臨界滑動面 e 上：</p>
+          <p data-i18n="k168">以變分法比較兩者，在臨界滑動面 e 上：</p>
           <div class="eqn"><math display="block"><mi>δ</mi><msub><mrow><mo>(</mo><msub><mover><mi>F</mi><mo>‾</mo></mover><mi>s</mi></msub><mo>)</mo></mrow><mi>e</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>f</mi><mn>0</mn></msub><mi>δ</mi><msub><mrow><mo>(</mo><mover><mi>G</mi><mo>‾</mo></mover><mo>)</mo></mrow><mi>e</mi></msub></mrow><msub><mrow><mo>(</mo><mover><mi>B</mi><mo>‾</mo></mover><mo>)</mo></mrow><mi>e</mi></msub></mfrac><mspace width="2em"/><msup><mi>δ</mi><mn>2</mn></msup><msub><mrow><mo>(</mo><msub><mover><mi>F</mi><mo>‾</mo></mover><mi>s</mi></msub><mo>)</mo></mrow><mi>e</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>f</mi><mn>0</mn></msub><msup><mi>δ</mi><mn>2</mn></msup><msub><mrow><mo>(</mo><mover><mi>G</mi><mo>‾</mo></mover><mo>)</mo></mrow><mi>e</mi></msub></mrow><msub><mrow><mo>(</mo><mover><mi>B</mi><mo>‾</mo></mover><mo>)</mo></mrow><mi>e</mi></msub></mfrac></math><span class="eqno">(43)(44)</span></div>
-          <p>只要總滑動成分 B̄ &gt; 0，G 的極小值條件（δG = 0、δ²G &gt; 0）就是 F<sub>s</sub> 的極小值條件。所以固定 F<sub>s</sub> 後讓 G 最小，等於讓安全係數最小。G 可以逐段相加，DP 因此能夠處理。</p>
+          <p data-i18n="k169">只要總滑動成分 B̄ &gt; 0，G 的極小值條件（δG = 0、δ²G &gt; 0）就是 F<sub>s</sub> 的極小值條件。所以固定 F<sub>s</sub> 後讓 G 最小，等於讓安全係數最小。G 可以逐段相加，DP 因此能夠處理。</p>
         </section>
 
         <section class="th-sec">
-          <h3>五、DP 遞迴與計算流程</h3>
-          <p>第一條分割線上所有候選點的累積值設為 0，之後逐線向前推進，每個點只保留累積值最小的前一點：</p>
+          <h3 data-i18n="k170">五、DP 遞迴與計算流程</h3>
+          <p data-i18n="k171">第一條分割線上所有候選點的累積值設為 0，之後逐線向前推進，每個點只保留累積值最小的前一點：</p>
           <div class="eqn"><math display="block"><msub><mi>G</mi><mn>1</mn></msub><mo>(</mo><mi>K</mi><mo>)</mo><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><mi>K</mi><mo>=</mo><mn>1</mn><mo>…</mo><mi>K</mi><msub><mi>K</mi><mn>1</mn></msub></math><span class="eqno">(45)(48)</span></div>
           <div class="eqn eq-key"><math display="block"><msub><mi>G</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><munder><mi>min</mi><mrow><mi>K</mi><mo>=</mo><mn>1</mn><mo>…</mo><mi>K</mi><msub><mi>K</mi><mi>i</mi></msub></mrow></munder><mrow><mo>{</mo><msub><mi>G</mi><mi>i</mi></msub><mo>(</mo><mi>K</mi><mo>)</mo><mo>+</mo><mi>D</mi><msub><mi>G</mi><mi>i</mi></msub><mo>(</mo><mi>K</mi><mo>,</mo><mi>j</mi><mo>)</mo><mo>}</mo></mrow></math><span class="eqno">(47)</span></div>
           <div class="eqn"><math display="block"><mi>D</mi><msub><mi>G</mi><mi>i</mi></msub><mo>=</mo><msub><mi>A</mi><mi>i</mi></msub><mo>−</mo><msub><mi>F</mi><mrow><mi>s</mi><mn>0</mn></mrow></msub><mo>·</mo><msub><mi>B</mi><mi>i</mi></msub><mo>/</mo><msub><mi>f</mi><mn>0</mn></msub></math><span class="eqno">(49)</span></div>
-          <p>DG<sub>i</sub>(K, j) 稱為「利得」，是第 i 條線的點 K 連到第 i+1 條線的點 j 這一段滑動面的貢獻。搜尋範圍延伸到地表以上，地表以上的線段利得為 0，滑動面的起點與終點因此成為解的一部分。最後一條線上累積值最小的點，再沿記錄的前一點回溯，就得到臨界滑動面：</p>
+          <p data-i18n="k172">DG<sub>i</sub>(K, j) 稱為「利得」，是第 i 條線的點 K 連到第 i+1 條線的點 j 這一段滑動面的貢獻。搜尋範圍延伸到地表以上，地表以上的線段利得為 0，滑動面的起點與終點因此成為解的一部分。最後一條線上累積值最小的點，再沿記錄的前一點回溯，就得到臨界滑動面：</p>
           <div class="eqn"><math display="block"><msub><mi>T</mi><mi>s</mi></msub><mo>=</mo><munder><mi>min</mi><mrow><mi>K</mi><mo>=</mo><mn>1</mn><mo>…</mo><mi>K</mi><msub><mi>K</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow></munder><mrow><mo>[</mo><msub><mi>G</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>K</mi><mo>)</mo><mo>]</mo></mrow></math><span class="eqno">(46)</span></div>
           <ol class="th-steps">
-            <li>假設安全係數初值 λ（及修正係數 f<sub>0</sub>）。</li>
-            <li>以式 (49) 計算所有候選線段的利得，用式 (47) 以 DP 求出使 G 最小的滑動面 y<sub>i</sub>。</li>
-            <li>沿這個滑動面以簡易 Janbu 法反覆計算，得到它自己的 F<sub>s</sub>。</li>
-            <li>若 |F<sub>s</sub> − λ| &lt; ε 則結束；否則令 λ = F<sub>s</sub>，回到步驟 2。</li>
+            <li data-i18n="k173">假設安全係數初值 λ（及修正係數 f<sub>0</sub>）。</li>
+            <li data-i18n="k174">以式 (49) 計算所有候選線段的利得，用式 (47) 以 DP 求出使 G 最小的滑動面 y<sub>i</sub>。</li>
+            <li data-i18n="k175">沿這個滑動面以簡易 Janbu 法反覆計算，得到它自己的 F<sub>s</sub>。</li>
+            <li data-i18n="k176">若 |F<sub>s</sub> − λ| &lt; ε 則結束；否則令 λ = F<sub>s</sub>，回到步驟 2。</li>
           </ol>
-          <p>本工具的「迭代紀錄」逐輪列出 λ 與該輪滑動面的 F<sub>s</sub>，數值應逐輪下降並收斂。</p>
+          <p data-i18n="k177">本工具的「迭代紀錄」逐輪列出 λ 與該輪滑動面的 F<sub>s</sub>，數值應逐輪下降並收斂。</p>
         </section>
 
         <section class="th-sec">
-          <h3>六、滑動面形狀的限制條件</h3>
-          <p>為了排除現實中不會出現的滑動面，原報告加入兩項限制。第一項要求滑動面為凹形（向上開口），避免中間凸起的異常形狀：</p>
+          <h3 data-i18n="k178">六、滑動面形狀的限制條件</h3>
+          <p data-i18n="k179">為了排除現實中不會出現的滑動面，原報告加入兩項限制。第一項要求滑動面為凹形（向上開口），避免中間凸起的異常形狀：</p>
           <div class="eqn"><math display="block"><msub><mrow><mo>(</mo><mfrac><mrow><msup><mi>d</mi><mn>2</mn></msup><mi>y</mi></mrow><mrow><mi>d</mi><msup><mi>x</mi><mn>2</mn></msup></mrow></mfrac><mo>)</mo></mrow><mi>i</mi></msub><mo>≥</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><mi>i</mi><mo>=</mo><mn>1</mn><mo>…</mo><mi>n</mi></math><span class="eqno">(50)</span></div>
-          <p>第二項要求 n<sub>αi</sub> &gt; 0，避免坡趾附近反傾的切片算出負的抵抗力：</p>
+          <p data-i18n="k180">第二項要求 n<sub>αi</sub> &gt; 0，避免坡趾附近反傾的切片算出負的抵抗力：</p>
           <div class="eqn"><math display="block"><msub><mi>n</mi><mrow><mi>α</mi><mi>i</mi></mrow></msub><mo>&gt;</mo><mn>0</mn><mspace width="1em"/><mo>⇒</mo><mspace width="1em"/><msub><mi>F</mi><mi>s</mi></msub><mo>&gt;</mo><mo>−</mo><mi>tan</mi><msub><mi>α</mi><mi>i</mi></msub><mi>tan</mi><msubsup><mi>φ</mi><mi>i</mi><mo>′</mo></msubsup></math><span class="eqno">(51)(52)</span></div>
-          <p>本工具對應的設定是「限制滑動面為凹形」。第二項改用較嚴格的常用準則 m<sub>α</sub> = cosα + sinα·tanφ′/F ≥ 0.2，只套用在反傾（α &lt; 0）的切片。</p>
+          <p data-i18n="k181">本工具對應的設定是「限制滑動面為凹形」。第二項改用較嚴格的常用準則 m<sub>α</sub> = cosα + sinα·tanφ′/F ≥ 0.2，只套用在反傾（α &lt; 0）的切片。</p>
         </section>
 
         <section class="th-sec">
-          <h3>七、補強構件（土釘與地錨）</h3>
-          <p>每支構件在滑動面的交點，對滑動土體施加一個沿構件方向、指向坡內的拉力。可用拉力取下列最小值，再除以水平間距 S<sub>h</sub> 換算為每公尺寬：</p>
+          <h3 data-i18n="k182">七、補強構件（土釘與地錨）</h3>
+          <p data-i18n="k183">每支構件在滑動面的交點，對滑動土體施加一個沿構件方向、指向坡內的拉力。可用拉力取下列最小值，再除以水平間距 S<sub>h</sub> 換算為每公尺寬：</p>
           <div class="eqn"><math display="block"><mi>T</mi><mo>=</mo><mfrac><mrow><mi>min</mi><mo>(</mo><msub><mi>T</mi><mi>t</mi></msub><mo>,</mo><mi>q</mi><mo>·</mo><msub><mi>L</mi><mi>e</mi></msub><mo>,</mo><msub><mi>T</mi><mi>f</mi></msub><mo>,</mo><mi>P</mi><mo>)</mo></mrow><msub><mi>S</mi><mi>h</mi></msub></mfrac><mspace width="1.5em"/><msub><mi>P</mi><mi>x</mi></msub><mo>=</mo><mi>T</mi><mi>cos</mi><mi>θ</mi><mo>,</mo><mspace width="0.6em"/><msub><mi>P</mi><mi>y</mi></msub><mo>=</mo><mi>T</mi><mi>sin</mi><mi>θ</mi></math><span class="eqno">(R1)</span></div>
-          <p>T<sub>t</sub> 為抗拉強度，q 為每公尺拉拔阻抗，L<sub>e</sub> 為穿出滑動面、位於穩定區的長度。土釘另受面版容量 T<sub>f</sub> 限制；地錨只計錨碇段，錨碇段整段落在滑動體內時 L<sub>e</sub> = 0，並受設計錨力 P 限制。θ 為構件向下傾角。</p>
-          <p>把 P<sub>x</sub>、P<sub>y</sub> 加入原報告式 (8)(9) 的切片平衡後，依同樣步驟推導，主動法的安全係數為：</p>
+          <p data-i18n="k184">T<sub>t</sub> 為抗拉強度，q 為每公尺拉拔阻抗，L<sub>e</sub> 為穿出滑動面、位於穩定區的長度。土釘另受面版容量 T<sub>f</sub> 限制；地錨只計錨碇段，錨碇段整段落在滑動體內時 L<sub>e</sub> = 0，並受設計錨力 P 限制。θ 為構件向下傾角。</p>
+          <p data-i18n="k185">把 P<sub>x</sub>、P<sub>y</sub> 加入原報告式 (8)(9) 的切片平衡後，依同樣步驟推導，主動法的安全係數為：</p>
           <div class="eqn eq-key"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><mrow><mo>[</mo><msup><mi>c</mi><mo>′</mo></msup><mi>b</mi><mo>+</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><msub><mi>P</mi><mi>y</mi></msub><mo>−</mo><mi>u</mi><mi>b</mi><mo>)</mo><mi>tan</mi><msup><mi>φ</mi><mo>′</mo></msup><mo>]</mo></mrow><mo>/</mo><msub><mi>n</mi><mi>α</mi></msub></mrow><mrow><mo>∑</mo><mrow><mo>[</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><msub><mi>P</mi><mi>y</mi></msub><mo>)</mo><mi>tan</mi><mi>α</mi><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><mi>W</mi><mo>]</mo></mrow><mo>−</mo><mo>∑</mo><msub><mi>P</mi><mi>x</mi></msub></mrow></mfrac></math><span class="eqno">(R2)</span></div>
-          <p>被動法則把 ΣP<sub>x</sub> 從分母移到分子，與土壤抵抗力一起除以 F<sub>s</sub>。邊坡穩定時（F<sub>s</sub> &gt; 1），主動法算出的值一定比被動法高；一般預力地錨用主動法，靠變形才發揮的土釘用被動法，後者較保守。補強力只取決於每一段滑動面與構件的交點，G 仍可逐段相加，因此動態規劃可直接搜尋補強後的臨界滑動面，包括繞到構件後方的較深滑動面。</p>
-          <p>驗證案例：單一平面滑動塊體加一支地錨，在使用者指定的平面滑動面上，簡易 Janbu 法沒有切片間剪力的誤差，應與下列封閉解一致（主動法，L 為滑動面長，β 為傾角）：</p>
+          <p data-i18n="k186">被動法則把 ΣP<sub>x</sub> 從分母移到分子，與土壤抵抗力一起除以 F<sub>s</sub>。邊坡穩定時（F<sub>s</sub> &gt; 1），主動法算出的值一定比被動法高；一般預力地錨用主動法，靠變形才發揮的土釘用被動法，後者較保守。補強力只取決於每一段滑動面與構件的交點，G 仍可逐段相加，因此動態規劃可直接搜尋補強後的臨界滑動面，包括繞到構件後方的較深滑動面。</p>
+          <p data-i18n="k187">驗證案例：單一平面滑動塊體加一支地錨，在使用者指定的平面滑動面上，簡易 Janbu 法沒有切片間剪力的誤差，應與下列封閉解一致（主動法，L 為滑動面長，β 為傾角）：</p>
           <div class="eqn"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><mfrac><mrow><msup><mi>c</mi><mo>′</mo></msup><mi>L</mi><mo>+</mo><mo>(</mo><mi>W</mi><mi>cos</mi><mi>β</mi><mo>+</mo><mi>T</mi><mi>sin</mi><mo>(</mo><mi>β</mi><mo>+</mo><mi>θ</mi><mo>)</mo><mo>)</mo><mi>tan</mi><msup><mi>φ</mi><mo>′</mo></msup></mrow><mrow><mi>W</mi><mi>sin</mi><mi>β</mi><mo>−</mo><mi>T</mi><mi>cos</mi><mo>(</mo><mi>β</mi><mo>+</mo><mi>θ</mi><mo>)</mo></mrow></mfrac></math><span class="eqno">(R3)</span></div>
           <div class="tblwrap" style="max-height:none"><table>
-            <thead><tr><th class="t">驗證情況</th><th>封閉解</th><th>本工具</th><th>誤差</th></tr></thead>
+            <thead><tr><th data-i18n="k188" class="t">驗證情況</th><th data-i18n="k189">封閉解</th><th data-i18n="k190">本工具</th><th data-i18n="k191">誤差</th></tr></thead>
             <tbody>
-              <tr><td class="t">無補強</td><td>1.36876</td><td>1.36876</td><td>&lt; 0.001%</td></tr>
-              <tr><td class="t">地錨 T = 100 kN/m（設計錨力控制）</td><td>1.87476</td><td>1.87476</td><td>&lt; 0.001%</td></tr>
-              <tr><td class="t">地錨 T = 70 kN/m（拉拔控制，L<sub>e</sub> = 14 m）</td><td>1.69916</td><td>1.69916</td><td>&lt; 0.001%</td></tr>
-              <tr><td class="t">水平間距加倍（T = 50 kN/m）</td><td>1.59465</td><td>1.59465</td><td>&lt; 0.001%</td></tr>
+              <tr><td data-i18n="k192" class="t">無補強</td><td>1.36876</td><td>1.36876</td><td>&lt; 0.001%</td></tr>
+              <tr><td data-i18n="k193" class="t">地錨 T = 100 kN/m（設計錨力控制）</td><td>1.87476</td><td>1.87476</td><td>&lt; 0.001%</td></tr>
+              <tr><td data-i18n="k194" class="t">地錨 T = 70 kN/m（拉拔控制，L<sub>e</sub> = 14 m）</td><td>1.69916</td><td>1.69916</td><td>&lt; 0.001%</td></tr>
+              <tr><td data-i18n="k195" class="t">水平間距加倍（T = 50 kN/m）</td><td>1.59465</td><td>1.59465</td><td>&lt; 0.001%</td></tr>
             </tbody>
           </table></div>
-          <p class="hint">案例條件：均質土 γ = 20 kN/m³、c′ = 5 kPa、φ′ = 30°，坡高 15 m、坡比 1:1.33；平面滑動面由坡趾 (10, 0) 至坡頂 (34, 15)；地錨頭部 (20, 7.5)、向下 20°、總長 20 m、自由段 6 m、水平間距 2 m。另以 T = 0 時結果與無補強完全相同、坡面左右鏡射結果相同、構件加長時臨界滑動面逐漸移到構件後方等條件檢查。</p>
+          <p data-i18n="k196" class="hint">案例條件：均質土 γ = 20 kN/m³、c′ = 5 kPa、φ′ = 30°，坡高 15 m、坡比 1:1.33；平面滑動面由坡趾 (10, 0) 至坡頂 (34, 15)；地錨頭部 (20, 7.5)、向下 20°、總長 20 m、自由段 6 m、水平間距 2 m。另以 T = 0 時結果與無補強完全相同、坡面左右鏡射結果相同、構件加長時臨界滑動面逐漸移到構件後方等條件檢查。</p>
         </section>
 
         <section class="th-sec">
-          <h3>八、擋土牆（整體穩定）</h3>
-          <p>擋土牆以多邊形表示，視為不可穿越、計入重量的結構物。滑動面的任何一段穿過牆體內部都視為不可行，因此搜尋只會找到從牆底下或牆後方通過的滑動面；沿牆底面或牆背滑動則允許。</p>
-          <p>切片重量由地表往下累加土重，再加上牆體造成的差值。牆體位於地表以下的部分，以牆的單位重取代原本的土重；突出地表的部分則直接加上牆重。對切片底部高程 z<sub>c</sub>：</p>
-          <div class="eqn"><math display="block"><mi>W</mi><mo>=</mo><mi>b</mi><mrow><mo>[</mo><msub><mi>W</mi><mtext>土</mtext></msub><mo>(</mo><msub><mi>z</mi><mi>c</mi></msub><mo>)</mo><mo>+</mo><munder><mo>∑</mo><mtext>牆</mtext></munder><mrow><mo>(</mo><msub><mi>γ</mi><mtext>牆</mtext></msub><msub><mi>h</mi><mtext>牆</mtext></msub><mo>−</mo><msub><mi>W</mi><mtext>被取代的土</mtext></msub><mo>)</mo></mrow><mo>]</mo></mrow></math><span class="eqno">(R4)</span></div>
-          <p>這樣處理的是包含擋土牆在內的整體穩定，也就是滑動面從牆底或牆後通過時的安全係數。牆體本身沿底面滑動、傾倒、地基承載力等外部穩定，以及牆身結構強度，仍須依土壓力理論與相關規範另行檢核。</p>
+          <h3 data-i18n="k197">八、擋土牆（整體穩定）</h3>
+          <p data-i18n="k198">擋土牆以多邊形表示，視為不可穿越、計入重量的結構物。滑動面的任何一段穿過牆體內部都視為不可行，因此搜尋只會找到從牆底下或牆後方通過的滑動面；沿牆底面或牆背滑動則允許。</p>
+          <p data-i18n="k199">切片重量由地表往下累加土重，再加上牆體造成的差值。牆體位於地表以下的部分，以牆的單位重取代原本的土重；突出地表的部分則直接加上牆重。對切片底部高程 z<sub>c</sub>：</p>
+          <div class="eqn"><math display="block"><mi>W</mi><mo>=</mo><mi>b</mi><mrow><mo>[</mo><msub><mi>W</mi><mtext data-i18n="k200">土</mtext></msub><mo>(</mo><msub><mi>z</mi><mi>c</mi></msub><mo>)</mo><mo>+</mo><munder><mo>∑</mo><mtext data-i18n="k201">牆</mtext></munder><mrow><mo>(</mo><msub><mi>γ</mi><mtext data-i18n="k202">牆</mtext></msub><msub><mi>h</mi><mtext data-i18n="k203">牆</mtext></msub><mo>−</mo><msub><mi>W</mi><mtext data-i18n="k204">被取代的土</mtext></msub><mo>)</mo></mrow><mo>]</mo></mrow></math><span class="eqno">(R4)</span></div>
+          <p data-i18n="k205">這樣處理的是包含擋土牆在內的整體穩定，也就是滑動面從牆底或牆後通過時的安全係數。牆體本身沿底面滑動、傾倒、地基承載力等外部穩定，以及牆身結構強度，仍須依土壓力理論與相關規範另行檢核。</p>
           <div class="tblwrap" style="max-height:none"><table>
-            <thead><tr><th class="t">驗證情況</th><th>封閉解</th><th>本工具</th></tr></thead>
+            <thead><tr><th data-i18n="k206" class="t">驗證情況</th><th data-i18n="k207">封閉解</th><th data-i18n="k208">本工具</th></tr></thead>
             <tbody>
-              <tr><td class="t">平面滑動塊體，坡頂有突出地表的牆塊（2 m × 2 m，γ = 24 kN/m³）</td><td>1.307381</td><td>1.307381</td></tr>
-              <tr><td class="t">平面滑動塊體，地表下埋設牆塊（4 m × 2.5 m，γ = 24 kN/m³）</td><td>1.523770</td><td>1.523770</td></tr>
-              <tr><td class="t">牆的單位重與土相同時，結果應與無牆相同</td><td>1.527867</td><td>1.527867</td></tr>
+              <tr><td data-i18n="k209" class="t">平面滑動塊體，坡頂有突出地表的牆塊（2 m × 2 m，γ = 24 kN/m³）</td><td>1.307381</td><td>1.307381</td></tr>
+              <tr><td data-i18n="k210" class="t">平面滑動塊體，地表下埋設牆塊（4 m × 2.5 m，γ = 24 kN/m³）</td><td>1.523770</td><td>1.523770</td></tr>
+              <tr><td data-i18n="k211" class="t">牆的單位重與土相同時，結果應與無牆相同</td><td>1.527867</td><td>1.527867</td></tr>
             </tbody>
           </table></div>
-          <p class="hint">另檢查：指定滑動面穿過牆體時程式會拒絕計算並說明原因；自動搜尋找到的滑動面以 500 個點取樣，沒有任何一點落在牆體內；坡面左右鏡射結果相同。</p>
+          <p data-i18n="k212" class="hint">另檢查：指定滑動面穿過牆體時程式會拒絕計算並說明原因；自動搜尋找到的滑動面以 500 個點取樣，沒有任何一點落在牆體內；坡面左右鏡射結果相同。</p>
         </section>
 
         <section class="th-sec">
-          <h3>九、地表載重</h3>
-          <p>均布載重 q 與線載重 P 都視為作用在切片頂面的垂直外力。每個切片承受的載重 Q 為 q 在切片寬度與載重範圍重疊段的積分（均布時即 q 乘以重疊長度，梯形分布時以兩端 q 的平均值乘以重疊長度），線載重則整個加在它所在的切片。只有滑動土體上方的切片會計入，Q 與土重一樣同時進入正向力與滑動力：</p>
+          <h3 data-i18n="k213">九、地表載重</h3>
+          <p data-i18n="k214">均布載重 q 與線載重 P 都視為作用在切片頂面的垂直外力。每個切片承受的載重 Q 為 q 在切片寬度與載重範圍重疊段的積分（均布時即 q 乘以重疊長度，梯形分布時以兩端 q 的平均值乘以重疊長度），線載重則整個加在它所在的切片。只有滑動土體上方的切片會計入，Q 與土重一樣同時進入正向力與滑動力：</p>
           <div class="eqn eq-key"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><mrow><mo>[</mo><msup><mi>c</mi><mo>′</mo></msup><mi>b</mi><mo>+</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><msup><mi>Q</mi><mo>*</mo></msup><mo>−</mo><mi>u</mi><mi>b</mi><mo>)</mo><mi>tan</mi><msup><mi>φ</mi><mo>′</mo></msup><mo>]</mo></mrow><mo>/</mo><msub><mi>n</mi><mi>α</mi></msub></mrow><mrow><mo>∑</mo><mrow><mo>[</mo><mo>(</mo><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><mo>)</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>+</mo><msub><mi>k</mi><mi>V</mi></msub><msup><mi>Q</mi><mo>*</mo></msup><mo>)</mo><mi>tan</mi><mi>α</mi><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><mo>(</mo><mi>W</mi><mo>+</mo><msup><mi>Q</mi><mo>*</mo></msup><mo>)</mo><mo>]</mo></mrow></mrow></mfrac></math><span class="eqno">(R5)</span></div>
-          <p>Q<sup>*</sup> 是勾選「計入地震慣性力」的載重。坡頂載重落在 α 為正的區段，增加的滑動力大於抵抗力，F<sub>s</sub> 下降；坡趾載重落在 α 接近 0 或為負的區段，主要增加抵抗力，F<sub>s</sub> 上升。動態規劃會自動找出載重影響下最危險的滑動面，包括繞到坡頂載重後方的滑動面，或從坡趾載重後方出露、避開壓腳效果的滑動面。</p>
-          <p>驗證案例沿用第七節的平面滑動塊體，載重 Q 加在塊體上方，封閉解為：</p>
+          <p data-i18n="k215">Q<sup>*</sup> 是勾選「計入地震慣性力」的載重。坡頂載重落在 α 為正的區段，增加的滑動力大於抵抗力，F<sub>s</sub> 下降；坡趾載重落在 α 接近 0 或為負的區段，主要增加抵抗力，F<sub>s</sub> 上升。動態規劃會自動找出載重影響下最危險的滑動面，包括繞到坡頂載重後方的滑動面，或從坡趾載重後方出露、避開壓腳效果的滑動面。</p>
+          <p data-i18n="k216">驗證案例沿用第七節的平面滑動塊體，載重 Q 加在塊體上方，封閉解為：</p>
           <div class="eqn"><math display="block"><msub><mi>F</mi><mi>s</mi></msub><mo>=</mo><mfrac><mrow><msup><mi>c</mi><mo>′</mo></msup><mi>L</mi><mo>+</mo><mo>[</mo><mo>(</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>)</mo><mi>cos</mi><mi>β</mi><mo>−</mo><msub><mi>k</mi><mi>H</mi></msub><msup><mi>W</mi><mo>′</mo></msup><mi>sin</mi><mi>β</mi><mo>]</mo><mi>tan</mi><msup><mi>φ</mi><mo>′</mo></msup></mrow><mrow><mo>(</mo><mi>W</mi><mo>+</mo><mi>Q</mi><mo>)</mo><mi>sin</mi><mi>β</mi><mo>+</mo><msub><mi>k</mi><mi>H</mi></msub><msup><mi>W</mi><mo>′</mo></msup><mi>cos</mi><mi>β</mi></mrow></mfrac></math><span class="eqno">(R6)</span></div>
-          <p class="hint">W′ 為受地震力作用的重量：載重計入地震慣性力時 W′ = W + Q，否則 W′ = W。</p>
+          <p data-i18n="k217" class="hint">W′ 為受地震力作用的重量：載重計入地震慣性力時 W′ = W + Q，否則 W′ = W。</p>
           <div class="tblwrap" style="max-height:none"><table>
-            <thead><tr><th class="t">驗證情況</th><th>封閉解</th><th>本工具</th></tr></thead>
-            <tbody><tr><td class="t">無載重</td><td>1.368760</td><td>1.368760</td></tr><tr><td class="t">均布載重 q = 20 kPa，整段在滑動體上（Q = 60 kN/m）</td><td>1.328306</td><td>1.328306</td></tr><tr><td class="t">梯形載重 0 → 40 kPa，整段在滑動體上（Q = 60 kN/m）</td><td>1.328306</td><td>1.328306</td></tr><tr><td class="t">均布載重只有 2 m 在滑動體上（Q = 40 kN/m）</td><td>1.340948</td><td>1.340948</td></tr><tr><td class="t">線載重 P = 50 kN/m</td><td>1.334530</td><td>1.334530</td></tr><tr><td class="t">寬 0.1 m、總量 50 kN/m 的均布載重</td><td>1.334530</td><td>1.334530</td></tr><tr><td class="t">載重在滑動體範圍外</td><td>1.368760</td><td>1.368760</td></tr><tr><td class="t">kH = 0.15，載重計入地震慣性力</td><td>1.001374</td><td>1.001374</td></tr><tr><td class="t">kH = 0.15，載重不計地震慣性力</td><td>1.025772</td><td>1.025772</td></tr></tbody>
+            <thead><tr><th data-i18n="k218" class="t">驗證情況</th><th data-i18n="k219">封閉解</th><th data-i18n="k220">本工具</th></tr></thead>
+            <tbody><tr><td data-i18n="k221" class="t">無載重</td><td>1.368760</td><td>1.368760</td></tr><tr><td data-i18n="k222" class="t">均布載重 q = 20 kPa，整段在滑動體上（Q = 60 kN/m）</td><td>1.328306</td><td>1.328306</td></tr><tr><td data-i18n="k223" class="t">梯形載重 0 → 40 kPa，整段在滑動體上（Q = 60 kN/m）</td><td>1.328306</td><td>1.328306</td></tr><tr><td data-i18n="k224" class="t">均布載重只有 2 m 在滑動體上（Q = 40 kN/m）</td><td>1.340948</td><td>1.340948</td></tr><tr><td data-i18n="k225" class="t">線載重 P = 50 kN/m</td><td>1.334530</td><td>1.334530</td></tr><tr><td data-i18n="k226" class="t">寬 0.1 m、總量 50 kN/m 的均布載重</td><td>1.334530</td><td>1.334530</td></tr><tr><td data-i18n="k227" class="t">載重在滑動體範圍外</td><td>1.368760</td><td>1.368760</td></tr><tr><td data-i18n="k228" class="t">kH = 0.15，載重計入地震慣性力</td><td>1.001374</td><td>1.001374</td></tr><tr><td data-i18n="k229" class="t">kH = 0.15，載重不計地震慣性力</td><td>1.025772</td><td>1.025772</td></tr></tbody>
           </table></div>
-          <p class="hint">另檢查：坡面左右鏡射結果相同；自動搜尋時，坡頂均布載重 10、20、40 kPa 使 F<sub>s</sub> 由 1.025 依序降為 1.022、1.016、0.998，載重越大降幅越大。</p>
+          <p data-i18n="k230" class="hint">另檢查：坡面左右鏡射結果相同；自動搜尋時，坡頂均布載重 10、20、40 kPa 使 F<sub>s</sub> 由 1.025 依序降為 1.022、1.016、0.998，載重越大降幅越大。</p>
         </section>
 
         <section class="th-sec">
-          <h3>符號</h3>
+          <h3 data-i18n="k231">符號</h3>
           <dl class="th-sym">
-            <div><dt>W<sub>i</sub></dt><dd>切片自重 (kN/m)</dd></div>
-            <div><dt>N<sub>i</sub>、T<sub>i</sub></dt><dd>滑動面上的正向力、抵抗力</dd></div>
-            <div><dt>E<sub>i</sub>、X<sub>i</sub></dt><dd>切片間水平力、剪力</dd></div>
-            <div><dt>α<sub>i</sub></dt><dd>滑動面傾角</dd></div>
-            <div><dt>ℓ<sub>i</sub>、b<sub>i</sub></dt><dd>切片底長、寬度，b = ℓcosα</dd></div>
-            <div><dt>c′、φ′</dt><dd>有效凝聚力 (kPa)、有效摩擦角</dd></div>
-            <div><dt>U<sub>i</sub>、u<sub>i</sub></dt><dd>切片底部孔隙水壓 (kPa)</dd></div>
-            <div><dt>k<sub>H</sub>、k<sub>V</sub></dt><dd>水平、垂直震度</dd></div>
-            <div><dt>F<sub>s</sub>、λ</dt><dd>安全係數、搜尋用的安全係數</dd></div>
-            <div><dt>f<sub>0</sub></dt><dd>修正係數</dd></div>
-            <div><dt>d、L</dt><dd>滑動面最大垂直深度、兩端點直線距離</dd></div>
-            <div><dt>G、DG</dt><dd>輔助泛函、利得（單段貢獻）</dd></div>
-            <div><dt>T、θ、S<sub>h</sub></dt><dd>補強拉力、構件向下傾角、水平間距</dd></div>
-            <div><dt>P<sub>x</sub>、P<sub>y</sub></dt><dd>補強力的水平、垂直分量（每公尺寬）</dd></div>
+            <div data-i18n="k232"><dt>W<sub>i</sub></dt><dd>切片自重 (kN/m)</dd></div>
+            <div data-i18n="k233"><dt>N<sub>i</sub>、T<sub>i</sub></dt><dd>滑動面上的正向力、抵抗力</dd></div>
+            <div data-i18n="k234"><dt>E<sub>i</sub>、X<sub>i</sub></dt><dd>切片間水平力、剪力</dd></div>
+            <div data-i18n="k235"><dt>α<sub>i</sub></dt><dd>滑動面傾角</dd></div>
+            <div data-i18n="k236"><dt>ℓ<sub>i</sub>、b<sub>i</sub></dt><dd>切片底長、寬度，b = ℓcosα</dd></div>
+            <div data-i18n="k237"><dt>c′、φ′</dt><dd>有效凝聚力 (kPa)、有效摩擦角</dd></div>
+            <div data-i18n="k238"><dt>U<sub>i</sub>、u<sub>i</sub></dt><dd>切片底部孔隙水壓 (kPa)</dd></div>
+            <div data-i18n="k239"><dt>k<sub>H</sub>、k<sub>V</sub></dt><dd>水平、垂直震度</dd></div>
+            <div data-i18n="k240"><dt>F<sub>s</sub>、λ</dt><dd>安全係數、搜尋用的安全係數</dd></div>
+            <div data-i18n="k241"><dt>f<sub>0</sub></dt><dd>修正係數</dd></div>
+            <div data-i18n="k242"><dt>d、L</dt><dd>滑動面最大垂直深度、兩端點直線距離</dd></div>
+            <div data-i18n="k243"><dt>G、DG</dt><dd>輔助泛函、利得（單段貢獻）</dd></div>
+            <div data-i18n="k244"><dt>T、θ、S<sub>h</sub></dt><dd>補強拉力、構件向下傾角、水平間距</dd></div>
+            <div data-i18n="k245"><dt>P<sub>x</sub>、P<sub>y</sub></dt><dd>補強力的水平、垂直分量（每公尺寬）</dd></div>
           </dl>
         </section>
       </article>
 
       <section class="cite" id="cite">
-        <h2>引用本程式</h2>
-        <p>使用本工具的分析結果發表報告或論文時，請引用下列文獻：</p>
-        <blockquote class="cite-main" id="citeText">陳振宇、藤田正治、堤大三(2014)，「基岩位置及土層特性對降雨逕流與大規模崩塌之影響」，中華水土保持學報，45(4)，pp.243-256。</blockquote>
+        <h2 data-i18n="k246">引用本程式</h2>
+        <p data-i18n="k247">使用本工具的分析結果發表報告或論文時，請引用下列文獻：</p>
+        <blockquote data-i18n="k248" class="cite-main" id="citeText">陳振宇、藤田正治、堤大三(2014)，「基岩位置及土層特性對降雨逕流與大規模崩塌之影響」，中華水土保持學報，45(4)，pp.243-256。</blockquote>
         <blockquote class="cite-main" id="citeTextEn">Chen, C. Y., Fujita, M., and Tsutsumi, D. (2014). "The Influence of Bedrock Location and Soil Characteristics on Rainfall-Runoff and Large-Scale Landslides." Journal of Chinese Soil and Water Conservation, 45(4), 243-256. (in Chinese)</blockquote>
         <div class="row">
-          <button class="btn small" id="btnCite" type="button">複製中文引用</button>
-          <button class="btn small" id="btnCiteEn" type="button">複製英文引用</button>
-          <button class="btn small" id="btnBib" type="button">複製 BibTeX</button>
-          <a class="btn small" href="https://www.cswcs.org.tw/AllDataPos/JournalPos/VOL45/NO4/jcswc45(4)243-256_04.pdf" target="_blank" rel="noopener">下載論文全文 (PDF) ↗</a>
+          <button data-i18n="k249" class="btn small" id="btnCite" type="button">複製中文引用</button>
+          <button data-i18n="k250" class="btn small" id="btnCiteEn" type="button">複製英文引用</button>
+          <button data-i18n="k251" class="btn small" id="btnBib" type="button">複製 BibTeX</button>
+          <a data-i18n="k252" class="btn small" href="https://www.cswcs.org.tw/AllDataPos/JournalPos/VOL45/NO4/jcswc45(4)243-256_04.pdf" target="_blank" rel="noopener">下載論文全文 (PDF) ↗</a>
         </div>
-        <h3>關於作者</h3>
-        <p>作者陳振宇的學經歷與研究成果請見<a href="https://cychen59.blogspot.com/p/education-2014.html" target="_blank" rel="noopener">作者介紹頁 ↗</a>，使用上的問題或建議歡迎來信 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a>。</p>
-        <h3>方法來源與參考文獻</h3>
+        <h3 data-i18n="k253">關於作者</h3>
+        <p data-i18n="k254">作者陳振宇的學經歷與研究成果請見<a href="https://cychen59.blogspot.com/p/education-2014.html" target="_blank" rel="noopener">作者介紹頁 ↗</a>，使用上的問題或建議歡迎來信 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a>。</p>
+        <h3 data-i18n="k255">方法來源與參考文獻</h3>
         <ol class="refs">
-          <li>中村浩之、久保田哲也（1987）：動的計画法を用いた臨界すべり面解析法，土木研究所資料第 2425 号，建設省土木研究所砂防部地すべり研究室。</li>
+          <li data-i18n="k256">中村浩之、久保田哲也（1987）：動的計画法を用いた臨界すべり面解析法，土木研究所資料第 2425 号，建設省土木研究所砂防部地すべり研究室。</li>
           <li>Baker, R. (1980): Determination of the critical slip surface in slope stability computations, International Journal for Numerical and Analytical Methods in Geomechanics, Vol. 4, pp. 333-359.</li>
           <li>Bellman, R. (1957): Dynamic Programming, Princeton University Press.</li>
-          <li>山上拓男、植田康宏（1986）：Noncircular Slip Surface Analysis of the Stability of Slopes: An Application of Dynamic Programming to the Janbu Method，地すべり，第 22 巻第 4 号。</li>
-          <li>申潤植、板垣治（1983）：地すべり（その 4），土と基礎，Vol. 31，No. 7，pp. 89-97。</li>
+          <li data-i18n="k257">山上拓男、植田康宏（1986）：Noncircular Slip Surface Analysis of the Stability of Slopes: An Application of Dynamic Programming to the Janbu Method，地すべり，第 22 巻第 4 号。</li>
+          <li data-i18n="k258">申潤植、板垣治（1983）：地すべり（その 4），土と基礎，Vol. 31，No. 7，pp. 89-97。</li>
           <li>Janbu, N. (1973): Slope stability computations, In Embankment-Dam Engineering (Casagrande Volume), Wiley, pp. 47-86.</li>
         </ol>
       </section>
     </section>
   </main>
   <footer class="site-foot">
-    <p>SSA 邊坡穩定分析以 <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GNU GPL-3.0</a> 授權開放使用。原始碼與問題回報：<a href="https://github.com/cychen59/ssa-slope-stability" target="_blank" rel="noopener">github.com/cychen59/ssa-slope-stability</a>。使用本工具的結果請引用<a href="#cite">陳振宇等（2014）</a>。作者：<a href="https://cychen59.blogspot.com/p/education-2014.html" target="_blank" rel="noopener">陳振宇</a>，聯絡信箱 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a>。</p>
-    <p>使用人數由 <a href="https://jasoncameron.dev/abacus/" target="_blank" rel="noopener">Abacus</a> 計數服務統計，只記錄次數，不蒐集個人資料。</p>
-    <p>本工具為二維極限平衡分析的輔助工具，計算結果僅供參考，實際工程判斷與設計仍應由專業人員依現地調查與相關規範負責。</p>
+    <p data-i18n="k259">SSA 邊坡穩定分析以 <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GNU GPL-3.0</a> 授權開放使用。原始碼與問題回報：<a href="https://github.com/cychen59/ssa-slope-stability" target="_blank" rel="noopener">github.com/cychen59/ssa-slope-stability</a>。使用本工具的結果請引用<a href="#cite">陳振宇等（2014）</a>。作者：<a href="https://cychen59.blogspot.com/p/education-2014.html" target="_blank" rel="noopener">陳振宇</a>，聯絡信箱 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a>。</p>
+    <p data-i18n="k260">使用人數由 <a href="https://jasoncameron.dev/abacus/" target="_blank" rel="noopener">Abacus</a> 計數服務統計，只記錄次數，不蒐集個人資料。</p>
+    <p data-i18n="k261">本工具為二維極限平衡分析的輔助工具，計算結果僅供參考，實際工程判斷與設計仍應由專業人員依現地調查與相關規範負責。</p>
   </footer>
 </div>
 <script>
@@ -1493,14 +1495,75 @@ if (typeof module !== 'undefined') module.exports = SSA;
   const dispN = v => String(Math.round(v * 1000) / 1000);
   const fmt = (v, d = 2) => (v == null || !isFinite(v)) ? '—' : (+v).toFixed(d);
 
+  /* ---------- language (Traditional Chinese / English) ---------- */
+  const I18N_EN = {"k1": "Slope Stability Analysis", "k2": "Dynamic programming search for non-circular slip surfaces · Simplified Janbu method · Pore pressure from the water table", "k3": "↶ Undo", "k4": "Load example", "k5": "Theory", "k6": "How to cite", "k7": "About the author", "k8": "Profile", "k9": "Soils", "k10": "Loads", "k11": "Reinforce", "k12": "Settings", "k13": "Help", "k14": "Line being edited", "k15": "Select a line, then drag, add or delete its vertices on the drawing. Every line is kept sorted by x.", "k16": "Coordinates (x　z)", "k17": "Apply coordinates", "k18": "Clear this line", "k19": "Copy current critical surface", "k20": "Create water table 2 m below ground", "k21": "One point per line; separate x and z with spaces, commas or tabs. You can paste directly from Excel. Units: m.", "k22": "Model extent", "k23": "Model base elevation (m)", "k24": "Slip surfaces never go below this elevation or into layers marked as bedrock.", "k25": "Import terrain from CSV", "k26": "Choose CSV file…", "k27": "Two layouts are accepted, and the first row may hold column names. CSV saved from Excel in UTF-8 or Big5 both work.", "k28": "<strong>Two columns (x, z)</strong>: imported into the line currently selected above (the ground surface by default).", "k29": "<strong>Three or more columns (whole profile)</strong>: column 1 is x, column 2 the ground elevation, and the following columns the top elevations of layers 2, 3 and so on. A column whose name contains “water” is read as the water table. Leave a cell empty where a line has no value at that x.", "k30": "Example files", "k31": "Whole profile (the default example on this page):", "k32": "Download SSA-profile-example.csv", "k33": "Copy", "k34": "Ground line only:", "k35": "Download SSA-ground-example.csv", "k36": "Copy", "k37": "Saving and resuming", "k38": "Under “Model file” at the bottom of the Settings tab you can save every model parameter to a JSON file, including terrain, layer boundaries, water table, soil properties and analysis settings. Next time, import that JSON file in the same place to continue where you left off. The tool always opens with the default example and does not keep your previous model, so remember to save.", "k39": "Go to “Model file”", "k40": "Unit weight γ, γsat", "k41": "Cohesion c'", "k42": "Layers are listed from top to bottom. The top of layer 1 is the ground surface; the tops of the other layers are edited on the Profile tab. φ' is in degrees. Conversion uses 1 tf = 9.80665 kN; values are converted automatically when you switch units, and results are shown in the same units.", "k43": "+ Add layer (at the bottom)", "k44": "Surface loads", "k45": "A distributed load q acts on a range of x at the ground surface (the start and end values may differ to form a trapezoid); a line load P acts at one point. Both are per metre width. Only the part above the sliding mass is counted, and it acts like soil weight, adding to both normal force and driving force.", "k46": "Also compute the case without loads<small>Shows Fs with and without loads side by side and draws the critical surface without loads as a dotted line.</small>", "k47": "Traffic (distributed, no seismic inertia)", "k48": "Building (distributed)", "k49": "Stockpile (distributed)", "k50": "Wall or structure (line load)", "k51": "+ Add load", "k52": "New loads start with placeholder magnitudes. Enter values according to the design code and site conditions. Drag the load ends on the drawing to change their position.", "k53": "Notes", "k54": "Loads on the crest (upslope) usually lower Fs; loads at the toe (downslope) usually raise Fs by buttressing.", "k55": "If a toe load may be removed (parking, temporary stockpiles), do not rely on it. Compute the cases with and without the load and use the lower Fs.", "k56": "Fill has its own strength and slip surfaces may pass through it. Model fill by editing the ground line and adding a fill layer, not as a load.", "k57": "Temporary loads such as traffic are usually excluded from seismic inertia; permanent loads such as structures should be included.", "k58": "How reinforcement forces are applied", "k59": "Method", "k60": "Active: reinforcement reduces the driving force (common for prestressed anchors)", "k61": "Passive: reinforcement adds to the resistance (common for soil nails, more conservative)", "k62": "Also compute the case without reinforcement<small>Runs a separate analysis without members and retaining walls, shows both Fs values, and draws the original critical surface as a grey dashed line.</small>", "k63": "Each member provides a tensile force T where it crosses the slip surface: the smallest of tensile capacity, pullout (q × effective length beyond the slip surface), facing capacity or design anchor load, divided by the horizontal spacing to give a force per metre width. For anchors only the bonded length provides pullout resistance.", "k64": "Members", "k65": "θ is the downward inclination of the member. Tensile, facing and anchor loads are capacities per member; pullout q is the resistance per metre of effective length. Use allowable or ultimate values consistently with your design approach.", "k66": "+ Soil nail", "k67": "+ Ground anchor", "k68": "Place a row", "k69": "Uses the last member in the list as a template and spaces several members evenly over an x range on the slope face. Heads snap to the ground surface.", "k70": "Start x (m)", "k71": "End x (m)", "k72": "Count", "k73": "Add this row", "k74": "Replace all members", "k75": "Retaining walls (global stability)", "k76": "Retaining walls are treated as impenetrable structures with weight. Slip surfaces may only pass beneath or behind a wall, and the wall weight is included in the slice weights. Sliding, overturning and bearing capacity of the wall itself are not checked here; check them separately according to the design code.", "k77": "+ Gravity wall", "k78": "Earthquake (pseudo-static)", "k79": "Horizontal coefficient kh", "k80": "Vertical coefficient kv", "k81": "Pore water pressure", "k82": "Unit weight of water γw (kN/m³)", "k83": "Inclined water table correction u = γw·hw·cos²θ<small>When unchecked, hydrostatic pressure u = γw·hw is used, where hw is the vertical distance from the water table to the slip surface.</small>", "k84": "Slip surface search", "k85": "Vertical lines", "k86": "Sets the horizontal resolution. A spacing of 1–2 m is recommended, roughly “horizontal length ÷ 1.5”. Typically 60–120 lines.", "k87": "Nodes per line", "k88": "Sets the vertical resolution. A node spacing of about 0.3 m is recommended, roughly “maximum soil thickness ÷ 0.3”. Typically 80–120 nodes.", "k89": "Slices per segment", "k90": "Number of slices between two neighbouring lines for computing weight and pore pressure. Usually 3–4; use 5 for very thin layers or an undulating water table.", "k91": "Minimum slip depth (m)", "k92": "Excludes overly shallow surface slides. For sand or colluvium with c' = 0, 1–2 m is recommended; set 0 when shallow failures are of interest.", "k93": "More lines and nodes give finer results, but the work grows roughly with “lines × nodes²”, so doubling the nodes takes about four times as long.", "k94": "Restrict slip surface to concave shape<small>The slope of the slip surface changes monotonically along the sliding direction, excluding kinematically unrealistic shapes (ktotu in the original program). The web version classifies DP states by the steepest slope reached and tolerates small errors from node discretization, so thin weak layers are still followed correctly.</small>", "k95": "Slip surface may not cross the left or right model boundary<small>The end lines only allow nodes above the ground surface (an extension of kconc in the original program).</small>", "k96": "Convergence and criteria", "k97": "Tolerance ΔF", "k98": "Maximum iterations", "k99": "Initial F", "k100": "Required factor of safety", "k101": "Correction factor f0", "k102": "f0 = (50d/L)^0.03 (PWRI 1987; Shin & Itagaki 1983)", "k103": "f0 = 1 + b1[d/L − 1.4(d/L)²] (Janbu correction curve)", "k104": "Judge by the corrected f0·Fs<small>When unchecked, the uncorrected simplified Janbu value is used, as defined in the original SSA program, which is more conservative.</small>", "k105": "Model file", "k106": "“Save model” stores terrain, layer boundaries, water table, soil properties and analysis settings in a single JSON file. Next time, use “Import model” and choose that file to continue your analysis.", "k107": "Save model (JSON)", "k108": "Import model…", "k109": "Copy or paste JSON as text", "k110": "Generate JSON", "k111": "Copy", "k112": "Load from text", "k113": "The full theory, equations and references are in <a href=\"#theory\">“Theory and equations”</a> further down the page.", "k114": "Steps", "k115": "On the Profile tab, edit the ground line, layer tops and water table.", "k116": "On the Soils tab, enter γ, γsat, c' and φ'; the lowest layer can be set as bedrock.", "k117": "On the Settings tab, check the search grid, then press “Find critical slip surface”.", "k118": "Differences from the original C++ program", "k119": "The original read pressure heads from a finite element solution of the Richards equation; this version converts them directly from the water table.", "k120": "Pore pressure is computed at the midpoint of every slice; the original used one midpoint value per segment.", "k121": "Intersections with layer boundaries and the water table are handled by slice sampling, avoiding intersections the original could miss near bends in the lines.", "k122": "Entry and exit states ensure a single continuous sliding mass. The concavity constraint applies only to adjacent segments below ground, not to the bends at entry and exit.", "k123": "A minimum slip depth prevents convergence to extremely shallow surface slides when c' = 0.", "k124": "The original did not apply the correction factor f0; this tool also reports f0·Fs for reference.", "k125": "Units are kN and kPa (1 tf/m² ≈ 9.81 kPa). Slopes facing left or right are detected automatically.", "k126": "Limitations", "k127": "2D plane strain limit equilibrium analysis; matric suction is not considered.", "k128": "Ponded water above the ground and lateral water pressure are not included.", "k129": "Reinforcement carries tension only; bending and shear are ignored.", "k130": "Retaining walls are checked for global stability only; external stability and structural strength must be checked separately.", "k131": "Loads are vertical only, without inclined loads, spreading with depth or excess pore pressure from rapid loading.", "k132": "The simplified Janbu method ignores interslice shear, so uncorrected values are usually conservative.", "k133": "✥ Drag", "k134": "+ Add point", "k135": "− Delete point", "k136": "Snap", "k137": "Equal scale", "k138": "Slices", "k139": "Search nodes", "k140": "Fit", "k141": "Check specified surface", "k142": "Find critical slip surface", "k143": "<span><i></i>Ground</span> <span><i class=\"w\"></i>Water table</span> <span><i class=\"s\"></i>Critical slip surface</span>", "k144": "Ready", "k145": "Theory and equations", "k146": "The computational core follows the critical slip surface analysis by dynamic programming of the Landslide Division, Public Works Research Institute (PWRI), Ministry of Construction, Japan (Nakamura and Kubota, 1987, PWRI Technical Memorandum No. 2425, program CSSDP1). Dynamic programming searches for a critical slip surface of arbitrary shape, and the factor of safety is computed with the simplified Janbu method. Equation numbers follow the original report for easy reference.", "k147": "1. Why dynamic programming", "k148": "Critical slip surface analysis finds the slip surface with the lowest factor of safety for given terrain, stratigraphy and soil properties. The traditional approach assumes a circle or log spiral and moves its centre and radius by trial. In layered ground or rugged terrain the true critical surface is often not circular. Dynamic programming (DP), introduced by Bellman (1957), splits a problem into stages and finds the optimum stage by stage, so a slip surface of any shape can be found within the search area without assuming its form in advance.", "k149": "DP rests on the principle of optimality: whatever the initial state and first decision, the remaining decisions must be optimal with respect to the state resulting from the first decision. A multistage problem therefore becomes a recursion.", "k150": "Applied to a slope, each vertical line is a “stage” and the candidate points on it are “states”. A slip surface is the polyline obtained by choosing one point on each line from the first line to the last.", "k151": "Stage i (vertical line)", "k152": "State j", "k153": "Above ground DG = 0", "k154": "Search grid. The red line is the path with the smallest accumulated value. Segments above the ground surface carry no force, so the start and end of the slip surface are determined by the computation.", "k155": "2. Factor of safety by the simplified Janbu method", "k156": "The sliding mass is divided into n vertical slices. Slice i is acted on by its weight W<sub>i</sub>, horizontal and vertical seismic coefficients k<sub>H</sub> and k<sub>V</sub>, the normal force N<sub>i</sub> and resisting force T<sub>i</sub> on the slip surface, and the interslice horizontal force E and shear force X on both sides.", "k157": "Forces on slice i (after Fig. 2 of the original report). The mass slides down to the left; α<sub>i</sub> is the inclination of the slip surface.", "k158": "Vertical and horizontal force equilibrium of a slice:", "k159": "No external forces act at the ends of the sliding mass, so X<sub>1</sub> = X<sub>n+1</sub> = 0 and E<sub>1</sub> = E<sub>n+1</sub> = 0, hence ΣΔX<sub>i</sub> = 0 and ΣΔE<sub>i</sub> = 0 (Eqs. 12, 15, 16). The resisting force on the slip surface is defined by the Mohr–Coulomb criterion and the factor of safety:", "k160": "Solving Eq. (8) for N<sub>i</sub>, substituting into Eq. (19) and then into overall horizontal equilibrium, with the simplified Janbu assumption ΔX<sub>i</sub> = 0 (changes in interslice shear neglected, Eq. 25), gives:", "k161": "A<sub>i</sub> is the resisting term and B<sub>i</sub> the driving term. ℓ<sub>i</sub>cosα<sub>i</sub> is the slice width b<sub>i</sub>. F<sub>s</sub> appears on both sides, so an initial value is assumed and the calculation is repeated until it converges.", "k162": "f<sub>0</sub> is a correction factor compensating for the assumption ΔX<sub>i</sub> = 0. The original report uses the empirical formula of Shin and Itagaki (1983), where L is the straight-line distance between the ends of the slip surface and d is the distance from that line to a parallel line tangent to the slip surface, i.e. the maximum depth of the slip surface:", "k163": "3. Pore water pressure", "k164": "The original report treats groundwater through effective weight, using the submerged unit weight below the water table, so Eq. (28) becomes:", "k165": "This tool computes the pore pressure at the slice base directly from the water table drawn by the user, u<sub>i</sub> = γ<sub>w</sub>h<sub>w</sub>, where h<sub>w</sub> is the vertical distance from the water table to the midpoint of the slice base. Soil above the water table is weighed with γ and soil below with γ<sub>sat</sub>, and (W<sub>i</sub> − u<sub>i</sub>b<sub>i</sub>) is used in Eq. (28). Both forms are identical for a horizontal water table. With “Inclined water table correction” checked, u<sub>i</sub> = γ<sub>w</sub>h<sub>w</sub>cos²θ is used, where θ is the inclination of the water table.", "k166": "4. Baker's auxiliary functional", "k167": "DP can only handle objective functions that add up segment by segment, but Eq. (27) is a ratio of two sums and cannot be added directly. Baker (1980) replaced it with the following auxiliary functional:", "k168": "Comparing the two by the calculus of variations, on the critical slip surface e:", "k169": "As long as the total driving term B̄ > 0, the conditions for a minimum of G (δG = 0, δ²G > 0) are the conditions for a minimum of F<sub>s</sub>. Minimizing G for a fixed F<sub>s</sub> therefore minimizes the factor of safety. G adds up segment by segment, so DP can handle it.", "k170": "5. DP recursion and procedure", "k171": "The accumulated values of all candidate points on the first line are set to 0. The search then advances line by line, and each point keeps only the predecessor with the smallest accumulated value:", "k172": "DG<sub>i</sub>(K, j) is the “gain”, the contribution of the slip surface segment connecting point K on line i to point j on line i+1. The search area extends above the ground surface, where the gain is 0, so the start and end of the slip surface become part of the solution. The point with the smallest accumulated value on the last line, traced back through the recorded predecessors, gives the critical slip surface:", "k173": "Assume an initial factor of safety λ (and correction factor f<sub>0</sub>).", "k174": "Compute the gains of all candidate segments by Eq. (49) and use DP, Eq. (47), to find the slip surface y<sub>i</sub> that minimizes G.", "k175": "Compute the factor of safety F<sub>s</sub> of this slip surface iteratively with the simplified Janbu method.", "k176": "If |F<sub>s</sub> − λ| < ε, stop; otherwise set λ = F<sub>s</sub> and return to step 2.", "k177": "The “Iteration log” of this tool lists λ and F<sub>s</sub> of each round; the values should decrease and converge.", "k178": "6. Constraints on the slip surface shape", "k179": "To exclude slip surfaces that do not occur in reality, the original report adds two constraints. The first requires the slip surface to be concave (opening upward), avoiding shapes that bulge in the middle:", "k180": "The second requires n<sub>αi</sub> > 0, avoiding negative resistance in slices that dip backward near the toe:", "k181": "The corresponding setting in this tool is “Restrict slip surface to concave shape”. For the second constraint the stricter common criterion m<sub>α</sub> = cosα + sinα·tanφ′/F ≥ 0.2 is used, applied only to slices dipping backward (α < 0).", "k182": "7. Reinforcement (soil nails and ground anchors)", "k183": "Where each member crosses the slip surface, it applies a tensile force to the sliding mass along the member, pointing into the slope. The available force is the smallest of the following, divided by the horizontal spacing S<sub>h</sub> to give a force per metre width:", "k184": "T<sub>t</sub> is the tensile capacity, q the pullout resistance per metre, and L<sub>e</sub> the length beyond the slip surface in the stable zone. Soil nails are also limited by the facing capacity T<sub>f</sub>. For anchors only the bonded length counts (L<sub>e</sub> = 0 when the whole bonded length lies inside the sliding mass), and the force is limited by the design anchor load P. θ is the downward inclination of the member.", "k185": "Adding P<sub>x</sub> and P<sub>y</sub> to the slice equilibrium of Eqs. (8) and (9) of the original report and following the same steps, the factor of safety by the active method is:", "k186": "The passive method moves ΣP<sub>x</sub> from the denominator to the numerator, dividing it by F<sub>s</sub> together with the soil resistance. For a stable slope (F<sub>s</sub> > 1) the active method always gives the higher value. Prestressed anchors are usually treated with the active method and soil nails, which need deformation to mobilize, with the more conservative passive method. Because reinforcement forces depend only on where each segment of the slip surface crosses a member, G still adds up segment by segment, so dynamic programming searches directly for the critical slip surface of the reinforced slope, including deeper surfaces that pass behind the members.", "k187": "Verification: a single planar sliding block with one anchor. On a user-specified planar slip surface the simplified Janbu method has no interslice shear error and should match the closed-form solution below (active method; L is the length and β the inclination of the slip surface):", "k188": "Case", "k189": "Closed form", "k190": "This tool", "k191": "Error", "k192": "No reinforcement", "k193": "Anchor T = 100 kN/m (design load governs)", "k194": "Anchor T = 70 kN/m (pullout governs, L<sub>e</sub> = 14 m)", "k195": "Horizontal spacing doubled (T = 50 kN/m)", "k196": "Case conditions: homogeneous soil γ = 20 kN/m³, c′ = 5 kPa, φ′ = 30°, slope height 15 m, gradient 1:1.33; planar slip surface from the toe (10, 0) to the crest (34, 15); anchor head at (20, 7.5), inclined 20° downward, total length 20 m, free length 6 m, horizontal spacing 2 m. Also checked: T = 0 gives exactly the unreinforced result, mirrored slopes give identical results, and the critical surface moves behind the members as they get longer.", "k197": "8. Retaining walls (global stability)", "k198": "A retaining wall is a polygon treated as an impenetrable structure with weight. Any slip surface segment passing through the interior of a wall is infeasible, so the search only finds surfaces passing beneath or behind the wall; sliding along the wall base or back is allowed.", "k199": "Slice weight is the soil weight accumulated downward from the ground surface plus the difference caused by walls. For the part of a wall below ground, the wall unit weight replaces the soil it displaces; the part above ground is added as wall weight. For a slice base elevation z<sub>c</sub>:", "k200": "soil", "k201": "wall", "k202": "wall", "k203": "wall", "k204": "displaced soil", "k205": "This gives the global stability including the retaining wall, i.e. the factor of safety of slip surfaces passing beneath or behind it. External stability of the wall itself (sliding on its base, overturning, bearing capacity) and its structural strength must still be checked with earth pressure theory and the relevant codes.", "k206": "Case", "k207": "Closed form", "k208": "This tool", "k209": "Planar block with a wall block protruding above the crest (2 m × 2 m, γ = 24 kN/m³)", "k210": "Planar block with a wall block embedded below ground (4 m × 2.5 m, γ = 24 kN/m³)", "k211": "Wall with the same unit weight as the soil should give the result without a wall", "k212": "Also checked: a specified slip surface through a wall is rejected with an explanation; the slip surface found by the search, sampled at 500 points, has no point inside a wall; mirrored slopes give identical results.", "k213": "9. Surface loads", "k214": "Distributed loads q and line loads P are vertical forces on the slice tops. The load Q on a slice is the integral of q over the overlap between the slice width and the loaded range (q times the overlap length for a uniform load, the mean of q at both ends times the overlap length for a trapezoidal load); a line load is applied entirely to the slice containing it. Only slices above the sliding mass carry load, and Q enters both normal and driving forces just like soil weight:", "k215": "Q<sup>*</sup> is the load marked “include seismic inertia”. Crest loads lie where α is positive, adding more driving force than resistance, so F<sub>s</sub> drops; toe loads lie where α is near zero or negative and mainly add resistance, so F<sub>s</sub> rises. Dynamic programming automatically finds the most dangerous slip surface under the loads, including surfaces passing behind a crest load or emerging behind a toe load to avoid its buttressing effect.", "k216": "The verification uses the planar block of Section 7 with a load Q on top. The closed-form solution is:", "k217": "W′ is the weight subject to seismic force: W′ = W + Q when the load includes seismic inertia, otherwise W′ = W.", "k218": "Case", "k219": "Closed form", "k220": "This tool", "k221": "No load", "k222": "Uniform load q = 20 kPa entirely on the sliding mass (Q = 60 kN/m)", "k223": "Trapezoidal load 0 → 40 kPa entirely on the sliding mass (Q = 60 kN/m)", "k224": "Uniform load with only 2 m on the sliding mass (Q = 40 kN/m)", "k225": "Line load P = 50 kN/m", "k226": "Uniform load 0.1 m wide totalling 50 kN/m", "k227": "Load outside the sliding mass", "k228": "kH = 0.15, load with seismic inertia", "k229": "kH = 0.15, load without seismic inertia", "k230": "Also checked: mirrored slopes give identical results; in automatic search, crest loads of 10, 20 and 40 kPa reduce F<sub>s</sub> from 1.025 to 1.022, 1.016 and 0.998, larger loads causing larger drops.", "k231": "Notation", "k232": "<dt>W<sub>i</sub></dt><dd>Slice weight (kN/m)</dd>", "k233": "<dt>N<sub>i</sub>, T<sub>i</sub></dt><dd>Normal and resisting force on the slip surface</dd>", "k234": "<dt>E<sub>i</sub>, X<sub>i</sub></dt><dd>Interslice horizontal and shear force</dd>", "k235": "<dt>α<sub>i</sub></dt><dd>Inclination of the slip surface</dd>", "k236": "<dt>ℓ<sub>i</sub>, b<sub>i</sub></dt><dd>Slice base length and width, b = ℓcosα</dd>", "k237": "<dt>c′, φ′</dt><dd>Effective cohesion (kPa) and effective friction angle</dd>", "k238": "<dt>U<sub>i</sub>, u<sub>i</sub></dt><dd>Pore water pressure at the slice base (kPa)</dd>", "k239": "<dt>k<sub>H</sub>, k<sub>V</sub></dt><dd>Horizontal and vertical seismic coefficients</dd>", "k240": "<dt>F<sub>s</sub>, λ</dt><dd>Factor of safety; factor of safety used in the search</dd>", "k241": "<dt>f<sub>0</sub></dt><dd>Correction factor</dd>", "k242": "<dt>d, L</dt><dd>Maximum depth of the slip surface; distance between its end points</dd>", "k243": "<dt>G, DG</dt><dd>Auxiliary functional; gain (contribution of one segment)</dd>", "k244": "<dt>T, θ, S<sub>h</sub></dt><dd>Reinforcement force, downward inclination of the member, horizontal spacing</dd>", "k245": "<dt>P<sub>x</sub>, P<sub>y</sub></dt><dd>Horizontal and vertical components of the reinforcement force (per metre width)</dd>", "k246": "How to cite", "k247": "If you publish results obtained with this tool in a report or paper, please cite:", "k249": "Copy Chinese citation", "k250": "Copy English citation", "k251": "Copy BibTeX", "k252": "Download full paper (PDF) ↗", "k253": "About the author", "k254": "For the background and publications of the author, Chen-Yu Chen, see the <a href=\"https://cychen59.blogspot.com/p/education-2014.html\" rel=\"noopener\" target=\"_blank\">author page ↗</a>. Questions and suggestions are welcome at <a href=\"mailto:cychen59@gmail.com\">cychen59@gmail.com</a>.", "k255": "Method sources and references", "k256": "Nakamura, H. and Kubota, T. (1987): Critical slip surface analysis by dynamic programming, PWRI Technical Memorandum No. 2425, Landslide Division, Public Works Research Institute, Ministry of Construction, Japan. (in Japanese)", "k257": "Yamagami, T. and Ueta, Y. (1986): Noncircular Slip Surface Analysis of the Stability of Slopes: An Application of Dynamic Programming to the Janbu Method, Journal of the Japan Landslide Society, 22(4).", "k258": "Shin, J. and Itagaki, O. (1983): Landslides (Part 4), Tsuchi-to-Kiso, Vol. 31, No. 7, pp. 89-97. (in Japanese)", "k259": "SSA Slope Stability Analysis is released under the <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\" rel=\"noopener\" target=\"_blank\">GNU GPL-3.0</a> license. Source code and issues: <a href=\"https://github.com/cychen59/ssa-slope-stability\" rel=\"noopener\" target=\"_blank\">github.com/cychen59/ssa-slope-stability</a>. Please cite <a href=\"#cite\">Chen et al. (2014)</a> when you use results from this tool. Author: <a href=\"https://cychen59.blogspot.com/p/education-2014.html\" rel=\"noopener\" target=\"_blank\">Chen-Yu Chen</a>, contact <a href=\"mailto:cychen59@gmail.com\">cychen59@gmail.com</a>.", "k260": "Usage is counted by the <a href=\"https://jasoncameron.dev/abacus/\" rel=\"noopener\" target=\"_blank\">Abacus</a> counter service, which records counts only and collects no personal data.", "k261": "This tool assists 2D limit equilibrium analysis and its results are for reference only. Engineering judgement and design remain the responsibility of qualified professionals based on site investigation and the relevant codes.", "a262": "Users are counted per browser; each browser counts once", "a263": "Undo (Ctrl+Z)", "a264": "Coordinates of the current line", "a265": "Load template", "a266": "Model JSON", "a267": "Edit mode", "a268": "Drag vertices", "a269": "Click the drawing to add a vertex", "a270": "Click a vertex to delete it", "a271": "Evaluate only the specified slip surface from the Profile tab, without searching", "a272": "Slope cross-section", "a273": "View search setting advice", "a274": "Copied content", "a275": "DP search grid: vertical lines are stages, nodes on them are states, and the red line is the path with the smallest accumulated value", "a276": "Slice forces: weight, seismic force, normal force, resisting force and interslice forces"};
+  let LANG = 'zh';
+  try {
+    const q = new URLSearchParams(location.search).get('lang');
+    let saved = null; try { saved = localStorage.getItem('ssa-lang'); } catch (e) { }
+    LANG = q === 'en' || q === 'zh' ? q : saved === 'en' || saved === 'zh' ? saved : (/^zh/i.test(navigator.language || 'zh') ? 'zh' : 'en');
+  } catch (e) { LANG = 'zh'; }
+  const L = (zh, en) => LANG === 'en' ? en : zh;
+  const L_ = L;
+  // engine messages are in Chinese; translate them for display
+  const ENGINE_MSG = [
+    [/^地表線至少需要 2 個點。$/, () => 'The ground line needs at least 2 points.'],
+    [/^至少需要 1 個土層。$/, () => 'At least one soil layer is required.'],
+    [/^「(.*)」的頂界面至少需要 2 個點。$/, m => `The top boundary of “${m[1]}” needs at least 2 points.`],
+    [/^「(.*)」的單位重 γ 需大於 0。$/, m => `Unit weight γ of “${m[1]}” must be greater than 0.`],
+    [/^「(.*)」的飽和單位重 γsat 需大於 0。$/, m => `Saturated unit weight γsat of “${m[1]}” must be greater than 0.`],
+    [/^「(.*)」的凝聚力 c' 不可為負。$/, m => `Cohesion c' of “${m[1]}” cannot be negative.`],
+    [/^「(.*)」的摩擦角 φ' 需介於 0–90°。$/, m => `Friction angle φ' of “${m[1]}” must be between 0 and 90°.`],
+    [/^擋土牆 (\d+) 的形狀至少需要 3 個頂點。$/, m => `Retaining wall ${m[1]} needs at least 3 vertices.`],
+    [/^擋土牆 (\d+) 的單位重需大於 0。$/, m => `The unit weight of retaining wall ${m[1]} must be greater than 0.`],
+    [/^模型底部高程需低於地表最低點。$/, () => 'The model base must be lower than the lowest ground point.'],
+    [/^找不到可行的滑動面。/, () => 'No feasible slip surface was found. Check the geometry and parameters, or relax the search constraints.'],
+    [/^指定滑動面至少需要 2 個點。$/, () => 'The specified slip surface needs at least 2 points.'],
+    [/^指定滑動面沒有低於地表的部分。$/, () => 'No part of the specified slip surface lies below the ground surface.'],
+    [/^指定滑動面穿過擋土牆。/, () => 'The specified slip surface passes through a retaining wall. Walls are impenetrable, so route the surface beneath or behind the wall.'],
+    [/^指定滑動面穿過岩盤/, () => 'The specified slip surface passes through bedrock, goes below the model base, or m\u03b1 of a toe slice is too small, so it cannot be evaluated.'],
+    [/^這條滑動面的滑動力小於等於零/, () => 'The driving force on this surface is zero or negative (reinforcement exceeds the driving force), so the factor of safety is meaningless.'],
+    [/^計算失敗：(.*)$/, m => 'Calculation failed: ' + m[1]],
+    [/^拉拔$/, () => 'pullout'], [/^抗拉$/, () => 'tension'], [/^面版$/, () => 'facing'], [/^設計錨力$/, () => 'design load'],
+    [/^錨碇段在滑動體內$/, () => 'bond length inside sliding mass'], [/^未穿出滑動面$/, () => 'does not extend beyond slip surface'], [/^未穿過滑動面$/, () => 'does not cross slip surface']
+  ];
+  const tx = msg => { if (LANG !== 'en' || msg == null) return msg; for (const [re, f] of ENGINE_MSG) { const m = String(msg).match(re); if (m) return f(m); } return msg; };
+  // default names that follow the interface language
+  const NAME_PAIRS = [['崩積層', 'Colluvium'], ['風化岩', 'Weathered rock'], ['岩盤', 'Bedrock'], ['道路車載', 'Traffic'], ['建築物', 'Building'], ['堆置物', 'Stockpile'], ['圍牆或構造物', 'Wall or structure']];
+  const NAME_PATTERNS = [[/^土層 (\d+)$/, /^Layer (\d+)$/, 'Layer ', '土層 '], [/^擋土牆 (\d+)$/, /^Retaining wall (\d+)$/, 'Retaining wall ', '擋土牆 '], [/^載重 (\d+)$/, /^Load (\d+)$/, 'Load ', '載重 ']];
+  function nameFor(n, lang) {
+    for (const [z, e] of NAME_PAIRS) { if (lang === 'en' && n === z) return e; if (lang === 'zh' && n === e) return z; }
+    for (const [rz, re, pe, pz] of NAME_PATTERNS) { const m = n.match(lang === 'en' ? rz : re); if (m) return (lang === 'en' ? pe : pz) + m[1]; }
+    return n;
+  }
+  function applyStatic() {
+    document.documentElement.lang = L('zh-Hant', 'en');
+    document.title = L('SSA 邊坡穩定分析', 'SSA Slope Stability Analysis');
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const en = I18N_EN[el.dataset.i18n]; if (en == null) return;
+      if (el._zh === undefined) el._zh = el.innerHTML;
+      el.innerHTML = LANG === 'en' ? en : el._zh;
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+      el._zhA = el._zhA || {};
+      el.dataset.i18nAttr.split(';').forEach(pair => {
+        const [a, k] = pair.split(':'); const en = I18N_EN[k]; if (en == null) return;
+        if (el._zhA[a] === undefined) el._zhA[a] = el.getAttribute(a);
+        el.setAttribute(a, LANG === 'en' ? en : el._zhA[a]);
+      });
+    });
+    const b = document.querySelector('#btnLang');
+    if (b) { b.textContent = L('EN', '中文'); b.title = L('Switch to English', '切換為中文'); b.lang = L('en', 'zh-Hant'); }
+  }
+
   const DEF_SET = { kh: 0, kv: 0, gw: 9.81, cos2: false, nCol: 60, nState: 80, nSub: 4, dmin: 1, convex: true, noBoundary: true, tol: 0.0001, maxIter: 30, F0: 2, Freq: 1.5, useF0: false, f0type: 'pwri', unitG: 'kN', unitC: 'kPa', reinfMode: 'active', compare: true, compareLoad: true };
   const TF = 9.80665;
   const SAMPLE = {
     ground: [[0, 10], [20, 10], [40, 20], [55, 27], [80, 28]],
     layers: [
-      { name: '崩積層', color: '#D8BE8A', gamma: 18, gammaSat: 20, c: 5, phi: 28, bedrock: false, top: null },
-      { name: '風化岩', color: '#B48462', gamma: 21, gammaSat: 22, c: 30, phi: 32, bedrock: false, top: [[0, 6], [20, 6], [40, 14], [55, 19], [80, 20]] },
-      { name: '岩盤', color: '#8C949A', gamma: 24, gammaSat: 24, c: 200, phi: 40, bedrock: true, top: [[0, 2], [40, 8], [80, 12]] }
+      { name: L('崩積層', 'Colluvium'), color: '#D8BE8A', gamma: 18, gammaSat: 20, c: 5, phi: 28, bedrock: false, top: null },
+      { name: L('風化岩', 'Weathered rock'), color: '#B48462', gamma: 21, gammaSat: 22, c: 30, phi: 32, bedrock: false, top: [[0, 6], [20, 6], [40, 14], [55, 19], [80, 20]] },
+      { name: L('岩盤', 'Bedrock'), color: '#8C949A', gamma: 24, gammaSat: 24, c: 200, phi: 40, bedrock: true, top: [[0, 2], [40, 8], [80, 12]] }
     ],
     water: [[0, 10], [20, 10.2], [40, 16], [55, 22], [80, 24]],
     zBase: 0,
@@ -1515,13 +1578,13 @@ if (typeof module !== 'undefined') module.exports = SSA;
 
   function save() { }
   function sanitize(m) {
-    if (!m || !Array.isArray(m.ground) || !Array.isArray(m.layers) || !m.layers.length) throw new Error('格式不符');
+    if (!m || !Array.isArray(m.ground) || !Array.isArray(m.layers) || !m.layers.length) throw new Error(L('格式不符', 'invalid format'));
     const P = a => Array.isArray(a) ? a.filter(p => Array.isArray(p) && isFinite(p[0]) && isFinite(p[1])).map(p => [+p[0], +p[1]]).sort((a, b) => a[0] - b[0]) : [];
     const pal = ['#D8BE8A', '#B48462', '#8C949A', '#A9B38B', '#C7A1A1', '#9FB4C7'];
     return {
       ground: P(m.ground),
       layers: m.layers.map((L, i) => ({
-        name: String(L.name || `土層 ${i + 1}`), color: /^#[0-9a-f]{6}$/i.test(L.color) ? L.color : pal[i % pal.length],
+        name: String(L.name || L_(`土層 ${i + 1}`, `Layer ${i + 1}`)), color: /^#[0-9a-f]{6}$/i.test(L.color) ? L.color : pal[i % pal.length],
         gamma: +L.gamma || 18, gammaSat: +L.gammaSat || +L.gamma || 20, c: +L.c || 0, phi: +L.phi || 0, bedrock: !!L.bedrock,
         top: i ? P(L.top) : null
       })),
@@ -1533,11 +1596,11 @@ if (typeof module !== 'undefined') module.exports = SSA;
         o.x = +r.x; o.z = +r.z; return o;
       }),
       loads: (Array.isArray(m.loads) ? m.loads : []).filter(l => l && (l.type === 'line' ? isFinite(l.x) : isFinite(l.x1) && isFinite(l.x2))).map((l, i) => ({
-        name: String(l.name || `載重 ${i + 1}`), type: l.type === 'line' ? 'line' : 'udl', on: l.on !== false, seis: l.seis !== false,
+        name: String(l.name || L_(`載重 ${i + 1}`, `Load ${i + 1}`)), type: l.type === 'line' ? 'line' : 'udl', on: l.on !== false, seis: l.seis !== false,
         x1: +l.x1, x2: +l.x2, x: +l.x, q: isFinite(+l.q) ? +l.q : 10, q2: (l.q2 === null || l.q2 === undefined || l.q2 === '' || !isFinite(+l.q2)) ? null : +l.q2, P: isFinite(+l.P) ? +l.P : 50
       })),
       walls: (Array.isArray(m.walls) ? m.walls : []).filter(w => w && Array.isArray(w.poly)).map((w, i) => ({
-        name: String(w.name || `擋土牆 ${i + 1}`), on: w.on !== false, gamma: +w.gamma > 0 ? +w.gamma : 23.5,
+        name: String(w.name || L_(`擋土牆 ${i + 1}`, `Retaining wall ${i + 1}`)), on: w.on !== false, gamma: +w.gamma > 0 ? +w.gamma : 23.5,
         poly: w.poly.filter(p => Array.isArray(p) && isFinite(p[0]) && isFinite(p[1])).map(p => [+p[0], +p[1]]),
         par: w.par && typeof w.par === 'object' ? { x0: +w.par.x0, z0: +w.par.z0, H: +w.par.H, B: +w.par.B, b: +w.par.b } : null
       })),
@@ -1555,10 +1618,10 @@ if (typeof module !== 'undefined') module.exports = SSA;
 
   /* ---------- lines ---------- */
   function lineDefs() {
-    const a = [{ key: 'ground', label: '地表線', kind: 'ground' }];
-    model.layers.forEach((L, i) => { if (i) a.push({ key: 'L' + i, label: `${L.name} 頂面`, kind: 'bound', color: L.color }); });
-    a.push({ key: 'water', label: '地下水位線', kind: 'water' });
-    a.push({ key: 'trial', label: '指定滑動面（試算用）', kind: 'trial' });
+    const a = [{ key: 'ground', label: L('地表線', 'Ground surface'), kind: 'ground' }];
+    model.layers.forEach((L, i) => { if (i) a.push({ key: 'L' + i, label: L_(`${L.name} 頂面`, `Top of ${L.name}`), kind: 'bound', color: L.color }); });
+    a.push({ key: 'water', label: L('地下水位線', 'Water table'), kind: 'water' });
+    a.push({ key: 'trial', label: L('指定滑動面（試算用）', 'Specified slip surface (trial)'), kind: 'trial' });
     return a;
   }
   function getPts(key) {
@@ -1595,14 +1658,14 @@ if (typeof module !== 'undefined') module.exports = SSA;
     box.innerHTML = lineDefs().map(d => {
       const n = (getPts(d.key) || []).length;
       const sw = d.kind === 'water' ? '<span class="sw water"></span>' : d.kind === 'trial' ? '<span class="sw trial"></span>' : d.kind === 'bound' ? `<span class="sw bound" style="border-top-color:${d.color}"></span>` : '<span class="sw"></span>';
-      return `<button class="lrow" type="button" data-key="${d.key}" aria-pressed="${d.key === active}">${sw}<span>${esc(d.label)}</span><span class="cnt">${n} 點</span></button>`;
+      return `<button class="lrow" type="button" data-key="${d.key}" aria-pressed="${d.key === active}">${sw}<span>${esc(d.label)}</span><span class="cnt">${n} ${L('點', n === 1 ? 'pt' : 'pts')}</span></button>`;
     }).join('');
     const d = lineDefs().find(x => x.key === active);
-    $('#coordTitle').textContent = `座標：${d ? d.label : ''}（x　z）`;
+    $('#coordTitle').textContent = L(`座標：${d ? d.label : ''}（x　z）`, `Coordinates: ${d ? d.label : ''} (x　z)`);
     $('#btnClearLine').hidden = !(active === 'water' || active === 'trial');
     $('#btnCopyCrit').hidden = !(active === 'trial' && result && result.ok);
     $('#btnMakeWater').hidden = !(active === 'water' && !model.water.length);
-    $('#activeInfo').textContent = `編輯中：${d ? d.label : ''}`;
+    $('#activeInfo').textContent = L(`編輯中：${d ? d.label : ''}`, `Editing: ${d ? d.label : ''}`);
   }
   function renderCoords() {
     const P = getPts(active) || [];
@@ -1626,9 +1689,9 @@ if (typeof module !== 'undefined') module.exports = SSA;
     box.innerHTML = model.layers.map((L, i) => `
       <div class="layer" data-i="${i}">
         <div class="layer-head">
-          <input type="color" value="${L.color}" data-f="color" aria-label="顏色">
-          <input type="text" value="${esc(L.name)}" data-f="name" aria-label="土層名稱">
-          <button class="btn small ghost" data-del="${i}" type="button" ${model.layers.length < 2 ? 'disabled' : ''} title="刪除此層">刪除</button>
+          <input type="color" value="${L.color}" data-f="color" aria-label="${L_('顏色', 'Colour')}">
+          <input type="text" value="${esc(L.name)}" data-f="name" aria-label="${L_('土層名稱', 'Layer name')}">
+          <button class="btn small ghost" data-del="${i}" type="button" ${model.layers.length < 2 ? 'disabled' : ''} title="${L_('刪除此層', 'Delete this layer')}">${L_('刪除', 'Delete')}</button>
         </div>
         <div class="grid4">
           <div class="field"><label>γ <small>${uG()}</small></label><input type="number" step="${gTF() ? 0.01 : 0.1}" value="${dispN(toG(L.gamma))}" data-f="gamma"></div>
@@ -1636,8 +1699,8 @@ if (typeof module !== 'undefined') module.exports = SSA;
           <div class="field"><label>c' <small>${uC()}</small></label><input type="number" step="${cTF() ? 0.1 : 0.5}" value="${dispN(toC(L.c))}" data-f="c"></div>
           <div class="field"><label>φ' <small>°</small></label><input type="number" step="0.5" value="${L.phi}" data-f="phi"></div>
         </div>
-        <label class="check"><input type="checkbox" data-f="bedrock" ${L.bedrock ? 'checked' : ''}><span>岩盤（滑動面不可穿越）</span></label>
-        <span class="idx">第 ${i + 1} 層・頂面為${i ? '界面線 ' + i : '地表線'}</span>
+        <label class="check"><input type="checkbox" data-f="bedrock" ${L.bedrock ? 'checked' : ''}><span>${L_('岩盤（滑動面不可穿越）', 'Bedrock (slip surface cannot enter)')}</span></label>
+        <span class="idx">${L_(`第 ${i + 1} 層・頂面為${i ? '界面線 ' + i : '地表線'}`, `Layer ${i + 1} · top is ${i ? 'boundary line ' + i : 'the ground surface'}`)}</span>
       </div>`).join('');
   }
   function renderSettings() {
@@ -1647,7 +1710,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
       else if (el.dataset.s === 'gw') el.value = dispN(toG(v));
       else el.value = v;
     });
-    $('#lbl-gw').textContent = `水的單位重 γw (${uG()})`;
+    $('#lbl-gw').textContent = L(`水的單位重 γw (${uG()})`, `Unit weight of water γw (${uG()})`);
     $('#zBase').value = model.zBase;
   }
 
@@ -1671,27 +1734,27 @@ if (typeof module !== 'undefined') module.exports = SSA;
   function renderReinf() {
     const box = $('#reinfList');
     if ($('#rbXa').value === '') { const a = faceX(0.15), b = faceX(0.85); $('#rbXa').value = Math.min(a, b); $('#rbXb').value = Math.max(a, b); }
-    if (!model.reinf.length) { box.innerHTML = '<p class="hint">尚未加入補強構件。按下方按鈕新增土釘或地錨，或用「整排配置」一次加入多支。</p>'; return; }
+    if (!model.reinf.length) { box.innerHTML = `<p class="hint">${L('尚未加入補強構件。按下方按鈕新增土釘或地錨，或用「整排配置」一次加入多支。', 'No members yet. Use the buttons below to add soil nails or anchors, or “Place a row” to add several at once.')}</p>`; return; }
     const crossed = result && result.ok && !stale && result.members ? result.members : null;
     box.innerHTML = model.reinf.map((r, i) => {
       const fld = (f, lab, v, step, conv) => `<div class="field"><label>${lab}</label><input type="number" step="${step}" value="${dispN(conv ? toG(v) : v)}" data-f="${f}"${conv ? ' data-conv="1"' : ''}></div>`;
       const m = crossed && crossed.find(c => c.idx === i);
-      const info = m ? (m.crossed ? `穿過滑動面・T = ${fmt(toG(m.Tm), 2)} ${uF()}（${m.ctrl}）` : '未穿過臨界滑動面') : '';
+      const info = m ? (m.crossed ? L(`穿過滑動面・T = ${fmt(toG(m.Tm), 2)} ${uF()}（${m.ctrl}）`, `Crosses slip surface · T = ${fmt(toG(m.Tm), 2)} ${uF()} (${tx(m.ctrl)})`) : L('未穿過臨界滑動面', 'Does not cross the critical surface')) : '';
       return `<div class="rcard${r.on ? '' : ' off'}" data-r="${i}">
         <div class="rcard-head">
           <span class="no">${i + 1}</span>
-          <select data-f="type" aria-label="類型"><option value="nail"${r.type === 'nail' ? ' selected' : ''}>土釘</option><option value="anchor"${r.type === 'anchor' ? ' selected' : ''}>地錨</option></select>
-          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-f="on"${r.on ? ' checked' : ''} style="margin:0"><span>啟用</span></label>
+          <select data-f="type" aria-label="${L('類型', 'Type')}"><option value="nail"${r.type === 'nail' ? ' selected' : ''}>${L('土釘', 'Soil nail')}</option><option value="anchor"${r.type === 'anchor' ? ' selected' : ''}>${L('地錨', 'Anchor')}</option></select>
+          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-f="on"${r.on ? ' checked' : ''} style="margin:0"><span>${L('啟用', 'On')}</span></label>
           <span class="sp"></span>
-          <button class="btn small ghost" data-act="snap" type="button" title="把頭部高程設為該處地表高程">貼齊</button>
-          <button class="btn small ghost" data-act="dup" type="button">複製</button>
-          <button class="btn small ghost" data-act="del" type="button">刪除</button>
+          <button class="btn small ghost" data-act="snap" type="button" title="${L('把頭部高程設為該處地表高程', 'Set the head elevation to the ground surface')}">${L('貼齊', 'Snap')}</button>
+          <button class="btn small ghost" data-act="dup" type="button">${L('複製', 'Duplicate')}</button>
+          <button class="btn small ghost" data-act="del" type="button">${L('刪除', 'Delete')}</button>
         </div>
         <div class="grid3">
-          ${fld('x', '頭部 x (m)', r.x, 0.5)}${fld('z', '頭部 z (m)', r.z, 0.5)}${fld('theta', '傾角 θ (°)', r.theta, 1)}
-          ${fld('L', '總長 L (m)', r.L, 0.5)}${fld('Sh', '間距 Sh (m)', r.Sh, 0.1)}${fld('Tt', `抗拉 (${uT()})`, r.Tt, 10, 1)}
-          ${fld('q', `拉拔 q (${uQ()})`, r.q, 5, 1)}
-          ${r.type === 'anchor' ? fld('Lfree', '自由段 (m)', r.Lfree, 0.5) + fld('P', `錨力 P (${uT()})`, r.P, 10, 1) : fld('Tf', `面版 (${uT()})`, r.Tf, 10, 1)}
+          ${fld('x', L('頭部 x (m)', 'Head x (m)'), r.x, 0.5)}${fld('z', L('頭部 z (m)', 'Head z (m)'), r.z, 0.5)}${fld('theta', L('傾角 θ (°)', 'Inclination θ (°)'), r.theta, 1)}
+          ${fld('L', L('總長 L (m)', 'Length L (m)'), r.L, 0.5)}${fld('Sh', L('間距 Sh (m)', 'Spacing Sh (m)'), r.Sh, 0.1)}${fld('Tt', L(`抗拉 (${uT()})`, `Tension (${uT()})`), r.Tt, 10, 1)}
+          ${fld('q', L(`拉拔 q (${uQ()})`, `Pullout q (${uQ()})`), r.q, 5, 1)}
+          ${r.type === 'anchor' ? fld('Lfree', L('自由段 (m)', 'Free length (m)'), r.Lfree, 0.5) + fld('P', L(`錨力 P (${uT()})`, `Anchor load P (${uT()})`), r.P, 10, 1) : fld('Tf', L(`面版 (${uT()})`, `Facing (${uT()})`), r.Tf, 10, 1)}
         </div>
         ${info ? `<span class="idx">${info}</span>` : ''}
       </div>`;
@@ -1704,37 +1767,37 @@ if (typeof module !== 'undefined') module.exports = SSA;
 
   /* ---------- surface loads ---------- */
   const LOAD_TPL = {
-    road: { name: '道路車載', type: 'udl', seis: false },
-    bldg: { name: '建築物', type: 'udl', seis: true },
-    pile: { name: '堆置物', type: 'udl', seis: true },
-    wallL: { name: '圍牆或構造物', type: 'line', seis: true }
+    road: { name: ['道路車載', 'Traffic'], type: 'udl', seis: false },
+    bldg: { name: ['建築物', 'Building'], type: 'udl', seis: true },
+    pile: { name: ['堆置物', 'Stockpile'], type: 'udl', seis: true },
+    wallL: { name: ['圍牆或構造物', 'Wall or structure'], type: 'line', seis: true }
   };
   function crestX() { return faceX(0.6); }
   function renderLoads() {
     const box = $('#loadList');
-    if (!model.loads.length) { box.innerHTML = '<p class="hint">尚未加入載重。</p>'; return; }
+    if (!model.loads.length) { box.innerHTML = `<p class="hint">${L('尚未加入載重。', 'No loads yet.')}</p>`; return; }
     box.innerHTML = model.loads.map((l, i) => {
       const fld = (f, lab, v, step, kind) => `<div class="field"><label>${lab}</label><input type="number" step="${step}" value="${isFinite(v) ? dispN(kind === 'C' ? toC(v) : kind === 'G' ? toG(v) : v) : ''}" data-lf="${f}"${kind ? ` data-lk="${kind}"` : ''}></div>`;
       return `<div class="rcard${l.on ? '' : ' off'}" data-l="${i}">
         <div class="rcard-head">
           <span class="no">Q${i + 1}</span>
-          <input type="text" value="${esc(l.name)}" data-lf="name" aria-label="名稱" style="flex:1;min-width:80px;border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--canvas);font-size:13px">
-          <select data-lf="type" aria-label="類型"><option value="udl"${l.type === 'udl' ? ' selected' : ''}>均布／梯形</option><option value="line"${l.type === 'line' ? ' selected' : ''}>線載重</option></select>
-          <button class="btn small ghost" data-lact="del" type="button">刪除</button>
+          <input type="text" value="${esc(l.name)}" data-lf="name" aria-label="${L('名稱', 'Name')}" style="flex:1;min-width:80px;border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--canvas);font-size:13px">
+          <select data-lf="type" aria-label="${L('類型', 'Type')}"><option value="udl"${l.type === 'udl' ? ' selected' : ''}>${L('均布／梯形', 'Distributed')}</option><option value="line"${l.type === 'line' ? ' selected' : ''}>${L('線載重', 'Line load')}</option></select>
+          <button class="btn small ghost" data-lact="del" type="button">${L('刪除', 'Delete')}</button>
         </div>
         <div class="grid3">
-          ${l.type === 'udl' ? fld('x1', '起點 x (m)', l.x1, 0.5) + fld('x2', '終點 x (m)', l.x2, 0.5) + fld('q', `起點 q (${uC()})`, l.q, 1, 'C') + fld('q2', `終點 q (${uC()})，空白＝均布`, l.q2 === null ? NaN : l.q2, 1, 'C') : fld('x', '作用點 x (m)', l.x, 0.5) + fld('P', `P (${uF()})`, l.P, 5, 'G')}
+          ${l.type === 'udl' ? fld('x1', L('起點 x (m)', 'Start x (m)'), l.x1, 0.5) + fld('x2', L('終點 x (m)', 'End x (m)'), l.x2, 0.5) + fld('q', L(`起點 q (${uC()})`, `Start q (${uC()})`), l.q, 1, 'C') + fld('q2', L(`終點 q (${uC()})，空白＝均布`, `End q (${uC()}), blank = uniform`), l.q2 === null ? NaN : l.q2, 1, 'C') : fld('x', L('作用點 x (m)', 'Position x (m)'), l.x, 0.5) + fld('P', `P (${uF()})`, l.P, 5, 'G')}
         </div>
         <div class="row">
-          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-lf="seis"${l.seis ? ' checked' : ''} style="margin:0"><span>計入地震慣性力</span></label>
-          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-lf="on"${l.on ? ' checked' : ''} style="margin:0"><span>啟用</span></label>
+          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-lf="seis"${l.seis ? ' checked' : ''} style="margin:0"><span>${L('計入地震慣性力', 'Include seismic inertia')}</span></label>
+          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-lf="on"${l.on ? ' checked' : ''} style="margin:0"><span>${L('啟用', 'On')}</span></label>
         </div>
       </div>`;
     }).join('');
   }
   function addLoad(tplKey) {
     const t = LOAD_TPL[tplKey] || LOAD_TPL.bldg, d = intoDir(), xc = crestX();
-    const o = { name: t.name, type: t.type, on: true, seis: t.seis, q: 10, P: 50, x1: r3(xc), x2: r3(xc + d * 6), x: r3(xc + d * 2) };
+    const o = { name: L(t.name[0], t.name[1]), type: t.type, on: true, seis: t.seis, q: 10, P: 50, x1: r3(xc), x2: r3(xc + d * 6), x: r3(xc + d * 2) };
     model.loads.push(o);
   }
 
@@ -1753,28 +1816,28 @@ if (typeof module !== 'undefined') module.exports = SSA;
   }
   function renderWalls() {
     const box = $('#wallList');
-    if (!model.walls.length) { box.innerHTML = '<p class="hint">尚未加入擋土牆。</p>'; return; }
+    if (!model.walls.length) { box.innerHTML = `<p class="hint">${L('尚未加入擋土牆。', 'No retaining walls yet.')}</p>`; return; }
     box.innerHTML = model.walls.map((w, i) => {
       const p = w.par || {};
       const fld = (f, lab, v, step) => `<div class="field"><label>${lab}</label><input type="number" step="${step}" value="${isFinite(v) ? dispN(v) : ''}" data-p="${f}"></div>`;
       return `<div class="rcard${w.on ? '' : ' off'}" data-w="${i}">
         <div class="rcard-head">
           <span class="no">W${i + 1}</span>
-          <input type="text" value="${esc(w.name)}" data-wf="name" aria-label="名稱" style="flex:1;min-width:80px;border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--canvas);font-size:13px">
-          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-wf="on"${w.on ? ' checked' : ''} style="margin:0"><span>啟用</span></label>
-          <button class="btn small ghost" data-wact="del" type="button">刪除</button>
+          <input type="text" value="${esc(w.name)}" data-wf="name" aria-label="${L('名稱', 'Name')}" style="flex:1;min-width:80px;border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--canvas);font-size:13px">
+          <label class="check" style="font-size:12px;align-items:center"><input type="checkbox" data-wf="on"${w.on ? ' checked' : ''} style="margin:0"><span>${L('啟用', 'On')}</span></label>
+          <button class="btn small ghost" data-wact="del" type="button">${L('刪除', 'Delete')}</button>
         </div>
         <div class="grid3">
-          <div class="field"><label>單位重 (${uG()})</label><input type="number" step="${gTF() ? 0.01 : 0.1}" value="${dispN(toG(w.gamma))}" data-wf="gamma"></div>
+          <div class="field"><label>${L('單位重', 'Unit weight')} (${uG()})</label><input type="number" step="${gTF() ? 0.01 : 0.1}" value="${dispN(toG(w.gamma))}" data-wf="gamma"></div>
         </div>
-        <span class="idx">參數式斷面（前趾在坡下側，背面垂直）${w.par ? '' : '・目前為自訂形狀，填入全部參數可改回參數式'}</span>
+        <span class="idx">${L('參數式斷面（前趾在坡下側，背面垂直）', 'Parametric section (toe on the downslope side, vertical back)')}${w.par ? '' : L('・目前為自訂形狀，填入全部參數可改回參數式', ' · currently a custom shape; fill in all parameters to return to the parametric form')}</span>
         <div class="grid3">
-          ${fld('x0', '前趾 x (m)', p.x0, 0.5)}${fld('z0', '底面 z (m)', p.z0, 0.5)}${fld('H', '牆高 H (m)', p.H, 0.5)}
-          ${fld('B', '底寬 B (m)', p.B, 0.1)}${fld('b', '頂寬 b (m)', p.b, 0.1)}
+          ${fld('x0', L('前趾 x (m)', 'Toe x (m)'), p.x0, 0.5)}${fld('z0', L('底面 z (m)', 'Base z (m)'), p.z0, 0.5)}${fld('H', L('牆高 H (m)', 'Height H (m)'), p.H, 0.5)}
+          ${fld('B', L('底寬 B (m)', 'Base width B (m)'), p.B, 0.1)}${fld('b', L('頂寬 b (m)', 'Top width b (m)'), p.b, 0.1)}
         </div>
-        <span class="idx">頂點座標（x　z，可改成任意形狀，例如懸臂式 L 型牆）</span>
-        <textarea rows="4" spellcheck="false" data-wf="poly" aria-label="擋土牆頂點座標">${w.poly.map(q => `${r3(q[0])}\t${r3(q[1])}`).join('\n')}</textarea>
-        <div class="row"><button class="btn small" data-wact="apply" type="button">套用頂點座標</button></div>
+        <span class="idx">${L('頂點座標（x　z，可改成任意形狀，例如懸臂式 L 型牆）', 'Vertices (x　z); any shape is allowed, e.g. an L-shaped cantilever wall')}</span>
+        <textarea rows="4" spellcheck="false" data-wf="poly" aria-label="${L('擋土牆頂點座標', 'Retaining wall vertices')}">${w.poly.map(q => `${r3(q[0])}\t${r3(q[1])}`).join('\n')}</textarea>
+        <div class="row"><button class="btn small" data-wact="apply" type="button">${L('套用頂點座標', 'Apply vertices')}</button></div>
       </div>`;
     }).join('');
   }
@@ -1807,35 +1870,35 @@ if (typeof module !== 'undefined') module.exports = SSA;
     const gi = gridInfo(), box = $('#searchGuide'), chip = $('#gridChip');
     if (!gi) { box.innerHTML = ''; chip.textContent = ''; return; }
     const warns = [];
-    if (gi.dx > 2.5) warns.push(`分割線間距 ${fmt(gi.dx, 2)} m 偏大，滑動面會較粗糙，Fs 可能偏高。`);
-    if (gi.dz > 0.6) warns.push(`節點垂直間距 ${fmt(gi.dz, 2)} m 偏大，淺層滑動面可能抓不準。`);
+    if (gi.dx > 2.5) warns.push(L(`分割線間距 ${fmt(gi.dx, 2)} m 偏大，滑動面會較粗糙，Fs 可能偏高。`, `Line spacing ${fmt(gi.dx, 2)} m is large; the slip surface will be coarse and Fs may be overestimated.`));
+    if (gi.dz > 0.6) warns.push(L(`節點垂直間距 ${fmt(gi.dz, 2)} m 偏大，淺層滑動面可能抓不準。`, `Vertical node spacing ${fmt(gi.dz, 2)} m is large; shallow slip surfaces may be missed.`));
     const short = [];
-    model.layers.forEach((Ly, i) => { if (i && Ly.top && Ly.top.length && (Ly.top[0][0] > gi.x0 + 1e-6 || Ly.top[Ly.top.length - 1][0] < gi.x1 - 1e-6)) short.push(`${Ly.name} 頂面`); });
-    const w = model.water; if (w.length >= 2 && (w[0][0] > gi.x0 + 1e-6 || w[w.length - 1][0] < gi.x1 - 1e-6)) short.push('地下水位線');
-    if (short.length) warns.push(`${short.join('、')}沒有涵蓋地表線全長，超出部分會沿用端點高程，建議補上端點。`);
-    if (gi.sec > 8) warns.push('網格很密，計算可能要十幾秒以上，可先用建議值試算。');
+    model.layers.forEach((Ly, i) => { if (i && Ly.top && Ly.top.length && (Ly.top[0][0] > gi.x0 + 1e-6 || Ly.top[Ly.top.length - 1][0] < gi.x1 - 1e-6)) short.push(L_(`${Ly.name} 頂面`, `top of ${Ly.name}`)); });
+    const w = model.water; if (w.length >= 2 && (w[0][0] > gi.x0 + 1e-6 || w[w.length - 1][0] < gi.x1 - 1e-6)) short.push(L('地下水位線', 'water table'));
+    if (short.length) warns.push(L(`${short.join('、')}沒有涵蓋地表線全長，超出部分會沿用端點高程，建議補上端點。`, `${short.join(', ')} ${short.length > 1 ? 'do' : 'does'} not span the full ground line; the end elevations are extended beyond. Adding end points is recommended.`));
+    if (gi.sec > 8) warns.push(L('網格很密，計算可能要十幾秒以上，可先用建議值試算。', 'The grid is dense and may take more than ten seconds. Try the recommended values first.'));
     const same = gi.N === gi.recN && gi.M === gi.recM;
-    const t = gi.sec < 1 ? '1 秒內' : `約 ${Math.ceil(gi.sec)} 秒`;
+    const t = gi.sec < 1 ? L('1 秒內', 'under 1 s') : L(`約 ${Math.ceil(gi.sec)} 秒`, `about ${Math.ceil(gi.sec)} s`);
     box.innerHTML = `
-      <span class="gt">目前模型的搜尋網格</span>
+      <span class="gt">${L('目前模型的搜尋網格', 'Search grid for the current model')}</span>
       <dl>
-        <dt>水平長度</dt><dd>${fmt(gi.L, 1)} m <em>（地表線 x = ${fmt(gi.x0, 1)} 到 ${fmt(gi.x1, 1)}）</em></dd>
-        <dt>最大土層厚度</dt><dd>${fmt(gi.H, 1)} m <em>（地表到底部或岩盤）</em></dd>
-        <dt>分割線間距</dt><dd>${fmt(gi.dx, 2)} m <em>（建議 1–2 m）</em></dd>
-        <dt>節點垂直間距</dt><dd>最大 ${fmt(gi.dz, 2)} m <em>（建議 ≤ 0.5 m）</em></dd>
-        <dt>預估計算時間</dt><dd>${t}</dd>
+        <dt>${L('水平長度', 'Horizontal length')}</dt><dd>${fmt(gi.L, 1)} m <em>${L(`（地表線 x = ${fmt(gi.x0, 1)} 到 ${fmt(gi.x1, 1)}）`, `(ground line x = ${fmt(gi.x0, 1)} to ${fmt(gi.x1, 1)})`)}</em></dd>
+        <dt>${L('最大土層厚度', 'Maximum soil thickness')}</dt><dd>${fmt(gi.H, 1)} m <em>${L('（地表到底部或岩盤）', '(ground to base or bedrock)')}</em></dd>
+        <dt>${L('分割線間距', 'Line spacing')}</dt><dd>${fmt(gi.dx, 2)} m <em>${L('（建議 1–2 m）', '(1–2 m recommended)')}</em></dd>
+        <dt>${L('節點垂直間距', 'Vertical node spacing')}</dt><dd>${L('最大', 'max')} ${fmt(gi.dz, 2)} m <em>${L('（建議 ≤ 0.5 m）', '(≤ 0.5 m recommended)')}</em></dd>
+        <dt>${L('預估計算時間', 'Estimated time')}</dt><dd>${t}</dd>
       </dl>
-      ${warns.length ? warns.map(w => `<p class="note warn">${w}</p>`).join('') : '<p class="note ok">網格密度適當。</p>'}
-      <div class="row"><button class="btn small" id="btnRec" type="button" ${same ? 'disabled' : ''}>套用建議值：分割線 ${gi.recN} 條、節點 ${gi.recM} 個</button></div>`;
-    chip.textContent = `網格 ${gi.N}×${gi.M}・線距 ${fmt(gi.dx, 1)} m`;
+      ${warns.length ? warns.map(w => `<p class="note warn">${w}</p>`).join('') : `<p class="note ok">${L('網格密度適當。', 'Grid density is adequate.')}</p>`}
+      <div class="row"><button class="btn small" id="btnRec" type="button" ${same ? 'disabled' : ''}>${L(`套用建議值：分割線 ${gi.recN} 條、節點 ${gi.recM} 個`, `Apply recommended: ${gi.recN} lines, ${gi.recM} nodes`)}</button></div>`;
+    chip.textContent = L(`網格 ${gi.N}×${gi.M}・線距 ${fmt(gi.dx, 1)} m`, `Grid ${gi.N}×${gi.M} · spacing ${fmt(gi.dx, 1)} m`);
     chip.classList.toggle('warn', warns.length > 0);
-    chip.title = warns.length ? warns.join('\n') : '搜尋網格密度適當，點選查看設定';
-    $('#rangeInfo').textContent = `目前水平範圍 ${fmt(gi.x0, 1)} 到 ${fmt(gi.x1, 1)} m（長 ${fmt(gi.L, 1)} m），由地表線第一點與最後一點決定。要改長度，請改地表線端點的 x，並把界面線與水位線延伸到同一範圍。`;
+    chip.title = warns.length ? warns.join('\n') : L('搜尋網格密度適當，點選查看設定', 'Search grid density is adequate; click to view settings');
+    $('#rangeInfo').textContent = L(`目前水平範圍 ${fmt(gi.x0, 1)} 到 ${fmt(gi.x1, 1)} m（長 ${fmt(gi.L, 1)} m），由地表線第一點與最後一點決定。要改長度，請改地表線端點的 x，並把界面線與水位線延伸到同一範圍。`, `The horizontal range is ${fmt(gi.x0, 1)} to ${fmt(gi.x1, 1)} m (length ${fmt(gi.L, 1)} m), set by the first and last points of the ground line. To change it, edit the x of the ground line end points and extend the boundary lines and water table to the same range.`);
     const br = $('#btnRec');
     if (br) br.onclick = () => {
       pushUndo(); model.settings.nCol = gi.recN; model.settings.nState = gi.recM;
       renderSettings(); stale = !!result; save(); renderGuide(); renderResults();
-      status(`已套用建議值：分割線 ${gi.recN} 條、節點 ${gi.recM} 個`);
+      status(L(`已套用建議值：分割線 ${gi.recN} 條、節點 ${gi.recM} 個`, `Applied recommended values: ${gi.recN} lines, ${gi.recM} nodes`));
     };
   }
 
@@ -1984,7 +2047,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
       if (l.type === 'line') {
         out.push(arrow(l.x, AL + 12, 2.6));
         const [px, py] = tip(l.x);
-        out.push(`<text class="load-lbl" x="${px + 6}" y="${py - AL - 4}">P = ${fmt(toG(l.P), 1)} ${uF()}</text><circle class="lhandle" cx="${px}" cy="${py - AL - 12}" r="4.5"/>`);
+        out.push(`<text class="load-lbl" x="${px + 6}" y="${py - AL - 4}">${esc(l.name)}　P = ${fmt(toG(l.P), 1)} ${uF()}</text><circle class="lhandle" cx="${px}" cy="${py - AL - 12}" r="4.5"/>`);
       } else {
         const xa = Math.min(l.x1, l.x2), xb = Math.max(l.x1, l.x2);
         const n = Math.max(2, Math.round((T.X(xb) - T.X(xa)) / 16));
@@ -2086,16 +2149,16 @@ if (typeof module !== 'undefined') module.exports = SSA;
       if (nearest(px, py, [active])) return;
       const x = snapV(T.ix(px)), z = snapV(T.iz(py));
       const P = (getPts(active) || []).slice();
-      if (P.some(p => Math.abs(p[0] - x) < 1e-6)) { status('此 x 位置已有節點，請改用拖曳。'); return; }
+      if (P.some(p => Math.abs(p[0] - x) < 1e-6)) { status(L('此 x 位置已有節點，請改用拖曳。', 'A vertex already exists at this x; drag it instead.')); return; }
       pushUndo(); P.push([x, z]); setPts(active, P); changed(false);
-      status(`已加入節點 (${r3(x)}, ${r3(z)})`);
+      status(L(`已加入節點 (${r3(x)}, ${r3(z)})`, `Added vertex (${r3(x)}, ${r3(z)})`));
     } else if (mode === 'del') {
       const n = nearest(px, py, [active]);
       if (!n) return;
       const P = getPts(active).slice();
-      if (P.length <= minPts(active)) { status('這條線至少要保留 2 個點。'); return; }
+      if (P.length <= minPts(active)) { status(L('這條線至少要保留 2 個點。', 'This line must keep at least 2 points.')); return; }
       pushUndo(); P.splice(n.i, 1); setPts(active, P); changed(false);
-      status('已刪除節點');
+      status(L('已刪除節點', 'Vertex deleted'));
     }
     e.preventDefault();
   }
@@ -2105,7 +2168,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
     $('#hud').textContent = `x ${fmt(T.ix(px), 2)}　z ${fmt(T.iz(py), 2)}`;
     if (ldrag) {
       const x = snapV(T.ix(px)); model.loads[ldrag.i][ldrag.k] = x; ldrag.moved = true;
-      $('#hud').textContent = `載重位置 x = ${fmt(x, 2)}`; stale = !!result; draw(); return;
+      $('#hud').textContent = L(`載重位置 x = ${fmt(x, 2)}`, `Load position x = ${fmt(x, 2)}`); stale = !!result; draw(); return;
     }
     if (drag) {
       const P = getPts(drag.key);
@@ -2113,7 +2176,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
       const lo = drag.i > 0 ? P[drag.i - 1][0] + 0.01 : -Infinity, hi = drag.i < P.length - 1 ? P[drag.i + 1][0] - 0.01 : Infinity;
       x = Math.min(Math.max(x, lo), hi);
       P[drag.i] = [x, z]; drag.moved = true;
-      $('#hud').textContent = `節點 (${fmt(x, 2)}, ${fmt(z, 2)})`;
+      $('#hud').textContent = L(`節點 (${fmt(x, 2)}, ${fmt(z, 2)})`, `Vertex (${fmt(x, 2)}, ${fmt(z, 2)})`);
       stale = !!result; draw();
       return;
     }
@@ -2140,7 +2203,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
     running = on;
     const btn = $('#btnRun'), bt = $('#btnTrial');
     btn.disabled = on; bt.disabled = on;
-    btn.textContent = on && label ? label : '計算最危險滑動面';
+    btn.textContent = on && label ? label : L('計算最危險滑動面', 'Find critical slip surface');
   }
   function runSearch(m, tag, done) {
     let gen;
@@ -2149,25 +2212,25 @@ if (typeof module !== 'undefined') module.exports = SSA;
       try {
         const n = gen.next();
         if (n.done) { done(n.value); return; }
-        status(`${tag}第 ${n.value.it} 輪：F = ${fmt(n.value.F, 4)}`);
+        status(L(`${tag}第 ${n.value.it} 輪：F = ${fmt(n.value.F, 4)}`, `${tag}round ${n.value.it}: F = ${fmt(n.value.F, 4)}`));
         setTimeout(step, 0);
-      } catch (e) { done({ ok: false, msg: '計算失敗：' + (e.message || e) }); }
+      } catch (e) { done({ ok: false, msg: L('計算失敗：', 'Calculation failed: ') + (e.message || e) }); }
     };
     setTimeout(step, 20);
   }
   function run() {
     if (running) return;
     errors = SSA.validate(currentModel());
-    if (errors.length) { result = null; renderResults(); draw(); status('輸入有誤，請依提示修正'); return; }
-    setBusy(true, '計算中…');
+    if (errors.length) { result = null; renderResults(); draw(); status(L('輸入有誤，請依提示修正', 'Input errors; please correct them as indicated')); return; }
+    setBusy(true, L('計算中…', 'Computing…'));
     const t0 = performance.now(), cmp = model.settings.compare && hasReinf(), cmpL = model.settings.compareLoad && hasLoads();
     const jobs = [];
-    if (cmp) jobs.push(['base', currentModel(true, false), '無補強措施：']);
-    if (cmpL) jobs.push(['baseLoad', currentModel(false, true), '無載重：']);
+    if (cmp) jobs.push(['base', currentModel(true, false), L('無補強措施：', 'Without reinforcement, ')]);
+    if (cmpL) jobs.push(['baseLoad', currentModel(false, true), L('無載重：', 'Without loads, ')]);
     const got = {};
     const next = () => {
       const j = jobs.shift();
-      if (!j) { runSearch(currentModel(), jobs.length || cmp || cmpL ? '目前條件：' : '', r => { Object.assign(r, got); finish(r, t0); }); return; }
+      if (!j) { runSearch(currentModel(), jobs.length || cmp || cmpL ? L('目前條件：', 'Current model, ') : '', r => { Object.assign(r, got); finish(r, t0); }); return; }
       runSearch(j[1], j[2], r => { got[j[0]] = r; next(); });
     };
     next();
@@ -2175,9 +2238,9 @@ if (typeof module !== 'undefined') module.exports = SSA;
   function runTrial() {
     if (running) return;
     errors = SSA.validate(currentModel());
-    if (errors.length) { result = null; renderResults(); draw(); status('輸入有誤，請依提示修正'); return; }
+    if (errors.length) { result = null; renderResults(); draw(); status(L('輸入有誤，請依提示修正', 'Input errors; please correct them as indicated')); return; }
     if (model.trial.length < 2) {
-      status('請先在「剖面」頁選「指定滑動面（試算用）」，畫出或貼上滑動面座標。');
+      status(L('請先在「剖面」頁選「指定滑動面（試算用）」，畫出或貼上滑動面座標。', 'First select “Specified slip surface” on the Profile tab and draw or paste its coordinates.'));
       $('#tab-geo').click(); active = 'trial'; renderLines(); renderCoords(); draw(); return;
     }
     const t0 = performance.now();
@@ -2186,14 +2249,14 @@ if (typeof module !== 'undefined') module.exports = SSA;
       r = SSA.evaluate(clone(currentModel()), model.trial);
       if (r.ok && model.settings.compare && hasReinf()) r.base = SSA.evaluate(clone(currentModel(true, false)), model.trial);
       if (r.ok && model.settings.compareLoad && hasLoads()) r.baseLoad = SSA.evaluate(clone(currentModel(false, true)), model.trial);
-    } catch (e) { r = { ok: false, msg: '計算失敗：' + (e.message || e) }; }
+    } catch (e) { r = { ok: false, msg: L('計算失敗：', 'Calculation failed: ') + (e.message || e) }; }
     finish(r, t0);
   }
   function finish(r, t0) {
     setBusy(false);
     r.ms = performance.now() - t0;
     result = r; stale = false;
-    status(!r.ok ? (r.mode === 'trial' ? '指定滑動面無法計算' : '未找到滑動面') : r.mode === 'trial' ? `指定滑動面試算完成：Fs = ${fmt(r.F, 3)}` : `完成：${r.hist.length} 輪、${fmt(r.ms / 1000, 2)} 秒`);
+    status(!r.ok ? (r.mode === 'trial' ? L('指定滑動面無法計算', 'The specified surface cannot be evaluated') : L('未找到滑動面', 'No slip surface found')) : r.mode === 'trial' ? L(`指定滑動面試算完成：Fs = ${fmt(r.F, 3)}`, `Specified surface evaluated: Fs = ${fmt(r.F, 3)}`) : L(`完成：${r.hist.length} 輪、${fmt(r.ms / 1000, 2)} 秒`, `Done: ${r.hist.length} rounds, ${fmt(r.ms / 1000, 2)} s`));
     draw(); renderResults(); renderReinf(); renderLines();
   }
 
@@ -2201,61 +2264,61 @@ if (typeof module !== 'undefined') module.exports = SSA;
     const box = $('#results');
     box.classList.toggle('stale', !!(stale && result));
     if (errors.length) {
-      box.innerHTML = `<div class="msg"><strong>無法計算，請先修正：</strong><ul>${errors.map(e => `<li>${esc(e)}</li>`).join('')}</ul></div>`;
+      box.innerHTML = `<div class="msg"><strong>${L('無法計算，請先修正：', 'Cannot compute. Please fix:')}</strong><ul>${errors.map(e => `<li>${esc(tx(e))}</li>`).join('')}</ul></div>`;
       return;
     }
-    if (!result) { box.innerHTML = '<p class="hint">按「計算最危險滑動面」開始分析。</p>'; return; }
-    if (!result.ok) { box.innerHTML = `<div class="msg">${esc(result.msg)}</div>`; return; }
+    if (!result) { box.innerHTML = `<p class="hint">${L('按「計算最危險滑動面」開始分析。', 'Press “Find critical slip surface” to start.')}</p>`; return; }
+    if (!result.ok) { box.innerHTML = `<div class="msg">${esc(tx(result.msg))}</div>`; return; }
     const r = result, s = model.settings;
     const Fj = s.useF0 ? r.Fc : r.F, req = +s.Freq;
     let chip;
-    if (stale) chip = '<span class="chip stale">幾何或參數已變更，請重新計算</span>';
-    else if (Fj < 1) chip = '<span class="chip crit">不穩定（Fs &lt; 1.0）</span>';
-    else if (Fj < req) chip = `<span class="chip warn">低於要求值 ${fmt(req, 2)}</span>`;
-    else chip = `<span class="chip ok">符合要求值 ${fmt(req, 2)}</span>`;
+    if (stale) chip = `<span class="chip stale">${L('幾何或參數已變更，請重新計算', 'Geometry or parameters changed; please recompute')}</span>`;
+    else if (Fj < 1) chip = `<span class="chip crit">${L('不穩定（Fs &lt; 1.0）', 'Unstable (Fs &lt; 1.0)')}</span>`;
+    else if (Fj < req) chip = `<span class="chip warn">${L('低於要求值', 'Below required')} ${fmt(req, 2)}</span>`;
+    else chip = `<span class="chip ok">${L('符合要求值', 'Meets required')} ${fmt(req, 2)}</span>`;
     const S = r.slip, pA = S[0], pB = S[S.length - 1];
     const toe = r.mirror ? pB : pA, head = r.mirror ? pA : pB;
     box.innerHTML = `
       <div class="res-top">
         <div class="fsbox">
-          <span class="lbl">安全係數 Fs（簡易 Janbu）<span class="mode-chip">${r.mode === 'trial' ? '指定滑動面' : '自動搜尋'}</span></span>
+          <span class="lbl">${L('安全係數 Fs（簡易 Janbu）', 'Factor of safety Fs (simplified Janbu)')}<span class="mode-chip">${r.mode === 'trial' ? L('指定滑動面', 'Specified surface') : L('自動搜尋', 'Search')}</span></span>
           <span class="big">${fmt(r.F, 3)}</span>
-          <span class="sub">修正後 f0·Fs = <span class="num">${fmt(r.Fc, 3)}</span>（f0 = ${fmt(r.f0, 3)}，${r.f0type === 'janbu' ? 'Janbu 曲線' : '(50d/L)<sup>0.03</sup>'}）</span>
-          ${r.baseLoad ? (r.baseLoad.ok ? `<span class="base-line">無載重 Fs = <b>${fmt(r.baseLoad.F, 3)}</b>，加載後${r.F >= r.baseLoad.F ? '提高' : '降低'} <b>${fmt(Math.abs(r.F / r.baseLoad.F - 1) * 100, 1)}%</b></span>` : `<span class="base-line">無載重情況：${esc(r.baseLoad.msg || '無法計算')}</span>`) : ''}
-          ${r.base ? (r.base.ok ? `<span class="base-line">無補強措施 Fs = <b>${fmt(r.base.F, 3)}</b>，補強後${r.F >= r.base.F ? '提高' : '降低'} <b>${fmt(Math.abs(r.F / r.base.F - 1) * 100, 1)}%</b></span>` : `<span class="base-line">無補強措施情況：${esc(r.base.msg || '無法計算')}</span>`) : ''}
+          <span class="sub">${L('修正後', 'Corrected')} f0·Fs = <span class="num">${fmt(r.Fc, 3)}</span>${L('（', ' (')}f0 = ${fmt(r.f0, 3)}${L('，', ', ')}${r.f0type === 'janbu' ? L('Janbu 曲線', 'Janbu curve') : '(50d/L)<sup>0.03</sup>'}${L('）', ')')}</span>
+          ${r.baseLoad ? (r.baseLoad.ok ? L(`<span class="base-line">無載重 Fs = <b>${fmt(r.baseLoad.F, 3)}</b>，加載後${r.F >= r.baseLoad.F ? '提高' : '降低'} <b>${fmt(Math.abs(r.F / r.baseLoad.F - 1) * 100, 1)}%</b></span>`, `<span class="base-line">Without loads Fs = <b>${fmt(r.baseLoad.F, 3)}</b>; loads ${r.F >= r.baseLoad.F ? 'raise' : 'lower'} it by <b>${fmt(Math.abs(r.F / r.baseLoad.F - 1) * 100, 1)}%</b></span>`) : `<span class="base-line">${L('無載重情況：', 'Without loads: ')}${esc(tx(r.baseLoad.msg) || L('無法計算', 'cannot compute'))}</span>`) : ''}
+          ${r.base ? (r.base.ok ? L(`<span class="base-line">無補強措施 Fs = <b>${fmt(r.base.F, 3)}</b>，補強後${r.F >= r.base.F ? '提高' : '降低'} <b>${fmt(Math.abs(r.F / r.base.F - 1) * 100, 1)}%</b></span>`, `<span class="base-line">Without reinforcement Fs = <b>${fmt(r.base.F, 3)}</b>; reinforcement ${r.F >= r.base.F ? 'raises' : 'lowers'} it by <b>${fmt(Math.abs(r.F / r.base.F - 1) * 100, 1)}%</b></span>`) : `<span class="base-line">${L('無補強措施情況：', 'Without reinforcement: ')}${esc(tx(r.base.msg) || L('無法計算', 'cannot compute'))}</span>`) : ''}
           ${chip}
         </div>
         <dl class="stats">
-          <div><dt>滑動體面積</dt><dd>${fmt(r.area, 1)} m²/m</dd></div>
-          <div><dt>最大鉛直深度</dt><dd>${fmt(r.dmaxV, 2)} m</dd></div>
-          <div><dt>坡趾出口 (x, z)</dt><dd>${fmt(toe[0], 2)}, ${fmt(toe[1], 2)}</dd></div>
-          <div><dt>坡頂入口 (x, z)</dt><dd>${fmt(head[0], 2)}, ${fmt(head[1], 2)}</dd></div>
-          <div><dt>ΣR 抵抗力</dt><dd>${fmt(toG(r.sumA), gTF() ? 2 : 1)} ${uF()}</dd></div>
-          <div><dt>ΣD 滑動力</dt><dd>${fmt(toG(r.sumB), gTF() ? 2 : 1)} ${uF()}</dd></div>
-          ${r.nLoads ? `<div><dt>滑動體上的載重 ΣQ</dt><dd>${fmt(toG(r.Qtot), gTF() ? 2 : 1)} ${uF()}</dd></div>` : ''}
-          <div><dt>d / L</dt><dd>${fmt(r.dL, 3)}${r.f0type === 'janbu' ? `（b1 = ${fmt(r.b1, 2)}）` : ''}</dd></div>
-          <div><dt>迭代・耗時</dt><dd>${r.mode === 'trial' ? '單一滑動面' : r.hist.length + ' 輪'}・${fmt(r.ms / 1000, 2)} s</dd></div>
+          <div><dt>${L('滑動體面積', 'Sliding mass area')}</dt><dd>${fmt(r.area, 1)} m²/m</dd></div>
+          <div><dt>${L('最大鉛直深度', 'Max vertical depth')}</dt><dd>${fmt(r.dmaxV, 2)} m</dd></div>
+          <div><dt>${L('坡趾出口 (x, z)', 'Toe exit (x, z)')}</dt><dd>${fmt(toe[0], 2)}, ${fmt(toe[1], 2)}</dd></div>
+          <div><dt>${L('坡頂入口 (x, z)', 'Crest entry (x, z)')}</dt><dd>${fmt(head[0], 2)}, ${fmt(head[1], 2)}</dd></div>
+          <div><dt>${L('ΣR 抵抗力', 'ΣR resisting')}</dt><dd>${fmt(toG(r.sumA), gTF() ? 2 : 1)} ${uF()}</dd></div>
+          <div><dt>${L('ΣD 滑動力', 'ΣD driving')}</dt><dd>${fmt(toG(r.sumB), gTF() ? 2 : 1)} ${uF()}</dd></div>
+          ${r.nLoads ? `<div><dt>${L('滑動體上的載重 ΣQ', 'Load on sliding mass ΣQ')}</dt><dd>${fmt(toG(r.Qtot), gTF() ? 2 : 1)} ${uF()}</dd></div>` : ''}
+          <div><dt>d / L</dt><dd>${fmt(r.dL, 3)}${r.f0type === 'janbu' ? L(`（b1 = ${fmt(r.b1, 2)}）`, ` (b1 = ${fmt(r.b1, 2)})`) : ''}</dd></div>
+          <div><dt>${L('迭代・耗時', 'Iterations · time')}</dt><dd>${r.mode === 'trial' ? L('單一滑動面', 'single surface') : r.hist.length + L(' 輪', ' rounds')}・${fmt(r.ms / 1000, 2)} s</dd></div>
         </dl>
       </div>
       ${r.members && r.members.length ? `<details open>
-        <summary>補強構件（${r.members.filter(m => m.crossed && m.Tm > 0).length} / ${r.members.length} 支發揮作用・${r.reinfMode === 'passive' ? '被動法' : '主動法'}）</summary>
+        <summary>${L(`補強構件（${r.members.filter(m => m.crossed && m.Tm > 0).length} / ${r.members.length} 支發揮作用・${r.reinfMode === 'passive' ? '被動法' : '主動法'}）`, `Members (${r.members.filter(m => m.crossed && m.Tm > 0).length} of ${r.members.length} effective · ${r.reinfMode === 'passive' ? 'passive' : 'active'} method)`)}</summary>
         <div class="tblwrap"><table>
-          <thead><tr><th>編號</th><th class="t">類型</th><th>交點 x</th><th>交點 z</th><th>有效長 Le (m)</th><th>可用拉力 (${uT()})</th><th>每公尺 T (${uF()})</th><th class="t">控制</th><th>Px (${uF()})</th><th>Py (${uF()})</th></tr></thead>
-          <tbody>${r.members.map(m => `<tr><td>${m.idx + 1}</td><td class="t">${m.type === 'anchor' ? '地錨' : '土釘'}</td><td>${m.crossed ? fmt(m.xi, 2) : '—'}</td><td>${m.crossed ? fmt(m.zi, 2) : '—'}</td><td>${m.crossed ? fmt(m.Le, 2) : '—'}</td><td>${fmt(toG(m.T), 1)}</td><td>${fmt(toG(m.Tm), 2)}</td><td class="t">${esc(m.ctrl)}</td><td>${fmt(toG(m.Px), 2)}</td><td>${fmt(toG(m.Py), 2)}</td></tr>`).join('')}</tbody>
+          <thead><tr><th>${L('編號', 'No.')}</th><th class="t">${L('類型', 'Type')}</th><th>${L('交點 x', 'Cross x')}</th><th>${L('交點 z', 'Cross z')}</th><th>${L('有效長 Le (m)', 'Effective Le (m)')}</th><th>${L('可用拉力', 'Available force')} (${uT()})</th><th>${L('每公尺 T', 'T per metre')} (${uF()})</th><th class="t">${L('控制', 'Governed by')}</th><th>Px (${uF()})</th><th>Py (${uF()})</th></tr></thead>
+          <tbody>${r.members.map(m => `<tr><td>${m.idx + 1}</td><td class="t">${m.type === 'anchor' ? L('地錨', 'Anchor') : L('土釘', 'Soil nail')}</td><td>${m.crossed ? fmt(m.xi, 2) : '—'}</td><td>${m.crossed ? fmt(m.zi, 2) : '—'}</td><td>${m.crossed ? fmt(m.Le, 2) : '—'}</td><td>${fmt(toG(m.T), 1)}</td><td>${fmt(toG(m.Tm), 2)}</td><td class="t">${esc(tx(m.ctrl))}</td><td>${fmt(toG(m.Px), 2)}</td><td>${fmt(toG(m.Py), 2)}</td></tr>`).join('')}</tbody>
         </table></div>
       </details>` : ''}
       <details>
-        <summary>切片明細（${r.rows.length} 片）</summary>
-        <div class="row" style="margin-top:8px"><button class="btn small" id="btnCopyRows" type="button">複製切片表 (CSV)</button><button class="btn small" id="btnCopySlip" type="button">複製滑動面座標</button></div>
+        <summary>${L(`切片明細（${r.rows.length} 片）`, `Slice details (${r.rows.length} slices)`)}</summary>
+        <div class="row" style="margin-top:8px"><button class="btn small" id="btnCopyRows" type="button">${L('複製切片表 (CSV)', 'Copy slice table (CSV)')}</button><button class="btn small" id="btnCopySlip" type="button">${L('複製滑動面座標', 'Copy slip surface coordinates')}</button></div>
         <div class="tblwrap"><table>
-          <thead><tr><th>x 中點</th><th>寬 b</th><th>底部 z</th><th>α (°)</th><th>W (${uF()})</th><th>hw (m)</th><th>u (${uC()})</th><th>c' (${uC()})</th><th>φ' (°)</th><th class="t">土層</th><th>mα</th>${r.nLoads ? `<th>Q (${uF()})</th>` : ''}<th>R (${uF()})</th><th>D (${uF()})</th>${r.members && r.members.length ? `<th>Px</th><th>Py</th>` : ''}</tr></thead>
+          <thead><tr><th>${L('x 中點', 'x mid')}</th><th>${L('寬 b', 'Width b')}</th><th>${L('底部 z', 'Base z')}</th><th>α (°)</th><th>W (${uF()})</th><th>hw (m)</th><th>u (${uC()})</th><th>c' (${uC()})</th><th>φ' (°)</th><th class="t">${L('土層', 'Layer')}</th><th>mα</th>${r.nLoads ? `<th>Q (${uF()})</th>` : ''}<th>R (${uF()})</th><th>D (${uF()})</th>${r.members && r.members.length ? `<th>Px</th><th>Py</th>` : ''}</tr></thead>
           <tbody>${r.rows.map(x => `<tr><td>${fmt(x.xc, 2)}</td><td>${fmt(x.b, 2)}</td><td>${fmt(x.zc, 2)}</td><td>${fmt(x.alpha, 1)}</td><td>${fmt(toG(x.W), gTF() ? 2 : 1)}</td><td>${fmt(x.hw, 2)}</td><td>${fmt(toC(x.u), cTF() ? 2 : 1)}</td><td>${fmt(toC(x.c), cTF() ? 2 : 1)}</td><td>${fmt(x.phi, 1)}</td><td class="t">${esc(x.layer)}</td><td>${fmt(x.ma, 3)}</td>${r.nLoads ? `<td>${x.Q ? fmt(toG(x.Q), 2) : ''}</td>` : ''}<td>${fmt(toG(x.res), gTF() ? 2 : 1)}</td><td>${fmt(toG(x.drv), gTF() ? 2 : 1)}</td>${r.members && r.members.length ? `<td>${x.Px ? fmt(toG(x.Px), 2) : ''}</td><td>${x.Py ? fmt(toG(x.Py), 2) : ''}</td>` : ''}</tr>`).join('')}</tbody>
         </table></div>
       </details>
       <details${r.mode === 'trial' ? ' hidden' : ''}>
-        <summary>迭代紀錄</summary>
+        <summary>${L('迭代紀錄', 'Iteration log')}</summary>
         <div class="tblwrap"><table>
-          <thead><tr><th>輪次</th><th>搜尋用 F (λ)</th><th>該輪滑動面 Fs</th><th>G 最小值</th></tr></thead>
+          <thead><tr><th>${L('輪次', 'Round')}</th><th>${L('搜尋用 F (λ)', 'Search F (λ)')}</th><th>${L('該輪滑動面 Fs', 'Fs of this surface')}</th><th>${L('G 最小值', 'Minimum G')}</th></tr></thead>
           <tbody>${r.hist.map(h => `<tr><td>${h.it}</td><td>${fmt(h.lam, 4)}</td><td>${fmt(h.F, 4)}</td><td>${fmt(h.G, 1)}</td></tr>`).join('')}</tbody>
         </table></div>
       </details>`;
@@ -2272,11 +2335,11 @@ if (typeof module !== 'undefined') module.exports = SSA;
   (async () => { try { if (window.claude && typeof window.claude.use === 'function') dlCap = await window.claude.use('downloads'); } catch (e) { dlCap = null; } })();
   async function saveFile(filename, text, btn) {
     if (dlCap) {
-      try { await dlCap.save({ filename, data: text }); status(`已下載 ${filename}`); }
+      try { await dlCap.save({ filename, data: text }); status(L(`已下載 ${filename}`, `Downloaded ${filename}`)); }
       catch (e) {
-        if (e && e.code === 'declined') status('已取消下載');
-        else if (e && e.code === 'rate_limited') status('下載視窗已開啟，請先完成或關閉它。');
-        else { copyText(text, btn); status('無法下載檔案，已改為複製內容，請貼到文字編輯器後存檔。'); }
+        if (e && e.code === 'declined') status(L('已取消下載', 'Download cancelled'));
+        else if (e && e.code === 'rate_limited') status(L('下載視窗已開啟，請先完成或關閉它。', 'A download dialog is already open; finish or close it first.'));
+        else { copyText(text, btn); status(L('無法下載檔案，已改為複製內容，請貼到文字編輯器後存檔。', 'Could not download the file, so its content was copied instead. Paste it into a text editor and save.')); }
       }
       return;
     }
@@ -2285,13 +2348,14 @@ if (typeof module !== 'undefined') module.exports = SSA;
       const a = document.createElement('a'); a.href = url; a.download = filename;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
-      status(`已下載 ${filename}（若沒有開始下載，請改用「複製」）`);
+      status(L(`已下載 ${filename}（若沒有開始下載，請改用「複製」）`, `Downloaded ${filename} (if nothing happened, use “Copy” instead)`));
     } catch (e) { copyText(text, btn); }
   }
   const stamp = () => { const d = new Date(), p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`; };
 
   /* ---------- CSV import ---------- */
-  const CSV_FULL = 'x,地表,風化岩頂面,岩盤頂面,地下水位\n0,10,6,2,10\n20,10,6,,10.2\n40,20,14,8,16\n55,27,19,,22\n80,28,20,12,24\n';
+  const CSV_DATA = '0,10,6,2,10\n20,10,6,,10.2\n40,20,14,8,16\n55,27,19,,22\n80,28,20,12,24\n';
+  const csvFull = () => L('x,地表,風化岩頂面,岩盤頂面,地下水位\n', 'x,ground,weathered rock top,bedrock top,water table\n') + CSV_DATA;
   const CSV_GROUND = 'x,z\n0,10\n20,10\n40,20\n55,27\n80,28\n';
   function decodeText(buf) {
     let t;
@@ -2301,24 +2365,24 @@ if (typeof module !== 'undefined') module.exports = SSA;
   }
   function importCSV(text) {
     const rows = text.split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#')).map(l => l.split(/\s*[,;\t]\s*|\s+(?=[-\d.])/));
-    if (!rows.length) throw new Error('檔案是空的');
+    if (!rows.length) throw new Error(L('檔案是空的', 'the file is empty'));
     let header = null;
     if (!isFinite(parseFloat(rows[0][0]))) header = rows.shift();
     const data = rows.filter(r => isFinite(parseFloat(r[0])));
-    if (data.length < 2) throw new Error('至少需要 2 列數值資料');
+    if (data.length < 2) throw new Error(L('至少需要 2 列數值資料', 'at least 2 rows of numbers are needed'));
     const ncol = Math.max(...data.map(r => r.length), header ? header.length : 0);
     const col = j => data.filter(r => r[j] !== undefined && r[j] !== '' && isFinite(parseFloat(r[j]))).map(r => [parseFloat(r[0]), parseFloat(r[j])]).sort((a, b) => a[0] - b[0]);
     pushUndo();
     let msg;
     if (ncol <= 2) {
       const P = col(1);
-      if (P.length < 2) throw new Error('x、z 兩欄至少需要 2 個點');
+      if (P.length < 2) throw new Error(L('x、z 兩欄至少需要 2 個點', 'the x and z columns need at least 2 points'));
       setPts(active, P);
       const d = lineDefs().find(x => x.key === active);
-      msg = `已匯入 ${P.length} 點到「${d ? d.label : ''}」`;
+      msg = L(`已匯入 ${P.length} 點到「${d ? d.label : ''}」`, `Imported ${P.length} points into “${d ? d.label : ''}”`);
     } else {
       const G = col(1);
-      if (G.length < 2) throw new Error('第 2 欄（地表高程）至少需要 2 個點');
+      if (G.length < 2) throw new Error(L('第 2 欄（地表高程）至少需要 2 個點', 'column 2 (ground elevation) needs at least 2 points'));
       model.ground = G;
       let li = 1, nb = 0, nw = 0;
       const pal = ['#D8BE8A', '#B48462', '#8C949A', '#A9B38B', '#C7A1A1', '#9FB4C7'];
@@ -2327,24 +2391,24 @@ if (typeof module !== 'undefined') module.exports = SSA;
         if (P.length < 2) continue;
         if (/水|water|wt|gwl/i.test(name)) { model.water = P; nw = P.length; continue; }
         if (!model.layers[li]) {
-          const nm = (name.replace(/頂面|頂界面|頂|top/gi, '').trim()) || `土層 ${li + 1}`;
+          const nm = (name.replace(/頂面|頂界面|頂|top/gi, '').trim()) || L(`土層 ${li + 1}`, `Layer ${li + 1}`);
           model.layers.push({ name: nm, color: pal[li % pal.length], gamma: 20, gammaSat: 21, c: 10, phi: 30, bedrock: false, top: P });
         } else model.layers[li].top = P;
         li++; nb++;
       }
-      msg = `已匯入地表 ${G.length} 點、${nb} 條土層界面${nw ? `、地下水位 ${nw} 點` : ''}`;
-      if (li < model.layers.length) msg += `（第 ${li + 1} 層以下沿用原本的界面）`;
+      msg = L(`已匯入地表 ${G.length} 點、${nb} 條土層界面${nw ? `、地下水位 ${nw} 點` : ''}`, `Imported ${G.length} ground points, ${nb} layer boundaries${nw ? `, ${nw} water table points` : ''}`);
+      if (li < model.layers.length) msg += L(`（第 ${li + 1} 層以下沿用原本的界面）`, ` (layers ${li + 1} and below keep their existing boundaries)`);
     }
     const zs = [...model.ground, ...model.water, ...model.layers.flatMap(L => L.top || [])].map(p => p[1]);
     const zg = Math.min(...model.ground.map(p => p[1]));
-    if (!(model.zBase < zg)) { model.zBase = Math.floor(Math.min(...zs)) - 2; msg += `，模型底部高程已調為 ${model.zBase} m`; }
+    if (!(model.zBase < zg)) { model.zBase = Math.floor(Math.min(...zs)) - 2; msg += L(`，模型底部高程已調為 ${model.zBase} m`, `; model base set to ${model.zBase} m`); }
     result = null; fit(); changed(true);
     status(msg);
   }
 
   function copyText(t, btn) {
-    const done = () => { if (btn) { const o = btn.textContent; btn.textContent = '已複製'; setTimeout(() => btn.textContent = o, 1400); } };
-    const fb = () => { const f = $('#fallback'); f.value = t; f.classList.add('show'); f.focus(); f.select(); status('無法直接寫入剪貼簿，已選取下方文字，請按 Ctrl+C 複製。'); };
+    const done = () => { if (btn) { const o = btn.textContent; btn.textContent = L('已複製', 'Copied'); setTimeout(() => btn.textContent = o, 1400); } };
+    const fb = () => { const f = $('#fallback'); f.value = t; f.classList.add('show'); f.focus(); f.select(); status(L('無法直接寫入剪貼簿，已選取下方文字，請按 Ctrl+C 複製。', 'Could not write to the clipboard. The text below is selected; press Ctrl+C to copy.')); };
     try { navigator.clipboard.writeText(t).then(done, fb); } catch (e) { fb(); }
   }
 
@@ -2360,10 +2424,10 @@ if (typeof module !== 'undefined') module.exports = SSA;
     });
     $('#btnApply').addEventListener('click', () => {
       const P = parseCoords($('#coords').value);
-      if (P.length < minPts(active)) { status('至少需要 2 個點。'); return; }
-      pushUndo(); setPts(active, P); fit(); changed(false); status('已套用座標');
+      if (P.length < minPts(active)) { status(L('至少需要 2 個點。', 'At least 2 points are needed.')); return; }
+      pushUndo(); setPts(active, P); fit(); changed(false); status(L('已套用座標', 'Coordinates applied'));
     });
-    $('#btnClearLine').addEventListener('click', () => { pushUndo(); if (active === 'trial') model.trial = []; else model.water = []; changed(false); status(active === 'trial' ? '已清除指定滑動面' : '已清除地下水位線'); });
+    $('#btnClearLine').addEventListener('click', () => { pushUndo(); if (active === 'trial') model.trial = []; else model.water = []; changed(false); status(active === 'trial' ? L('已清除指定滑動面', 'Specified slip surface cleared') : L('已清除地下水位線', 'Water table cleared')); });
     $('#btnMakeWater').addEventListener('click', () => { pushUndo(); model.water = model.ground.map(p => [p[0], Math.max(model.zBase, p[1] - 2)]); changed(false); });
     $('#zBase').addEventListener('change', e => { const v = +e.target.value; if (!isFinite(v)) return; pushUndo(); model.zBase = v; fit(); changed(false); });
 
@@ -2391,9 +2455,9 @@ if (typeof module !== 'undefined') module.exports = SSA;
       const n = model.layers.length, last = n > 1 ? model.layers[n - 1].top : model.ground;
       const pal = ['#D8BE8A', '#B48462', '#8C949A', '#A9B38B', '#C7A1A1', '#9FB4C7'];
       const top = last.map(p => [p[0], Math.max(model.zBase + 0.5, p[1] - 3)]);
-      model.layers.push({ name: `土層 ${n + 1}`, color: pal[n % pal.length], gamma: 20, gammaSat: 21, c: 10, phi: 30, bedrock: false, top });
+      model.layers.push({ name: L(`土層 ${n + 1}`, `Layer ${n + 1}`), color: pal[n % pal.length], gamma: 20, gammaSat: 21, c: 10, phi: 30, bedrock: false, top });
       active = 'L' + n; changed(true);
-      status('已新增土層，頂面預設為上一層頂面往下 3 m，可在「剖面」頁調整。');
+      status(L('已新增土層，頂面預設為上一層頂面往下 3 m，可在「剖面」頁調整。', 'Layer added. Its top is 3 m below the previous top by default; adjust it on the Profile tab.'));
     });
     $$('[data-s]').forEach(el => el.addEventListener('change', () => {
       const k = el.dataset.s;
@@ -2402,7 +2466,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
       model.settings[k] = v;
       if (k === 'unitG' || k === 'unitC') {
         renderLayers(); renderReinf(); renderWalls(); renderLoads(); renderSettings(); renderResults();
-        status(`單位已切換為 ${uG()}、${uC()}，數值已自動換算`);
+        status(L(`單位已切換為 ${uG()}、${uC()}，數值已自動換算`, `Units switched to ${uG()} and ${uC()}; values were converted`));
         return;
       }
       if (k === 'Freq' || k === 'useF0') { save(); renderResults(); return; }
@@ -2418,7 +2482,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
     $('#btnCopyCrit').addEventListener('click', () => {
       if (!result || !result.ok) return;
       pushUndo(); model.trial = result.slip.map(p => [r3(p[0]), r3(p[1])]); changed(false);
-      status('已把目前的臨界滑動面複製為指定滑動面，可再拖曳修改後按「試算指定滑動面」。');
+      status(L('已把目前的臨界滑動面複製為指定滑動面，可再拖曳修改後按「試算指定滑動面」。', 'The current critical surface was copied as the specified surface. Drag to modify it, then press “Check specified surface”.'));
     });
     // reinforcement editing
     const rl = $('#reinfList');
@@ -2470,7 +2534,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
     });
     $('#btnAddLoad').addEventListener('click', () => {
       pushUndo(); addLoad($('#loadTpl').value); stale = !!result; renderLoads(); draw(); renderResults();
-      status('已在坡肩附近加入載重，強度 10 為佔位數字，請依設計規範輸入。可在圖上拖曳載重端點調整範圍。');
+      status(L('已在坡肩附近加入載重，強度 10 為佔位數字，請依設計規範輸入。可在圖上拖曳載重端點調整範圍。', 'A load was added near the crest. Its magnitude of 10 is a placeholder; enter values per the design code. Drag the load ends on the drawing to adjust its range.'));
     });
     const wl = $('#wallList');
     wl.addEventListener('focusin', e => { if (e.target.dataset.wf || e.target.dataset.p) { const s = JSON.stringify(model); if (undoStack[undoStack.length - 1] !== s) pushUndo(); } });
@@ -2500,9 +2564,9 @@ if (typeof module !== 'undefined') module.exports = SSA;
       if (bt.dataset.wact === 'del') { pushUndo(); model.walls.splice(i, 1); }
       else if (bt.dataset.wact === 'apply') {
         const P = parseCoords(card.querySelector('textarea').value);
-        if (P.length < 3) { status('擋土牆至少需要 3 個頂點。'); return; }
+        if (P.length < 3) { status(L('擋土牆至少需要 3 個頂點。', 'A retaining wall needs at least 3 vertices.')); return; }
         pushUndo(); model.walls[i].poly = P; model.walls[i].par = null;
-        status('已套用擋土牆頂點座標。');
+        status(L('已套用擋土牆頂點座標。', 'Wall vertices applied.'));
       }
       stale = !!result; fit(); renderWalls(); draw(); renderResults();
     });
@@ -2511,21 +2575,21 @@ if (typeof module !== 'undefined') module.exports = SSA;
       const d = intoDir(), toe = toeX(), B = 2.0;
       const x0 = r3(toe - d * B), z0 = r3(interp(model.ground, x0) - 1);
       const par = { x0, z0, H: 3, B, b: 0.6 };
-      model.walls.push({ name: `擋土牆 ${model.walls.length + 1}`, on: true, gamma: 23.5, par, poly: wallPoly(par) });
+      model.walls.push({ name: L(`擋土牆 ${model.walls.length + 1}`, `Retaining wall ${model.walls.length + 1}`), on: true, gamma: 23.5, par, poly: wallPoly(par) });
       stale = !!result; fit(); renderWalls(); draw(); renderResults();
-      status('已在坡趾前加入一座重力式擋土牆（埋入 1 m）。若牆後有回填，請同步修改地表線，讓地表通過牆頂。');
+      status(L('已在坡趾前加入一座重力式擋土牆（埋入 1 m）。若牆後有回填，請同步修改地表線，讓地表通過牆頂。', 'A gravity wall (embedded 1 m) was added in front of the toe. If there is backfill behind it, edit the ground line so it passes over the wall top.'));
     });
-    $('#btnAddNail').addEventListener('click', () => { pushUndo(); addMember(NAIL, midFaceX()); stale = !!result; renderReinf(); draw(); renderResults(); status('已加入一支土釘，請調整位置與參數。'); });
-    $('#btnAddAnchor').addEventListener('click', () => { pushUndo(); addMember(ANCHOR, midFaceX()); stale = !!result; renderReinf(); draw(); renderResults(); status('已加入一支地錨，請調整位置與參數。'); });
+    $('#btnAddNail').addEventListener('click', () => { pushUndo(); addMember(NAIL, midFaceX()); stale = !!result; renderReinf(); draw(); renderResults(); status(L('已加入一支土釘，請調整位置與參數。', 'Soil nail added; adjust its position and parameters.')); });
+    $('#btnAddAnchor').addEventListener('click', () => { pushUndo(); addMember(ANCHOR, midFaceX()); stale = !!result; renderReinf(); draw(); renderResults(); status(L('已加入一支地錨，請調整位置與參數。', 'Anchor added; adjust its position and parameters.')); });
     const batch = replace => {
       const xa = parseFloat($('#rbXa').value), xb = parseFloat($('#rbXb').value), n = Math.round(+$('#rbN').value);
-      if (!isFinite(xa) || !isFinite(xb) || !(n >= 1)) { status('請輸入整排配置的起點 x、終點 x 與支數。'); return; }
+      if (!isFinite(xa) || !isFinite(xb) || !(n >= 1)) { status(L('請輸入整排配置的起點 x、終點 x 與支數。', 'Enter the start x, end x and count for the row.')); return; }
       const tpl = model.reinf.length ? model.reinf[model.reinf.length - 1] : NAIL;
       pushUndo();
       if (replace) model.reinf = [];
       for (let i = 0; i < n; i++) addMember(tpl, r3(n === 1 ? xa : xa + (xb - xa) * i / (n - 1)));
       stale = !!result; renderReinf(); draw(); renderResults();
-      status(`已配置 ${n} 支${tpl.type === 'anchor' ? '地錨' : '土釘'}，參數沿用範本。`);
+      status(L(`已配置 ${n} 支${tpl.type === 'anchor' ? '地錨' : '土釘'}，參數沿用範本。`, `Placed ${n} ${tpl.type === 'anchor' ? 'anchor' : 'soil nail'}${n > 1 ? 's' : ''} using the template parameters.`));
     };
     $('#btnBatchAdd').addEventListener('click', () => batch(false));
     $('#btnBatchReplace').addEventListener('click', () => batch(true));
@@ -2544,7 +2608,8 @@ if (typeof module !== 'undefined') module.exports = SSA;
 }`, e.currentTarget));
     $('#gridChip').addEventListener('click', () => { $('#tab-set').click(); $('#searchGuide').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); });
     $('#btnUndo').addEventListener('click', doUndo);
-    $('#btnSample').addEventListener('click', () => { pushUndo(); model = clone(SAMPLE); active = 'ground'; fit(); changed(true); run(); });
+    $('#btnSample').addEventListener('click', () => { pushUndo(); model = clone(SAMPLE); renameDefaults(); active = 'ground'; fit(); changed(true); run(); });
+    $('#btnLang').addEventListener('click', () => setLang(LANG === 'en' ? 'zh' : 'en'));
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); doUndo(); }
     });
@@ -2555,16 +2620,16 @@ if (typeof module !== 'undefined') module.exports = SSA;
     svg.addEventListener('pointercancel', onUp);
     svg.addEventListener('pointerleave', () => { $('#hud').textContent = 'x —　z —'; if (hover && !drag) { hover = null; draw(); } });
 
-    $('#csvSampleFull').textContent = CSV_FULL;
+    $('#csvSampleFull').textContent = csvFull();
     $('#csvSampleGround').textContent = CSV_GROUND;
-    $('#btnDlFull').addEventListener('click', e => saveFile('SSA-剖面範例.csv', '\uFEFF' + CSV_FULL, e.currentTarget));
-    $('#btnDlGround').addEventListener('click', e => saveFile('SSA-地表線範例.csv', '\uFEFF' + CSV_GROUND, e.currentTarget));
-    $('#btnCpFull').addEventListener('click', e => copyText(CSV_FULL, e.currentTarget));
+    $('#btnDlFull').addEventListener('click', e => saveFile(L('SSA-剖面範例.csv', 'SSA-profile-example.csv'), '\uFEFF' + csvFull(), e.currentTarget));
+    $('#btnDlGround').addEventListener('click', e => saveFile(L('SSA-地表線範例.csv', 'SSA-ground-example.csv'), '\uFEFF' + CSV_GROUND, e.currentTarget));
+    $('#btnCpFull').addEventListener('click', e => copyText(csvFull(), e.currentTarget));
     $('#btnCpGround').addEventListener('click', e => copyText(CSV_GROUND, e.currentTarget));
     $('#csvIn').addEventListener('change', e => {
       const f = e.target.files[0]; if (!f) return;
       const rd = new FileReader();
-      rd.onload = () => { try { importCSV(decodeText(rd.result)); } catch (err) { status('CSV 匯入失敗：' + err.message + '。請對照範例檔的格式。'); } };
+      rd.onload = () => { try { importCSV(decodeText(rd.result)); } catch (err) { status(L('CSV 匯入失敗：' + err.message + '。請對照範例檔的格式。', 'CSV import failed: ' + err.message + '. Compare with the example file format.')); } };
       rd.readAsArrayBuffer(f); e.target.value = '';
     });
     $('#btnSaveJson').addEventListener('click', e => saveFile(`SSA-model-${stamp()}.json`, JSON.stringify(model, null, 1), e.currentTarget));
@@ -2584,8 +2649,8 @@ if (typeof module !== 'undefined') module.exports = SSA;
   function importText(t) {
     try {
       const m = sanitize(JSON.parse(t));
-      pushUndo(); model = m; active = 'ground'; result = null; fit(); changed(true); status('已載入模型'); run();
-    } catch (e) { status('載入失敗：JSON 格式不正確或缺少地表線、土層資料。'); }
+      pushUndo(); model = m; active = 'ground'; result = null; fit(); changed(true); status(L('已載入模型', 'Model loaded')); run();
+    } catch (e) { status(L('載入失敗：JSON 格式不正確或缺少地表線、土層資料。', 'Load failed: the JSON is invalid or lacks ground line or layer data.')); }
   }
 
   /* ---------- usage counter (live GitHub Pages site only) ---------- */
@@ -2599,15 +2664,41 @@ if (typeof module !== 'undefined') module.exports = SSA;
     const get = url => fetch(url, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
     const [u, v] = await Promise.all([get(`${base}/${first ? 'hit' : 'get'}/${ns}/${kUser}`), get(`${base}/hit/${ns}/${kView}`)]);
     if (u && first) { try { localStorage.setItem('ssa-visited', String(Date.now())); } catch (e) { } }
-    const n = x => Number(x).toLocaleString('zh-TW');
+    counts = { u: u && isFinite(u.value) ? u.value : null, v: v && isFinite(v.value) ? v.value : null };
+    renderCounter();
+  }
+  let counts = null;
+  function renderCounter() {
+    const el = $('#visitCount'); if (!el || !counts) return;
+    const n = x => Number(x).toLocaleString(L('zh-TW', 'en-US'));
     const parts = [];
-    if (u && isFinite(u.value)) parts.push(`已有 <b>${n(u.value)}</b> 位使用者`);
-    if (v && isFinite(v.value)) parts.push(`累計開啟 <b>${n(v.value)}</b> 次`);
+    if (counts.u != null) parts.push(L(`已有 <b>${n(counts.u)}</b> 位使用者`, `<b>${n(counts.u)}</b> users`));
+    if (counts.v != null) parts.push(L(`累計開啟 <b>${n(counts.v)}</b> 次`, `<b>${n(counts.v)}</b> visits`));
     if (!parts.length) return;
     el.innerHTML = parts.join('<span class="sep">｜</span>');
     el.hidden = false;
   }
 
+  /* ---------- language switch ---------- */
+  function renameDefaults() {
+    model.layers.forEach(Ly => { Ly.name = nameFor(Ly.name, LANG); });
+    model.loads.forEach(l => { l.name = nameFor(l.name, LANG); });
+    model.walls.forEach(w => { w.name = nameFor(w.name, LANG); });
+  }
+  function setLang(lang) {
+    LANG = lang === 'en' ? 'en' : 'zh';
+    try { localStorage.setItem('ssa-lang', LANG); } catch (e) { }
+    try { const u = new URL(location.href); u.searchParams.set('lang', LANG); history.replaceState(null, '', u); } catch (e) { }
+    renameDefaults();
+    applyStatic();
+    $('#csvSampleFull').textContent = csvFull();
+    setBusy(running, running ? L('計算中…', 'Computing…') : '');
+    renderLines(); renderCoords(); renderLayers(); renderSettings(); renderReinf(); renderWalls(); renderLoads(); draw(); renderResults(); renderGuide(); renderCounter();
+    status(L('已切換為中文介面', 'Switched to English'));
+  }
+
+  applyStatic();
+  renameDefaults();
   bind();
   visitCounter();
   $('#btnUndo').disabled = true;
