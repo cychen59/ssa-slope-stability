@@ -1,6 +1,6 @@
 # SSA Slope Stability Analysis (web edition)
 
-[中文](README.md) | **English**
+[中文](README.md) | **English** | [日本語](README.ja.md)
 
 Draw a slope profile, soil layers and the groundwater table in your browser. SSA searches for a critical slip surface of arbitrary shape by **dynamic programming (DP)** and computes the minimum factor of safety with the **simplified Janbu method**. Nothing to install; just open the page.
 
@@ -21,9 +21,9 @@ Draw a slope profile, soil layers and the groundwater table in your browser. SSA
 - **Surface loads**: uniform, trapezoidal and line loads, each with or without seismic inertia, with an optional comparison against the case without loads. Load ends can be dragged on the drawing.
 - **Retaining walls**: defined by parameters (toe, base elevation, height, base width, top width) or by vertices, and treated as impenetrable structures with weight, giving the global stability including the wall.
 - **Specified slip surface check**: draw or paste one slip surface and compute only its factor of safety, for comparison with other software or hand calculations.
-- **Automatic search**: DP search for non-circular critical slip surfaces, with entry and exit points found automatically. Options include a concavity constraint (handled with slope classes so thin weak layers are still followed) and a minimum slip depth.
+- **Automatic search**: DP search for non-circular critical slip surfaces, with entry and exit points found automatically. Options include a concavity constraint (handled with slope classes so thin weak layers are still followed) and a minimum slip depth. An [animated explanation](https://cychen59.github.io/ssa-slope-stability/concave-constraint.html?lang=en) shows how the concavity constraint works.
 - **Results**: Fs and corrected f0·Fs, sliding mass area, entry and exit coordinates, slice details and iteration log, all copyable as CSV.
-- **Chinese and English interface**: press “EN / 中文” in the header. The choice is remembered by your browser, and adding `?lang=en` to the address opens the English interface directly.
+- **Chinese, English and Japanese interface**: press “中文 / EN / 日本語” in the header. The choice is remembered by your browser, and adding `?lang=en` or `?lang=ja` to the address opens that interface directly.
 - **Save and resume**: save the whole model (terrain, layers, water table, parameters, settings) as a JSON file and import it later to continue.
 
 ## How to use

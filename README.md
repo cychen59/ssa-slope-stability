@@ -1,6 +1,6 @@
 # SSA 邊坡穩定分析（網頁版）
 
-**中文** | [English](README.en.md)
+**中文** | [English](README.en.md) | [日本語](README.ja.md)
 
 在瀏覽器裡繪製邊坡剖面、土層與地下水位，以**動態規劃（DP）**搜尋任意形狀的臨界滑動面，並以**簡易 Janbu 法**計算最小安全係數。免安裝，打開網頁就能用。
 
@@ -21,9 +21,9 @@
 - **地表載重**：均布、梯形分布與線載重，可選擇是否計入地震慣性力，並可同時計算無載重情況對照。可在圖上拖曳載重端點。
 - **擋土牆**：以參數（前趾、底面高程、牆高、底寬、頂寬）或頂點座標建立牆體，視為不可穿越、計入重量的結構物，計算包含擋土牆的整體穩定。
 - **指定滑動面試算**：畫出或貼上一條滑動面，只計算這一條的安全係數，可用來和其他軟體或手算結果比對。
-- **自動搜尋**：以動態規劃搜尋非圓弧臨界滑動面，入口與出口位置由計算自動決定，可限制滑動面為凹形（依最陡坡度分級處理，薄弱夾層也能正確追蹤）、設定最小滑動深度。
+- **自動搜尋**：以動態規劃搜尋非圓弧臨界滑動面，入口與出口位置由計算自動決定，可限制滑動面為凹形（依最陡坡度分級處理，薄弱夾層也能正確追蹤）、設定最小滑動深度。凹形限制的原理另有[動畫說明](https://cychen59.github.io/ssa-slope-stability/concave-constraint.html)。
 - **結果**：安全係數 Fs 與修正後 f0·Fs、滑動體面積、出入口座標、切片明細與迭代紀錄，可複製為 CSV。
-- **中英文介面**：頁首按「EN／中文」即可切換，選擇會記在瀏覽器裡。網址加上 `?lang=en` 可直接開啟英文介面。
+- **中、英、日文介面**：頁首按「中文／EN／日本語」即可切換，選擇會記在瀏覽器裡。網址加上 `?lang=en` 或 `?lang=ja` 可直接開啟英文或日文介面。
 - **存檔與接續**：把整個模型（地形、土層、水位、參數、設定）存成 JSON 檔，下次匯入即可繼續分析。
 
 ## 使用方式
@@ -137,3 +137,7 @@ x,z
 ## English
 
 An English version of this README is available in [README.en.md](README.en.md). The web tool itself also has an English interface: press **EN** in the header, or open <https://cychen59.github.io/ssa-slope-stability/?lang=en>.
+
+## 日本語
+
+日本語版の README は [README.ja.md](README.ja.md) をご覧ください。Web ツールもヘッダーの「日本語」ボタン、または <https://cychen59.github.io/ssa-slope-stability/?lang=ja> で日本語表示に切り替えられます。

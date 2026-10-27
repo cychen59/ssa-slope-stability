@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="以三段動畫說明 SSA 邊坡穩定分析的凹形限制：原作法為何漏掉沿薄弱夾層的滑動面，以及坡度分級與節點容許誤差的改良。">
+<meta property="og:title" content="凹形限制動畫說明｜SSA 邊坡穩定分析">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://cychen59.github.io/ssa-slope-stability/concave-constraint.html">
+<!--
+  SSA Slope Stability Analysis (web edition) · concavity constraint animation
+  Copyright (C) 2013-2026  C. Y. Chen
+  Released under the GNU General Public License, version 3: https://www.gnu.org/licenses/gpl-3.0.html
+-->
+<title>凹形限制動畫說明｜SSA 邊坡穩定分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one drawing board in the middle, scene tabs above, caption and step controls below, formula card at the end */
+:root{
+  --bg:#f3f1ea; --panel:#fbfaf6; --ink:#22261f; --muted:#646a5e; --line:#d6d3c6;
+  --soil:#e6d6b2; --soil-ink:#9b8758; --seam:#8a7096; --rock:#c3c6c8;
+  --slip:#c0392b; --ok:#2f7d4f; --bad:#c0392b; --pathA:#2c6fb3; --pathB:#d07a1c; --ghost:#a7a89e; --node:#4b4f47;
+  --accent:#2d5b45; --chip:#e8efe9;
+  --f-ui:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-ja:"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  --f-num:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161915; --panel:#1e221d; --ink:#e7e9e2; --muted:#a3a99c; --line:#383d35;
+  --soil:#4a3f2b; --soil-ink:#c2ac78; --seam:#7d6990; --rock:#3d4144;
+  --slip:#ef6b5c; --ok:#5cc188; --bad:#ef6b5c; --pathA:#6aa8ea; --pathB:#f0a24f; --ghost:#62665d; --node:#c8ccc2;
+  --accent:#7cc39b; --chip:#25352c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161915; --panel:#1e221d; --ink:#e7e9e2; --muted:#a3a99c; --line:#383d35;
+  --soil:#4a3f2b; --soil-ink:#c2ac78; --seam:#7d6990; --rock:#3d4144;
+  --slip:#ef6b5c; --ok:#5cc188; --bad:#ef6b5c; --pathA:#6aa8ea; --pathB:#f0a24f; --ghost:#62665d; --node:#c8ccc2;
+  --accent:#7cc39b; --chip:#25352c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:900px;margin:0 auto;display:grid;gap:18px}
+header h1{margin:0;font-size:24px;font-weight:700;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);max-width:62ch}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:500}
+.tab:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.board{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stage{overflow-x:auto}
+svg{display:block;width:100%;min-width:560px;height:auto}
+.caption{border-top:1px solid var(--line);padding:14px 18px;min-height:96px;display:grid;gap:6px}
+.caption .k{font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.caption .t{font-size:16px;font-weight:500;max-width:70ch}
+.caption .t b{color:var(--accent)}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px 14px}
+.btn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:6px 12px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.btn:disabled{opacity:.4;cursor:default}
+.dots{display:flex;gap:6px;margin-left:auto}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line);border:0;padding:0;cursor:pointer}
+.dot.on{background:var(--accent)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;display:grid;gap:10px}
+.card h2{margin:0;font-size:17px}
+.card p{margin:0;max-width:68ch}
+.formula{font-family:var(--f-num);font-size:15px;background:var(--chip);border-radius:6px;padding:10px 14px;overflow-x:auto;white-space:nowrap}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}
+.legend code{font-family:var(--f-num);color:var(--accent)}
+/* svg styles */
+.ground{fill:none;stroke:var(--ink);stroke-width:2.2}
+.soil{fill:var(--soil);opacity:.75}
+.seam{fill:var(--seam);opacity:.55}
+.rock{fill:var(--rock)}
+.col{stroke:var(--line);stroke-width:1.2;stroke-dasharray:4 4}
+.node{fill:var(--node)}
+.lbl{fill:var(--muted);font:12px var(--f-ui)}
+.lbl.big{font-size:14px;fill:var(--ink)}
+.num{font:600 12px var(--f-num)}
+.p-ok{fill:none;stroke:var(--slip);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.p-bad{fill:none;stroke:var(--bad);stroke-width:2.6;stroke-dasharray:7 5;stroke-linecap:round}
+.p-a{fill:none;stroke:var(--pathA);stroke-width:3;stroke-linecap:round}
+.p-b{fill:none;stroke:var(--pathB);stroke-width:3;stroke-linecap:round}
+.p-ghost{fill:none;stroke:var(--ghost);stroke-width:2.4;stroke-dasharray:3 5}
+.p-true{fill:none;stroke:var(--seam);stroke-width:2;stroke-dasharray:2 4}
+.t-ok{fill:var(--ok)} .t-bad{fill:var(--bad)} .t-a{fill:var(--pathA)} .t-b{fill:var(--pathB)} .t-ink{fill:var(--ink)}
+.box{fill:var(--panel);stroke:var(--line)}
+.box.a{stroke:var(--pathA)} .box.b{stroke:var(--pathB)}
+.mark{font:700 16px var(--f-ui)}
+.fan{fill:var(--ok);opacity:.14}
+.fanline{stroke:var(--ok);stroke-width:1.2;stroke-dasharray:3 3}
+/* entrance animations */
+.draw{stroke-dasharray:var(--len) var(--len);stroke-dashoffset:var(--len);animation:draw .9s ease forwards;animation-delay:var(--d,0s)}
+.fade{opacity:0;animation:fade .5s ease forwards;animation-delay:var(--d,0s)}
+.gone{animation:gone .8s ease forwards}
+.noanim .draw,.noanim .fade{animation:none;stroke-dashoffset:0;opacity:1}
+.noanim .gone{animation:none;opacity:.18}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{to{opacity:1}}
+@keyframes gone{to{opacity:.18}}
+@media (prefers-reduced-motion: reduce){.draw,.fade,.gone{animation:none;stroke-dashoffset:0;opacity:1}.gone{opacity:.18}}
+:root:lang(ja){--f-ui:var(--f-ja)}
+.nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.back{color:var(--accent);text-decoration:none;font-size:14px}
+.back:hover{text-decoration:underline}
+.seg{display:inline-flex}
+.seg .btn{border-radius:0;margin-left:-1px;font-weight:600;padding:5px 10px;background:var(--panel)}
+.seg .btn:first-child{border-radius:6px 0 0 6px;margin-left:0}
+.seg .btn:last-child{border-radius:0 6px 6px 0}
+.seg .btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg);position:relative;z-index:1}
+footer{color:var(--muted);font-size:13px}
+footer a{color:var(--accent)}
+@media (max-width:520px){header h1{font-size:20px}.caption .t{font-size:15px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav">
+    <a class="back" id="back" href="index.html" data-t="back">← 回到 SSA 邊坡穩定分析</a>
+    <div class="seg" role="group" aria-label="語言 / Language / 言語">
+      <button class="btn" type="button" data-lang="zh" lang="zh-Hant">中文</button>
+      <button class="btn" type="button" data-lang="en" lang="en">EN</button>
+      <button class="btn" type="button" data-lang="ja" lang="ja">日本語</button>
+    </div>
+  </nav>
+
+  <header>
+    <h1 data-t="h1">凹形限制：原作法的問題與改良</h1>
+    <p data-t="lead">三段動畫依序說明：凹形限制是什麼、原作法為什麼會漏掉沿薄弱夾層的滑動面，以及網頁版怎麼改。按「下一步」逐格看，或按「自動播放」。</p>
+  </header>
+
+  <div class="tabs" role="tablist" data-ta="aria-label:tabsLbl" aria-label="場景">
+    <button class="tab" role="tab" id="tab0" data-s="0" type="button" data-t="tab0">① 什麼是凹形限制</button>
+    <button class="tab" role="tab" id="tab1" data-s="1" type="button" data-t="tab1">② 只留一條路的問題</button>
+    <button class="tab" role="tab" id="tab2" data-s="2" type="button" data-t="tab2">③ 節點高低造成的鋸齒</button>
+  </div>
+
+  <section class="board" aria-live="polite">
+    <div class="stage"><svg id="cv" viewBox="0 0 760 400" role="img" data-ta="aria-label:svgLbl" aria-label="動畫畫面"></svg></div>
+    <div class="caption"><span class="k" id="stepNo"></span><span class="t" id="cap"></span></div>
+    <div class="controls">
+      <button class="btn" id="prev" type="button" data-t="prev">◀ 上一步</button>
+      <button class="btn primary" id="next" type="button">下一步 ▶</button>
+      <button class="btn" id="play" type="button">自動播放</button>
+      <div class="dots" id="dots"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 data-t="ruleH">改良後的判斷規則</h2>
+    <div class="formula">s<sub>k</sub> ≥ m<sub>k−1</sub> − δ<sub>k</sub>　　m<sub>k</sub> = max(m<sub>k−1</sub>, s<sub>k</sub>)</div>
+    <div class="legend">
+      <code>s</code><span data-t="lgS">這一段滑動面的坡度（斜率）。</span>
+      <code>m</code><span data-t="lgM">這條路徑到目前為止最陡的坡度，只會變大、不會變小。</span>
+      <code>δ</code><span data-t="lgD">節點高低不齊造成的坡度誤差，約為（兩條線的節點間距平均）÷ 線距。</span>
+    </div>
+    <p data-t="p1">每個節點不再只記一條最佳路徑，而是依 m 分成 36 個抽屜（每 5° 一格），每個抽屜各留一條。坡度緩的路徑因此不會被提早丟掉；允許 δ 的誤差讓滑動面能沿著薄夾層走，而 m 只增不減，誤差不會一路累積成中間凸起的形狀。</p>
+    <p data-t="p2">以 ACADS 軟弱夾層考題為例，原作法得到 F = 1.646 的深層滑動面，改良後找到沿夾層的臨界面 F = 1.174，修正後 1.270 落在參考解 1.24～1.27 之間。</p>
+  </section>
+
+  <footer data-t="foot">本頁是 <a href="index.html" data-keep-lang>SSA 邊坡穩定分析</a> 第六節「滑動面形狀的限制條件」的補充說明，以 <a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener" target="_blank">GPL-3.0</a> 授權公開。</footer>
+</div>
+
+<script>
+(() => {
+  /* ---------------- language ---------------- */
+  const ok = v => v === 'zh' || v === 'en' || v === 'ja';
+  let LANG = 'zh';
+  try {
+    const q = new URLSearchParams(location.search).get('lang');
+    let saved = null; try { saved = localStorage.getItem('ssa-lang'); } catch (e) { }
+    const nav = navigator.language || 'zh';
+    LANG = ok(q) ? q : ok(saved) ? saved : /^zh/i.test(nav) ? 'zh' : /^ja/i.test(nav) ? 'ja' : 'en';
+  } catch (e) { LANG = 'zh'; }
+
+  const T = {
+    zh: {
+      title: '凹形限制動畫說明｜SSA 邊坡穩定分析', back: '← 回到 SSA 邊坡穩定分析',
+      h1: '凹形限制：原作法的問題與改良',
+      lead: '三段動畫依序說明：凹形限制是什麼、原作法為什麼會漏掉沿薄弱夾層的滑動面，以及網頁版怎麼改。按「下一步」逐格看，或按「自動播放」。',
+      tabsLbl: '場景', svgLbl: '動畫畫面',
+      tab0: '① 什麼是凹形限制', tab1: '② 只留一條路的問題', tab2: '③ 節點高低造成的鋸齒',
+      prev: '◀ 上一步', next: '下一步 ▶', nextScene: '下一個場景 ▶', restart: '從頭開始 ↺', play: '自動播放', pause: '暫停',
+      scene: i => `場景 ${'①②③'[i]}`, step: (a, n) => `第 ${a} / ${n} 步`, dot: i => `第 ${i} 步`,
+      ruleH: '改良後的判斷規則',
+      lgS: '這一段滑動面的坡度（斜率）。',
+      lgM: '這條路徑到目前為止最陡的坡度，只會變大、不會變小。',
+      lgD: '節點高低不齊造成的坡度誤差，約為（兩條線的節點間距平均）÷ 線距。',
+      p1: '每個節點不再只記一條最佳路徑，而是依 m 分成 36 個抽屜（每 5° 一格），每個抽屜各留一條。坡度緩的路徑因此不會被提早丟掉；允許 δ 的誤差讓滑動面能沿著薄夾層走，而 m 只增不減，誤差不會一路累積成中間凸起的形狀。',
+      p2: '以 ACADS 軟弱夾層考題為例，原作法得到 F = 1.646 的深層滑動面，改良後找到沿夾層的臨界面 F = 1.174，修正後 1.270 落在參考解 1.24～1.27 之間。',
+      foot: '本頁是 <a href="index.html" data-keep-lang>SSA 邊坡穩定分析</a> 第六節「滑動面形狀的限制條件」的補充說明，以 <a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener" target="_blank">GPL-3.0</a> 授權公開。',
+      toe: '坡趾', crest: '坡頂', seam: '薄弱夾層', seam3: '薄弱夾層（厚 0.5 m）', lines: ['第 k−1 條線', '第 k 條線', '第 k+1 條線'],
+      pathA: '路徑 A　G = 102', pathB: '路徑 B　G = 105', into: a => `進入 P 的坡度 ${a}`,
+      drawers: 'P 點的抽屜（每 5° 一格）', binA: '+15～+20°：路徑 A', binB: '−5～0°：路徑 B', only: '只能走 ≥ +17°',
+      s1: [
+        '滑動土體由右往左滑。從坡趾往坡頂看，滑動面每一段都有一個傾角（往右上升為正）。',
+        '凹形限制要求傾角<b>一段比一段大</b>（或相等），滑動面就像一個向上開口的碗。這條路徑每段都符合，可以接受。',
+        '這條路徑在中段傾角由 +11° 變成 −19°，中間凸起一塊。現實中不會這樣滑，凹形限制把它排除。'],
+      s2: [
+        'DP 逐條線往右推進。兩條路徑都走到第 k 條線的 P 點：路徑 A 累積值 G 較小、進來時比較陡（+17°）；路徑 B 的 G 稍大、進來時比較平（−4°）。',
+        '<b>原作法</b>：每個節點只保留 G 最小的一條路徑。路徑 A 留下，路徑 B 被丟掉。',
+        '下一段若沿夾層走（0°），比 A 的 +17° 小，違反凹形限制，不能走。真正的臨界面因此被擋掉，搜尋只好往陡處走，最後得到 F = 1.646 的深層滑動面。',
+        '<b>改良後</b>：P 點依「目前最陡坡度」分成多個抽屜，每個抽屜各留一條路徑。A 和 B 落在不同抽屜，兩條都保留。',
+        '從 B 接下去沿夾層走（0° ≥ −4°）符合凹形限制，搜尋就能找到沿夾層的臨界面，F = 1.174。'],
+      s3: [
+        '每條分割線的節點從模型底部到地表等距排列，但各條線的地表高度不同，節點的高程也就前後錯開。紫色虛線是沿夾層的真正滑動面，完全水平。',
+        '滑動面只能通過節點。沿夾層挑最近的節點連起來，坡度會在 +3° 和 −3° 之間來回跳，成了鋸齒。',
+        '<b>嚴格的凹形限制</b>：第二段 −3° 比第一段 +3° 小，判定不合格。滑動面無法沿夾層延伸，只能離開夾層。',
+        '<b>改良後</b>：允許一個小誤差 δ（這裡約 11°，即節點間距 ÷ 線距換算成的角度），並記錄目前最陡坡度 m。只要這段坡度 ≥ m − δ 就合格，鋸齒路徑可以一路沿夾層走下去。',
+        '誤差不會累積：m 只增不減，判斷基準一直是 +3° − 11° = −8°。一條持續往下彎的路徑，第四段 −5° 還在誤差內，第五段 −12° 就不合格，所以中間凸起的形狀仍然會被排除。']
+    },
+    en: {
+      title: 'Concavity constraint animation | SSA Slope Stability Analysis', back: '← Back to SSA Slope Stability Analysis',
+      h1: 'Concavity constraint: the original problem and the fix',
+      lead: 'Three animated scenes explain what the concavity constraint is, why the original method misses slip surfaces along thin weak seams, and how the web version fixes it. Press “Next” to step through, or “Play”.',
+      tabsLbl: 'Scenes', svgLbl: 'Animation',
+      tab0: '① What the constraint means', tab1: '② Keeping only one path', tab2: '③ Zigzag from node elevations',
+      prev: '◀ Back', next: 'Next ▶', nextScene: 'Next scene ▶', restart: 'Start over ↺', play: 'Play', pause: 'Pause',
+      scene: i => `Scene ${'①②③'[i]}`, step: (a, n) => `Step ${a} / ${n}`, dot: i => `Step ${i}`,
+      ruleH: 'The improved rule',
+      lgS: 'Slope (gradient) of this segment of the slip surface.',
+      lgM: 'Steepest slope of the path so far. It can only grow, never shrink.',
+      lgD: 'Slope error caused by staggered node elevations, about (mean node spacing of the two lines) ÷ line spacing.',
+      p1: 'Each node no longer keeps a single best path. Paths are sorted by m into 36 bins (5° each), and each bin keeps one path, so gentler paths are not discarded too early. The tolerance δ lets the slip surface follow a thin seam, and because m never decreases, the error cannot build up into a bulging shape.',
+      p2: 'In the ACADS weak seam problem, the original method found a deep surface with F = 1.646. The improved method finds the critical surface along the seam, F = 1.174, and the corrected value 1.270 lies within the reference range of 1.24–1.27.',
+      foot: 'This page supplements Section 6, “Constraints on the slip surface shape”, of <a href="index.html" data-keep-lang>SSA Slope Stability Analysis</a> and is released under <a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener" target="_blank">GPL-3.0</a>.',
+      toe: 'Toe', crest: 'Crest', seam: 'Weak seam', seam3: 'Weak seam (0.5 m thick)', lines: ['Line k−1', 'Line k', 'Line k+1'],
+      pathA: 'Path A　G = 102', pathB: 'Path B　G = 105', into: a => `Slope into P ${a}`,
+      drawers: 'Bins at P (5° each)', binA: '+15 to +20°: path A', binB: '−5 to 0°: path B', only: 'only ≥ +17°',
+      s1: [
+        'The soil mass slides from right to left. Looking from the toe to the crest, each segment of the slip surface has an inclination (positive when rising to the right).',
+        'The concavity constraint requires each inclination to be <b>no smaller than the one before</b>, so the slip surface is shaped like a bowl opening upward. Every segment of this path satisfies it, so the path is accepted.',
+        'On this path the inclination drops from +11° to −19° midway, producing a bulge. Real slides do not take this shape, so the constraint excludes it.'],
+      s2: [
+        'DP advances line by line. Two paths reach point P on line k. Path A has the smaller accumulated value G and enters steeply (+17°); path B has a slightly larger G and enters gently (−4°).',
+        '<b>Original method</b>: each node keeps only the path with the smallest G. Path A is kept and path B is discarded.',
+        'If the next segment follows the seam (0°), it is flatter than A’s +17° and violates the constraint. The true critical surface is blocked, the search is pushed into steeper ground, and it ends with a deep surface of F = 1.646.',
+        '<b>Improved method</b>: P is divided into bins by the steepest slope reached so far, and each bin keeps its own path. A and B fall into different bins, so both are kept.',
+        'Continuing from B along the seam (0° ≥ −4°) satisfies the constraint, so the search finds the critical surface along the seam, F = 1.174.'],
+      s3: [
+        'Nodes on each vertical line are evenly spaced from the model base to the ground surface. The ground elevation differs from line to line, so node elevations are staggered. The purple dotted line is the true slip surface along the seam, perfectly horizontal.',
+        'The slip surface can only pass through nodes. Joining the nodes nearest the seam makes the slope jump back and forth between +3° and −3°, a zigzag.',
+        '<b>Strict concavity</b>: the second segment (−3°) is flatter than the first (+3°) and is rejected. The slip surface cannot continue along the seam and has to leave it.',
+        '<b>Improved method</b>: a small tolerance δ is allowed (about 11° here, the node spacing ÷ line spacing expressed as an angle), and the steepest slope so far, m, is recorded. A segment passes if its slope ≥ m − δ, so the zigzag path can follow the seam all the way.',
+        'Errors do not accumulate. m never decreases, so the threshold stays at +3° − 11° = −8°. On a path that keeps bending downward, the fourth segment (−5°) is still within tolerance but the fifth (−12°) is rejected, so bulging shapes are still excluded.']
+    },
+    ja: {
+      title: '凹形制約のアニメーション解説｜SSA 斜面安定解析', back: '← SSA 斜面安定解析に戻る',
+      h1: '凹形の制約：従来の方法の問題点と改良',
+      lead: '3 つのアニメーションで、凹形の制約とは何か、従来の方法がなぜ薄い弱層に沿ったすべり面を見落とすのか、Web 版でどう改良したかを順に説明します。「次へ」で 1 コマずつ、または「自動再生」で見られます。',
+      tabsLbl: '場面', svgLbl: 'アニメーション',
+      tab0: '① 凹形の制約とは', tab1: '② 経路を 1 本だけ残す問題', tab2: '③ 節点の高さによるジグザグ',
+      prev: '◀ 前へ', next: '次へ ▶', nextScene: '次の場面 ▶', restart: '最初から ↺', play: '自動再生', pause: '一時停止',
+      scene: i => `場面 ${'①②③'[i]}`, step: (a, n) => `ステップ ${a} / ${n}`, dot: i => `ステップ ${i}`,
+      ruleH: '改良後の判定規則',
+      lgS: 'この区間のすべり面の勾配。',
+      lgM: 'この経路でこれまでに最も急な勾配。増えるだけで減りません。',
+      lgD: '節点の高さのずれによる勾配の誤差。おおよそ（2 本の線の節点間隔の平均）÷ 線間隔です。',
+      p1: '各節点に最良の経路を 1 本だけ記録するのではなく、m によって 36 個の引き出し（5° ごと）に分け、引き出しごとに 1 本ずつ残します。これにより緩い勾配の経路が早い段階で捨てられることはありません。許容誤差 δ によってすべり面は薄い弱層に沿って進め、m は増えるだけなので、誤差が積み重なって中央が膨らむ形になることもありません。',
+      p2: 'ACADS の弱層問題では、従来の方法は F = 1.646 の深いすべり面を求めましたが、改良後は弱層に沿った臨界すべり面 F = 1.174 を見つけ、補正後の 1.270 は参考解 1.24〜1.27 の範囲に入ります。',
+      foot: 'このページは <a href="index.html" data-keep-lang>SSA 斜面安定解析</a> の第 6 節「すべり面形状の制約」の補足説明で、<a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener" target="_blank">GPL-3.0</a> ライセンスで公開しています。',
+      toe: 'のり尻', crest: 'のり肩', seam: '弱層', seam3: '弱層（厚さ 0.5 m）', lines: ['第 k−1 線', '第 k 線', '第 k+1 線'],
+      pathA: '経路 A　G = 102', pathB: '経路 B　G = 105', into: a => `P への勾配 ${a}`,
+      drawers: 'P の引き出し（5° ごと）', binA: '+15〜+20°：経路 A', binB: '−5〜0°：経路 B', only: '+17° 以上のみ',
+      s1: [
+        '土塊は右から左へすべります。のり尻からのり肩に向かって見ると、すべり面の各区間には傾角があります（右上がりを正とします）。',
+        '凹形の制約では、傾角が<b>前の区間より小さくならない</b>ことを求めます。すべり面は上に開いたお椀のような形になります。この経路はすべての区間が条件を満たすので採用されます。',
+        'この経路は途中で傾角が +11° から −19° に変わり、中央が膨らんでいます。実際にはこのようにすべらないため、凹形の制約で除外します。'],
+      s2: [
+        'DP は分割線を 1 本ずつ右へ進みます。2 つの経路が第 k 線の点 P に到達しました。経路 A は累積値 G が小さく、急な勾配（+17°）で入ってきます。経路 B は G がやや大きく、緩い勾配（−4°）で入ってきます。',
+        '<b>従来の方法</b>：各節点には G が最小の経路を 1 本だけ残します。経路 A が残り、経路 B は捨てられます。',
+        '次の区間が弱層に沿う場合（0°）、A の +17° より緩いため凹形の制約に反し、進めません。真の臨界すべり面がふさがれ、探索は急な方へ向かうしかなく、最終的に F = 1.646 の深いすべり面になります。',
+        '<b>改良後</b>：点 P を「これまでの最大勾配」で複数の引き出しに分け、引き出しごとに 1 本の経路を残します。A と B は別の引き出しに入るため、両方とも残ります。',
+        'B から弱層に沿って進むと（0° ≥ −4°）凹形の制約を満たすので、弱層に沿った臨界すべり面 F = 1.174 が見つかります。'],
+      s3: [
+        '各分割線の節点はモデル底面から地表まで等間隔に並びますが、地表の高さが線ごとに違うため、節点の標高も前後でずれます。紫の点線は弱層に沿った真のすべり面で、完全に水平です。',
+        'すべり面は節点しか通れません。弱層に最も近い節点を結ぶと、勾配が +3° と −3° の間を行き来するジグザグになります。',
+        '<b>厳密な凹形の制約</b>：2 番目の区間の −3° が 1 番目の +3° より小さいため不合格です。すべり面は弱層に沿って延びられず、弱層から離れるしかありません。',
+        '<b>改良後</b>：小さな許容誤差 δ（ここでは約 11°、節点間隔 ÷ 線間隔を角度に換算した値）を認め、これまでの最大勾配 m を記録します。区間の勾配が m − δ 以上なら合格なので、ジグザグの経路でも弱層に沿って最後まで進めます。',
+        '誤差は累積しません。m は増えるだけで減らないため、判定基準は常に +3° − 11° = −8° です。下向きに曲がり続ける経路では、4 番目の −5° はまだ許容範囲内ですが、5 番目の −12° は不合格になり、中央が膨らむ形状は引き続き除外されます。']
+    }
+  };
+  const t = k => T[LANG][k];
+
+  const svg = document.getElementById('cv');
+  const deg = (a, b) => Math.round(Math.atan2(a[1] - b[1], b[0] - a[0]) * 180 / Math.PI); // slope angle, rising to the right is positive
+  const len = (P) => { let s = 0; for (let i = 1; i < P.length; i++) s += Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); return Math.ceil(s) + 2; };
+  const pts = P => P.map(p => p.join(',')).join(' ');
+  const sgn = a => `${a > 0 ? '+' : ''}${a}°`;
+  // element helpers; "draw" or "fade" only when the element first appears in this step
+  const line = (P, c, anim, d = 0) => `<polyline points="${pts(P)}" class="${c}${anim ? ' draw' : ''}" style="--len:${len(P)};--d:${d}s"/>`;
+  const txt = (x, y, s, c, anim, d = 0, a = 'middle') => `<text x="${x}" y="${y}" text-anchor="${a}" class="${c}${anim ? ' fade' : ''}" style="--d:${d}s">${s}</text>`;
+  const grp = (s, anim, d = 0, extra = '') => `<g class="${anim ? 'fade' : ''}${extra}" style="--d:${d}s">${s}</g>`;
+  const dot = (x, y, r = 3.2, c = 'node') => `<circle cx="${x}" cy="${y}" r="${r}" class="${c}"/>`;
+
+  /* ---------------- scene 1: what the concavity constraint means ---------------- */
+  const S1 = (() => {
+    const G = [[20, 300], [190, 300], [520, 105], [740, 105]];
+    const good = [[170, 300], [250, 332], [340, 344], [430, 322], [500, 262], [540, 190], [560, 117]];
+    const bad = [[170, 300], [250, 332], [330, 316], [400, 340], [470, 290], [520, 200], [550, 122]];
+    const soil = `<polygon class="soil" points="${pts(G)} 740,385 20,385"/>`;
+    const base = () => `${soil}<polyline class="ground" points="${pts(G)}"/>${txt(60, 290, t('toe'), 'lbl')}${txt(690, 95, t('crest'), 'lbl')}`;
+    const angles = (P, cls, anim, d0, judge) => {
+      let s = '', prev = -999;
+      for (let i = 1; i < P.length; i++) {
+        const a = deg(P[i - 1], P[i]), mx = (P[i - 1][0] + P[i][0]) / 2, my = (P[i - 1][1] + P[i][1]) / 2;
+        const ok = a >= prev; prev = Math.max(prev, a);
+        const c = judge ? (ok ? 't-ok' : 't-bad') : cls;
+        s += txt(mx, my + 22, `${sgn(a)}${judge ? (ok ? ' ✓' : ' ✗') : ''}`, 'num ' + c, anim, d0 + i * 0.25);
+      }
+      return s;
+    };
+    return [
+      n => base(),
+      n => base() + line(good, 'p-ok', n === 1) + angles(good, '', n === 1, 0.2, true),
+      n => base() + line(good, 'p-ghost', false) + line(bad, 'p-bad', n === 2) + angles(bad, '', n === 2, 0.2, true)
+    ];
+  })();
+
+  /* ---------------- scene 2: keeping only one path per node ---------------- */
+  const S2 = (() => {
+    const X = [130, 360, 590], ys = []; for (let y = 120; y <= 360; y += 24) ys.push(y);
+    const seamTop = 258, seamBot = 282, P = [360, 270];
+    const A0 = [130, 340], B0 = [130, 252], Q = [590, 270], Qd = [590, 150];
+    const bg = () => `<rect class="rock" x="20" y="365" width="720" height="20"/>
+      <rect class="seam" x="20" y="${seamTop}" width="720" height="${seamBot - seamTop}"/>
+      ${txt(700, seamTop - 6, t('seam'), 'lbl', false, 0, 'end')}
+      ${X.map((x, i) => `<line class="col" x1="${x}" y1="100" x2="${x}" y2="362"/>${txt(x, 92, t('lines')[i], 'lbl')}`).join('')}
+      ${X.map(x => ys.map(y => dot(x, y, 2.6)).join('')).join('')}`;
+    const Pdot = dot(P[0], P[1], 6, 't-ink') + txt(P[0] + 12, P[1] - 12, 'P', 'lbl big', false, 0, 'start');
+    const tagA = (anim, d) => grp(`<rect class="box a" x="146" y="306" width="148" height="44" rx="6"/>${txt(220, 324, t('pathA'), 'num t-a')}${txt(220, 342, t('into')(sgn(deg(A0, P))), 'num t-a')}`, anim, d);
+    const tagB = (anim, d) => grp(`<rect class="box b" x="146" y="186" width="148" height="44" rx="6"/>${txt(220, 204, t('pathB'), 'num t-b')}${txt(220, 222, t('into')(sgn(deg(B0, P))), 'num t-b')}`, anim, d);
+    const drawers = (anim) => grp(`<rect class="box" x="384" y="150" width="180" height="96" rx="6"/>
+      ${txt(474, 168, t('drawers'), 'lbl')}
+      <rect class="box a" x="394" y="178" width="160" height="26" rx="4"/>${txt(474, 196, t('binA'), 'num t-a')}
+      <rect class="box b" x="394" y="210" width="160" height="26" rx="4"/>${txt(474, 228, t('binB'), 'num t-b')}`, anim);
+    return [
+      n => bg() + line([A0, P], 'p-a', n === 0) + line([B0, P], 'p-b', n === 0, .2) + tagA(n === 0, .5) + tagB(n === 0, .7) + Pdot,
+      n => bg() + line([A0, P], 'p-a', false) + `<g class="${n === 1 ? 'gone' : ''}" style="${n > 1 ? 'opacity:.18' : ''}">${line([B0, P], 'p-b', false)}${tagB(false)}</g>` + tagA(false) + Pdot,
+      n => bg() + line([A0, P], 'p-a', false) + `<g style="opacity:.18">${line([B0, P], 'p-b', false)}${tagB(false)}</g>` + tagA(false) + line([P, Q], 'p-bad', n === 2) + txt(480, 262, '0° &lt; +17° ✗', 'num t-bad', n === 2, .6) + line([P, Qd], 'p-a', n === 2, 1) + txt(604, 196, t('only'), 'num t-a', n === 2, 1.4, 'start') + Pdot,
+      n => bg() + line([A0, P], 'p-a', false) + line([B0, P], 'p-b', n === 3) + tagA(false) + tagB(n === 3) + drawers(n === 3) + Pdot,
+      n => bg() + line([A0, P], 'p-a', false) + line([B0, P], 'p-b', false) + tagA(false) + tagB(false) + drawers(false) + line([P, Q], 'p-ok', n === 4) + txt(480, 300, '0° ≥ −4° ✓', 'num t-ok', n === 4, .6) + Pdot
+    ];
+  })();
+
+  /* ---------------- scene 3: node elevations differ from line to line ---------------- */
+  const S3 = (() => {
+    const X = [80, 165, 250, 335, 420, 505, 590, 675];
+    const off = [13, 9, 13, 9, 13, 9, 13, 9];          // nodes start at different elevations on each line
+    const sp = 16, seamTop = 252, seamBot = 274, yTrue = 263;
+    const nodesAt = i => { const a = []; for (let y = 140 + off[i]; y <= 350; y += sp) a.push(y); return a; };
+    const near = i => nodesAt(i).reduce((b, y) => Math.abs(y - yTrue) < Math.abs(b - yTrue) ? y : b, 0);
+    const zig = X.map((x, i) => [x, near(i)]);
+    const bg = () => `<rect class="rock" x="20" y="365" width="720" height="20"/>
+      <rect class="seam" x="20" y="${seamTop}" width="720" height="${seamBot - seamTop}"/>
+      ${txt(28, seamBot + 16, t('seam3'), 'lbl', false, 0, 'start')}
+      ${X.map((x, i) => `<line class="col" x1="${x}" y1="120" x2="${x}" y2="362"/>${nodesAt(i).map(y => dot(x, y, 2.6)).join('')}`).join('')}`;
+    const segs = (P, judge, anim, d0, tol) => {
+      let s = '', m = -999;
+      for (let i = 1; i < P.length; i++) {
+        const a = deg(P[i - 1], P[i]); let ok;
+        if (judge === 'strict') ok = a >= (i === 1 ? -999 : deg(P[i - 2], P[i - 1]));
+        else ok = a >= m - tol;
+        m = Math.max(m, a);
+        const mx = (P[i - 1][0] + P[i][0]) / 2, my = Math.min(P[i - 1][1], P[i][1]) - 12;
+        const c = judge ? (ok ? 't-ok' : 't-bad') : 't-ink';
+        s += txt(mx, my, `${sgn(a)}${judge ? (ok ? '✓' : '✗') : ''}`, 'num ' + c, anim, d0 + i * 0.22);
+        if (judge === 'tol') s += txt(mx, 330, `m=${sgn(m)}`, 'num t-ink', anim, d0 + i * 0.22);
+        if (judge === 'strict' && !ok) break;
+      }
+      return s;
+    };
+    const drift = [[80, near(0)], [165, near(1)], [250, near(2)], [335, near(2) + 7], [420, near(2) + 25]];
+    const tolDeg = Math.round(Math.atan(sp / 85) * 180 / Math.PI);
+    const truth = anim => line([[20, yTrue], [740, yTrue]], 'p-true', anim);
+    return [
+      n => bg() + truth(n === 0),
+      n => bg() + truth(false) + line(zig, 'p-a', n === 1) + segs(zig, null, n === 1, .3),
+      n => bg() + truth(false) + line(zig.slice(0, 3), 'p-a', n === 2) + segs(zig, 'strict', n === 2, .3),
+      n => bg() + truth(false) + line(zig, 'p-ok', n === 3) + segs(zig, 'tol', n === 3, .3, tolDeg),
+      n => bg() + truth(false) + line(drift, 'p-bad', n === 4) + segs(drift, 'tol', n === 4, .3, tolDeg)
+    ];
+  })();
+
+  const SCENES = [{ steps: S1, cap: 's1' }, { steps: S2, cap: 's2' }, { steps: S3, cap: 's3' }];
+  let sc = 0, st = 0, timer = null;
+  const $ = id => document.getElementById(id);
+  function render(anim = true) {
+    const S = SCENES[sc].steps;
+    svg.classList.toggle('noanim', !anim);
+    svg.innerHTML = S[st](st);
+    $('cap').innerHTML = t(SCENES[sc].cap)[st];
+    $('stepNo').textContent = `${t('scene')(sc)}　${t('step')(st + 1, S.length)}`;
+    $('prev').disabled = sc === 0 && st === 0;
+    $('next').textContent = st < S.length - 1 ? t('next') : sc < SCENES.length - 1 ? t('nextScene') : t('restart');
+    document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', +b.dataset.s === sc));
+    $('dots').innerHTML = S.map((_, i) => `<button class="dot${i === st ? ' on' : ''}" data-i="${i}" type="button" aria-label="${t('dot')(i + 1)}"></button>`).join('');
+  }
+  function applyLang() {
+    document.documentElement.lang = LANG === 'zh' ? 'zh-Hant' : LANG;
+    document.title = t('title');
+    document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = t(el.dataset.t); });
+    document.querySelectorAll('[data-ta]').forEach(el => { const [a, k] = el.dataset.ta.split(':'); el.setAttribute(a, t(k)); });
+    document.querySelectorAll('.seg [data-lang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === LANG ? 'true' : 'false'));
+    const keep = `index.html?lang=${LANG}`;
+    $('back').href = keep;
+    document.querySelectorAll('a[data-keep-lang]').forEach(a => { a.href = keep; });
+    $('play').textContent = timer ? t('pause') : t('play');
+  }
+  function setLang(l) {
+    LANG = ok(l) ? l : 'zh';
+    try { localStorage.setItem('ssa-lang', LANG); } catch (e) { }
+    try { const u = new URL(location.href); u.searchParams.set('lang', LANG); history.replaceState(null, '', u); } catch (e) { }
+    applyLang(); render(false);
+  }
+  function next() {
+    const S = SCENES[sc].steps;
+    if (st < S.length - 1) st++; else if (sc < SCENES.length - 1) { sc++; st = 0; } else { sc = 0; st = 0; }
+    render();
+  }
+  function prev() { if (st > 0) st--; else if (sc > 0) { sc--; st = SCENES[sc].steps.length - 1; } render(); }
+  function stop() { clearInterval(timer); timer = null; $('play').textContent = t('play'); }
+  $('next').onclick = () => { stop(); next(); };
+  $('prev').onclick = () => { stop(); prev(); };
+  $('play').onclick = () => { if (timer) { stop(); return; } timer = setInterval(next, 4200); $('play').textContent = t('pause'); };
+  $('dots').onclick = e => { const b = e.target.closest('.dot'); if (!b) return; stop(); st = +b.dataset.i; render(); };
+  document.querySelectorAll('.tab').forEach(b => b.onclick = () => { stop(); sc = +b.dataset.s; st = 0; render(); });
+  document.querySelectorAll('.seg [data-lang]').forEach(b => b.onclick = () => { if (b.dataset.lang !== LANG) setLang(b.dataset.lang); });
+  document.addEventListener('keydown', e => {
+    if (e.target.closest && e.target.closest('input,textarea')) return;
+    if (e.key === 'ArrowRight') { stop(); next(); } if (e.key === 'ArrowLeft') { stop(); prev(); }
+  });
+  applyLang();
+  render();
+})();
+</script>
+</body>
+</html>
