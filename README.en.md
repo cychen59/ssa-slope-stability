@@ -15,7 +15,8 @@ Draw a slope profile, soil layers and the groundwater table in your browser. SSA
 - **Profile drawing**: drag, add or delete vertices on the drawing, or paste coordinates from Excel, to edit the ground surface, layer boundaries and water table.
 - **CSV terrain import**: a single line (x, z) or a whole profile (x, ground, layer tops, water table), in UTF-8 or Big5 encoding.
 - **Soil properties**: γ, γsat, c′ and φ′ for each layer; any layer can be set as bedrock (impenetrable to slip surfaces). Units can be switched between kN/m³ and tf/m³, and between kPa and tf/m².
-- **Pore water pressure**: computed directly from the water table, u = γw·hw, with an optional inclined water table correction (cos²θ).
+- **Pore water pressure and ponded water**: computed directly from the water table, u = γw·hw, with an optional inclined water table correction (cos²θ). Where the water line is drawn above the ground (rivers, reservoirs, water at the toe) it is treated as ponded water, with its weight and the pressure on the sloping ground; a fully submerged slope gives the same result as the buoyant-weight calculation.
+- **Tension crack**: a vertical crack at the crest, with depth from the Rankine formula 2c′/(γ√Ka) or specified, dry or water-filled (Pw = ½γw·zc²). The search decides where the crack is, and each case of the multi-case check can set crack water separately. Verified against closed forms and ACADS problem 1(b) (see section 13 of the theory page).
 - **Earthquake**: pseudo-static analysis with horizontal and vertical seismic coefficients kH and kV.
 - **Soil nails and ground anchors**: head position, inclination, length, spacing and capacities (tension, pullout, facing or design anchor load); members can be placed in rows. The reinforcement force is the smallest capacity, applied by the active or passive method, and Fs and the critical surface with and without reinforcement are shown side by side.
 - **Surface loads**: uniform, trapezoidal and line loads, each with or without seismic inertia, with an optional comparison against the case without loads. Load ends can be dragged on the drawing.
@@ -131,7 +132,7 @@ Chen-Yu Chen. See the [author page](https://cychen59.blogspot.com/p/education-20
 ## Limitations
 
 - 2D plane strain limit equilibrium analysis; matric suction is not considered.
-- Ponded water above the ground and lateral water pressure are not included.
+- Pore pressure comes from a single water table; piezometric lines per layer and the ru coefficient are not yet available. Ponded water is hydrostatic, without waves or excess pore pressure from rapid drawdown.
 - The simplified Janbu method ignores interslice shear, so the uncorrected Fs is usually conservative.
 - Reinforcement carries tension only; bending and shear are ignored.
 - Loads are vertical only, without inclined loads or excess pore pressure from rapid loading.
