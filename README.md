@@ -2,7 +2,7 @@
 
 **中文** | [English](README.en.md) | [日本語](README.ja.md)
 
-在瀏覽器裡繪製邊坡剖面、土層與地下水位，以**動態規劃（DP）**搜尋任意形狀的臨界滑動面，並以**簡易 Janbu 法**計算最小安全係數。免安裝，打開網頁就能用。
+在瀏覽器裡繪製邊坡剖面、土層與地下水位，以**動態規劃（DP）**搜尋任意形狀的臨界滑動面，並以**簡易 Janbu 法**、**Spencer 法**或 **Morgenstern–Price 法**計算最小安全係數。免安裝，打開網頁就能用。
 
 **線上使用：<https://cychen59.github.io/ssa-slope-stability/>**
 
@@ -22,6 +22,7 @@
 - **擋土牆**：以參數（前趾、底面高程、牆高、底寬、頂寬）或頂點座標建立牆體，視為不可穿越、計入重量的結構物，計算包含擋土牆的整體穩定。
 - **指定滑動面試算**：畫出或貼上一條滑動面，只計算這一條的安全係數，可用來和其他軟體或手算結果比對。
 - **自動搜尋**：以動態規劃搜尋非圓弧臨界滑動面，入口與出口位置由計算自動決定，可限制滑動面為凹形（依最陡坡度分級處理，薄弱夾層也能正確追蹤）、設定最小滑動深度。凹形限制的原理另有[動畫說明](https://cychen59.github.io/ssa-slope-stability/concave-constraint.html)。
+- **嚴密法**：可選 Spencer 法或 Morgenstern–Price 法（半正弦 f(x)），同時滿足力與力矩平衡，搜尋後可再局部最佳化滑動面。三種方法的結果並列，已以封閉解、Fredlund and Krahn (1977) 與 ACADS 標準考題驗證（見網頁原理第十節）。
 - **結果**：安全係數 Fs 與修正後 f0·Fs、滑動體面積、出入口座標、切片明細與迭代紀錄，可複製為 CSV。
 - **中、英、日文介面**：頁首按「中文／EN／日本語」即可切換，選擇會記在瀏覽器裡。網址加上 `?lang=en` 或 `?lang=ja` 可直接開啟英文或日文介面。
 - **存檔與接續**：把整個模型（地形、土層、水位、參數、設定）存成 JSON 檔，下次匯入即可繼續分析。
@@ -80,6 +81,7 @@ x,z
   Gᵢ₊₁(j) = min over K { Gᵢ(K) + DGᵢ(K, j) }
 
 - 以 λ = Fs 反覆迭代至收斂。修正係數預設採 f0 = (50d/L)^0.03（申・板垣，1983），也可切換為 Janbu 修正曲線。
+- 選擇 Spencer 法或 Morgenstern–Price 法時，以一般化極限平衡（GLE）同時解力平衡與力矩平衡，假設切片間剪力 X = λ f(x) E，並以 Newton 法求解 Fs 與 λ。DP 找到的滑動面可再以樣式搜尋局部最佳化。
 
 完整推導、公式與示意圖請見網頁下方「方法原理與公式」。
 
@@ -117,6 +119,10 @@ x,z
 4. 山上拓男、植田康宏（1986）：Noncircular Slip Surface Analysis of the Stability of Slopes: An Application of Dynamic Programming to the Janbu Method，地すべり，第 22 巻第 4 号。
 5. 申潤植、板垣治（1983）：地すべり（その 4），土と基礎，Vol. 31，No. 7，pp. 89-97。
 6. Janbu, N. (1973): Slope stability computations, In Embankment-Dam Engineering (Casagrande Volume), Wiley, pp. 47-86.
+7. Spencer, E. (1967): A method of analysis of the stability of embankments assuming parallel inter-slice forces, Géotechnique, 17(1), pp. 11-26.
+8. Morgenstern, N. R. and Price, V. E. (1965): The analysis of the stability of general slip surfaces, Géotechnique, 15(1), pp. 79-93.
+9. Fredlund, D. G. and Krahn, J. (1977): Comparison of slope stability methods of analysis, Canadian Geotechnical Journal, 14(3), pp. 429-439.
+10. Giam, P. S. K. and Donald, I. B. (1989): Example problems for testing soil slope stability programs, Civil Engineering Research Report No. 8/1989, Monash University.
 
 ## 使用限制
 

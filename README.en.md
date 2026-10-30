@@ -2,7 +2,7 @@
 
 [中文](README.md) | **English** | [日本語](README.ja.md)
 
-Draw a slope profile, soil layers and the groundwater table in your browser. SSA searches for a critical slip surface of arbitrary shape by **dynamic programming (DP)** and computes the minimum factor of safety with the **simplified Janbu method**. Nothing to install; just open the page.
+Draw a slope profile, soil layers and the groundwater table in your browser. SSA searches for a critical slip surface of arbitrary shape by **dynamic programming (DP)** and computes the minimum factor of safety with the **simplified Janbu**, **Spencer** or **Morgenstern–Price** method. Nothing to install; just open the page.
 
 **Use it online: <https://cychen59.github.io/ssa-slope-stability/?lang=en>**
 
@@ -22,6 +22,7 @@ Draw a slope profile, soil layers and the groundwater table in your browser. SSA
 - **Retaining walls**: defined by parameters (toe, base elevation, height, base width, top width) or by vertices, and treated as impenetrable structures with weight, giving the global stability including the wall.
 - **Specified slip surface check**: draw or paste one slip surface and compute only its factor of safety, for comparison with other software or hand calculations.
 - **Automatic search**: DP search for non-circular critical slip surfaces, with entry and exit points found automatically. Options include a concavity constraint (handled with slope classes so thin weak layers are still followed) and a minimum slip depth. An [animated explanation](https://cychen59.github.io/ssa-slope-stability/concave-constraint.html?lang=en) shows how the concavity constraint works.
+- **Rigorous methods**: Spencer or Morgenstern–Price (half-sine f(x)), satisfying both force and moment equilibrium, with optional local optimisation of the searched surface. Results of all three methods are listed, and the methods are verified against closed-form solutions, Fredlund and Krahn (1977) and the ACADS benchmark problems (Section 10 of the theory on the web page).
 - **Results**: Fs and corrected f0·Fs, sliding mass area, entry and exit coordinates, slice details and iteration log, all copyable as CSV.
 - **Chinese, English and Japanese interface**: press “中文 / EN / 日本語” in the header. The choice is remembered by your browser, and adding `?lang=en` or `?lang=ja` to the address opens that interface directly.
 - **Save and resume**: save the whole model (terrain, layers, water table, parameters, settings) as a JSON file and import it later to continue.
@@ -80,6 +81,7 @@ The computational core follows the critical slip surface analysis by dynamic pro
   Gᵢ₊₁(j) = min over K { Gᵢ(K) + DGᵢ(K, j) }
 
 - λ = Fs is iterated until convergence. The correction factor defaults to f0 = (50d/L)^0.03 (Shin and Itagaki, 1983); the Janbu correction curve is also available.
+- With Spencer or Morgenstern–Price, force and moment equilibrium are solved together in the general limit equilibrium (GLE) form, assuming interslice shear X = λ f(x) E; Fs and λ are found by Newton’s method. The DP surface can then be locally optimised by a pattern search.
 
 The full derivation, equations and figures are in “Theory and equations” at the bottom of the web page.
 
@@ -117,6 +119,10 @@ Chen-Yu Chen. See the [author page](https://cychen59.blogspot.com/p/education-20
 4. Yamagami, T. and Ueta, Y. (1986): Noncircular Slip Surface Analysis of the Stability of Slopes: An Application of Dynamic Programming to the Janbu Method, Journal of the Japan Landslide Society, 22(4).
 5. Shin, J. and Itagaki, O. (1983): Landslides (Part 4), Tsuchi-to-Kiso, Vol. 31, No. 7, pp. 89-97. (in Japanese)
 6. Janbu, N. (1973): Slope stability computations, In Embankment-Dam Engineering (Casagrande Volume), Wiley, pp. 47-86.
+7. Spencer, E. (1967): A method of analysis of the stability of embankments assuming parallel inter-slice forces, Géotechnique, 17(1), pp. 11-26.
+8. Morgenstern, N. R. and Price, V. E. (1965): The analysis of the stability of general slip surfaces, Géotechnique, 15(1), pp. 79-93.
+9. Fredlund, D. G. and Krahn, J. (1977): Comparison of slope stability methods of analysis, Canadian Geotechnical Journal, 14(3), pp. 429-439.
+10. Giam, P. S. K. and Donald, I. B. (1989): Example problems for testing soil slope stability programs, Civil Engineering Research Report No. 8/1989, Monash University.
 
 ## Limitations
 

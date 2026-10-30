@@ -2,7 +2,7 @@
 
 [中文](README.md) | [English](README.en.md) | **日本語**
 
-ブラウザ上で斜面断面、地層、地下水位を描き、**動的計画法（DP）** で任意形状の臨界すべり面を探索して、**簡易 Janbu 法** で最小安全率を計算します。インストール不要で、ページを開くだけで使えます。
+ブラウザ上で斜面断面、地層、地下水位を描き、**動的計画法（DP）** で任意形状の臨界すべり面を探索して、**簡易 Janbu 法**、**Spencer 法**、**Morgenstern–Price 法** のいずれかで最小安全率を計算します。インストール不要で、ページを開くだけで使えます。
 
 **オンラインで使う：<https://cychen59.github.io/ssa-slope-stability/?lang=ja>**
 
@@ -22,6 +22,7 @@
 - **擁壁**：パラメータ（つま先、底面標高、壁高、底幅、天端幅）または頂点座標で作成し、重量をもつ不透過の構造物として扱って、擁壁を含む全体安定を計算します。
 - **指定すべり面の試算**：すべり面を 1 本描くか貼り付けて、その安全率だけを計算します。他のソフトや手計算との照合に使えます。
 - **自動探索**：DP で非円弧の臨界すべり面を探索し、入口と出口の位置も自動で決まります。凹形の制約（勾配の分類で処理し、薄い弱層にも沿えます）と最小すべり深さを設定できます。凹形の制約の仕組みは[アニメーション解説](https://cychen59.github.io/ssa-slope-stability/concave-constraint.html?lang=ja)で見られます。
+- **厳密法**：Spencer 法または Morgenstern–Price 法（半正弦 f(x)）を選べます。力とモーメントのつり合いを同時に満たし、探索後にすべり面を局所最適化できます。3 つの方法の結果を並べて表示し、解析解、Fredlund and Krahn (1977)、ACADS 標準問題で検証済みです（Web ページの理論第 10 節）。
 - **結果**：安全率 Fs と補正後の f0·Fs、すべり土塊の面積、入口と出口の座標、スライス明細、反復記録。いずれも CSV でコピーできます。
 - **中国語・英語・日本語の表示**：ヘッダーの「中文／EN／日本語」で切り替えます。選択はブラウザに記憶され、アドレスに `?lang=ja` を付けると日本語表示で開きます。
 - **保存と再開**：モデル全体（地形、地層、地下水位、パラメータ、設定）を JSON ファイルに保存し、後で読み込んで作業を続けられます。
@@ -80,6 +81,7 @@ x,z
   Gᵢ₊₁(j) = min over K { Gᵢ(K) + DGᵢ(K, j) }
 
 - λ = Fs として収束するまで反復します。補正係数は既定で f0 = (50d/L)^0.03（申・板垣、1983）とし、Janbu の補正曲線も選べます。
+- Spencer 法または Morgenstern–Price 法では、一般化極限平衡（GLE）の形で力とモーメントのつり合いを同時に解き、スライス間せん断力を X = λ f(x) E と仮定して、Newton 法で Fs と λ を求めます。DP のすべり面はパターンサーチで局所最適化できます。
 
 導出、計算式、図の詳細は Web ページ下部の「理論と計算式」にあります。
 
@@ -105,6 +107,10 @@ BibTeX は [README.en.md](README.en.md#how-to-cite) を参照してください�
 4. 山上拓男・植田康宏（1986）：Noncircular Slip Surface Analysis of the Stability of Slopes: An Application of Dynamic Programming to the Janbu Method、地すべり、第 22 巻第 4 号。
 5. 申潤植・板垣治（1983）：地すべり（その 4）、土と基礎、Vol. 31、No. 7、pp. 89-97。
 6. Janbu, N. (1973): Slope stability computations, In Embankment-Dam Engineering (Casagrande Volume), Wiley, pp. 47-86.
+7. Spencer, E. (1967): A method of analysis of the stability of embankments assuming parallel inter-slice forces, Géotechnique, 17(1), pp. 11-26.
+8. Morgenstern, N. R. and Price, V. E. (1965): The analysis of the stability of general slip surfaces, Géotechnique, 15(1), pp. 79-93.
+9. Fredlund, D. G. and Krahn, J. (1977): Comparison of slope stability methods of analysis, Canadian Geotechnical Journal, 14(3), pp. 429-439.
+10. Giam, P. S. K. and Donald, I. B. (1989): Example problems for testing soil slope stability programs, Civil Engineering Research Report No. 8/1989, Monash University.
 
 ## 適用範囲
 
