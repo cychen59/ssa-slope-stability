@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, please cite the paper below."
 title: "SSA Slope Stability Analysis (web edition)"
 type: software
-version: "2.9.0"
+version: "2.10.0"
 date-released: "2026-10-31"
 authors:
   - family-names: Chen
