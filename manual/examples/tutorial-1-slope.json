@@ -1,0 +1,212 @@
+{
+ "ssaVersion": "2.10.1",
+ "ground": [
+  [
+   0,
+   10
+  ],
+  [
+   10,
+   10
+  ],
+  [
+   35,
+   22.5
+  ],
+  [
+   50,
+   24
+  ],
+  [
+   70,
+   25
+  ]
+ ],
+ "layers": [
+  {
+   "name": "崩積層",
+   "color": "#D8BE8A",
+   "gamma": 18,
+   "gammaSat": 20,
+   "c": 5,
+   "phi": 28,
+   "bedrock": false,
+   "top": null
+  },
+  {
+   "name": "風化岩",
+   "color": "#B48462",
+   "gamma": 21,
+   "gammaSat": 22,
+   "c": 30,
+   "phi": 32,
+   "bedrock": false,
+   "top": [
+    [
+     0,
+     6
+    ],
+    [
+     15,
+     7.5
+    ],
+    [
+     35,
+     16
+    ],
+    [
+     70,
+     19
+    ]
+   ]
+  },
+  {
+   "name": "岩盤",
+   "color": "#8C949A",
+   "gamma": 24,
+   "gammaSat": 24,
+   "c": 200,
+   "phi": 40,
+   "bedrock": true,
+   "top": [
+    [
+     0,
+     2
+    ],
+    [
+     35,
+     9
+    ],
+    [
+     70,
+     12
+    ]
+   ]
+  }
+ ],
+ "water": [
+  [
+   0,
+   7
+  ],
+  [
+   15,
+   8.5
+  ],
+  [
+   35,
+   17
+  ],
+  [
+   70,
+   21
+  ]
+ ],
+ "piezo": [],
+ "zBase": 0,
+ "reinf": [],
+ "walls": [],
+ "loads": [
+  {
+   "name": "道路車載",
+   "type": "udl",
+   "on": true,
+   "seis": false,
+   "q": 10,
+   "P": 50,
+   "x1": 36,
+   "x2": 44,
+   "x": 30
+  }
+ ],
+ "trial": [],
+ "scenarios": [
+  {
+   "name": "常時",
+   "kind": "normal",
+   "on": true,
+   "water": "base",
+   "dh": null,
+   "kh": 0,
+   "kv": 0,
+   "Freq": 1.5,
+   "loads": true,
+   "reinf": true,
+   "tcWet": false
+  },
+  {
+   "name": "暴雨",
+   "kind": "rain",
+   "on": true,
+   "water": "raise",
+   "dh": null,
+   "kh": 0,
+   "kv": 0,
+   "Freq": 1.2,
+   "loads": true,
+   "reinf": true,
+   "tcWet": true
+  },
+  {
+   "name": "地震",
+   "kind": "eq",
+   "on": true,
+   "water": "base",
+   "dh": null,
+   "kh": null,
+   "kv": 0,
+   "Freq": 1.1,
+   "loads": true,
+   "reinf": true,
+   "tcWet": false
+  }
+ ],
+ "ctrl": {
+  "on": false,
+  "pts": [],
+  "toe": {
+   "on": false,
+   "x1": null,
+   "x2": null
+  },
+  "crest": {
+   "on": false,
+   "x1": null,
+   "x2": null
+  }
+ },
+ "pileDesign": {
+  "PFs": 1.2
+ },
+ "wallCode": "wsc",
+ "report": {},
+ "settings": {
+  "kh": 0,
+  "kv": 0,
+  "gw": 9.81,
+  "cos2": false,
+  "nCol": 60,
+  "nState": 80,
+  "nSub": 4,
+  "dmin": 1,
+  "convex": true,
+  "noBoundary": true,
+  "tol": 0.0001,
+  "maxIter": 30,
+  "F0": 2,
+  "Freq": 1.5,
+  "useF0": false,
+  "f0type": "pwri",
+  "unitG": "kN",
+  "unitC": "kPa",
+  "reinfMode": "active",
+  "compare": true,
+  "compareLoad": true,
+  "method": "janbu",
+  "optimize": true,
+  "tcOn": false,
+  "tcMode": "auto",
+  "tcDepth": null,
+  "tcWater": false
+ }
+}

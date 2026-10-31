@@ -1,0 +1,396 @@
+{
+ "ssaVersion": "2.10.1",
+ "ground": [
+  [
+   0,
+   10
+  ],
+  [
+   9.07,
+   10
+  ],
+  [
+   10.5,
+   12.5
+  ],
+  [
+   15,
+   12.5
+  ],
+  [
+   35,
+   22.5
+  ],
+  [
+   50,
+   24
+  ],
+  [
+   70,
+   25
+  ]
+ ],
+ "layers": [
+  {
+   "name": "崩積層",
+   "color": "#D8BE8A",
+   "gamma": 18,
+   "gammaSat": 20,
+   "c": 5,
+   "phi": 28,
+   "bedrock": false,
+   "top": null,
+   "pore": {
+    "type": "wt"
+   }
+  },
+  {
+   "name": "風化岩",
+   "color": "#B48462",
+   "gamma": 21,
+   "gammaSat": 22,
+   "c": 30,
+   "phi": 32,
+   "bedrock": false,
+   "top": [
+    [
+     0,
+     6
+    ],
+    [
+     15,
+     7.5
+    ],
+    [
+     35,
+     16
+    ],
+    [
+     70,
+     19
+    ]
+   ],
+   "pore": {
+    "type": "wt"
+   }
+  },
+  {
+   "name": "岩盤",
+   "color": "#8C949A",
+   "gamma": 24,
+   "gammaSat": 24,
+   "c": 200,
+   "phi": 40,
+   "bedrock": true,
+   "top": [
+    [
+     0,
+     2
+    ],
+    [
+     35,
+     9
+    ],
+    [
+     70,
+     12
+    ]
+   ],
+   "pore": {
+    "type": "wt"
+   }
+  }
+ ],
+ "water": [
+  [
+   0,
+   7
+  ],
+  [
+   15,
+   8.5
+  ],
+  [
+   35,
+   17
+  ],
+  [
+   70,
+   21
+  ]
+ ],
+ "piezo": [],
+ "trial": [],
+ "trialCircle": null,
+ "reinf": [
+  {
+   "type": "nail",
+   "on": true,
+   "theta": 15,
+   "L": 9,
+   "Lfree": 0,
+   "Sh": 1.5,
+   "Tt": 180,
+   "q": 40,
+   "Tf": 150,
+   "P": 0,
+   "x": 16,
+   "z": 13
+  },
+  {
+   "type": "nail",
+   "on": true,
+   "theta": 15,
+   "L": 9,
+   "Lfree": 0,
+   "Sh": 1.5,
+   "Tt": 180,
+   "q": 40,
+   "Tf": 150,
+   "P": 0,
+   "x": 18.571,
+   "z": 14.29
+  },
+  {
+   "type": "nail",
+   "on": true,
+   "theta": 15,
+   "L": 9,
+   "Lfree": 0,
+   "Sh": 1.5,
+   "Tt": 180,
+   "q": 40,
+   "Tf": 150,
+   "P": 0,
+   "x": 21.143,
+   "z": 15.57
+  },
+  {
+   "type": "nail",
+   "on": true,
+   "theta": 15,
+   "L": 9,
+   "Lfree": 0,
+   "Sh": 1.5,
+   "Tt": 180,
+   "q": 40,
+   "Tf": 150,
+   "P": 0,
+   "x": 23.714,
+   "z": 16.86
+  },
+  {
+   "type": "nail",
+   "on": true,
+   "theta": 15,
+   "L": 9,
+   "Lfree": 0,
+   "Sh": 1.5,
+   "Tt": 180,
+   "q": 40,
+   "Tf": 150,
+   "P": 0,
+   "x": 26.286,
+   "z": 18.14
+  },
+  {
+   "type": "nail",
+   "on": true,
+   "theta": 15,
+   "L": 9,
+   "Lfree": 0,
+   "Sh": 1.5,
+   "Tt": 180,
+   "q": 40,
+   "Tf": 150,
+   "P": 0,
+   "x": 28.857,
+   "z": 19.43
+  },
+  {
+   "type": "nail",
+   "on": true,
+   "theta": 15,
+   "L": 9,
+   "Lfree": 0,
+   "Sh": 1.5,
+   "Tt": 180,
+   "q": 40,
+   "Tf": 150,
+   "P": 0,
+   "x": 31.429,
+   "z": 20.71
+  },
+  {
+   "type": "nail",
+   "on": true,
+   "theta": 15,
+   "L": 9,
+   "Lfree": 0,
+   "Sh": 1.5,
+   "Tt": 180,
+   "q": 40,
+   "Tf": 150,
+   "P": 0,
+   "x": 34,
+   "z": 22
+  }
+ ],
+ "loads": [
+  {
+   "name": "道路車載",
+   "type": "udl",
+   "on": true,
+   "seis": false,
+   "x1": 36,
+   "x2": 44,
+   "x": 30,
+   "q": 10,
+   "q2": null,
+   "P": 50
+  }
+ ],
+ "walls": [
+  {
+   "name": "坡趾重力式擋土牆",
+   "on": true,
+   "gamma": 23.5,
+   "type": "gravity",
+   "par": {
+    "x0": 8.5,
+    "z0": 9,
+    "H": 3.5,
+    "B": 3,
+    "b": 1
+   },
+   "ext": {
+    "found": "soil",
+    "delta": "",
+    "mu": "",
+    "bearMode": "calc",
+    "qa": "",
+    "drained": false,
+    "passive": true,
+    "bPhi": "",
+    "bC": "",
+    "bG": "",
+    "fPhi": "",
+    "fC": "",
+    "fG": ""
+   },
+   "poly": [
+    [
+     8.5,
+     9
+    ],
+    [
+     11.5,
+     9
+    ],
+    [
+     11.5,
+     12.5
+    ],
+    [
+     10.5,
+     12.5
+    ]
+   ]
+  }
+ ],
+ "wallCode": "wsc",
+ "scenarios": [
+  {
+   "name": "常時",
+   "on": true,
+   "kind": "normal",
+   "water": "base",
+   "dh": null,
+   "kh": 0,
+   "kv": 0,
+   "Freq": 1.5,
+   "loads": true,
+   "reinf": true,
+   "tcWet": false
+  },
+  {
+   "name": "暴雨",
+   "on": true,
+   "kind": "rain",
+   "water": "raise",
+   "dh": 2,
+   "kh": 0,
+   "kv": 0,
+   "Freq": 1.2,
+   "loads": true,
+   "reinf": true,
+   "tcWet": true
+  },
+  {
+   "name": "地震",
+   "on": true,
+   "kind": "eq",
+   "water": "base",
+   "dh": null,
+   "kh": 0.15,
+   "kv": 0,
+   "Freq": 1.1,
+   "loads": true,
+   "reinf": true,
+   "tcWet": false
+  }
+ ],
+ "ctrl": {
+  "on": false,
+  "pts": [],
+  "toe": {
+   "on": false,
+   "x1": null,
+   "x2": null
+  },
+  "crest": {
+   "on": false,
+   "x1": null,
+   "x2": null
+  }
+ },
+ "pileDesign": {
+  "PFs": 1.2
+ },
+ "report": {
+  "title": "道路上邊坡穩定分析計算書",
+  "project": "SSA 使用手冊教學案例",
+  "author": "○○工程顧問公司 王○○",
+  "note": "教學用案例，參數為假設值。"
+ },
+ "zBase": 0,
+ "settings": {
+  "kh": 0,
+  "kv": 0,
+  "gw": 9.81,
+  "cos2": false,
+  "nCol": 60,
+  "nState": 80,
+  "nSub": 4,
+  "dmin": 1,
+  "convex": true,
+  "noBoundary": true,
+  "tol": 0.0001,
+  "maxIter": 30,
+  "F0": 2,
+  "Freq": 1.5,
+  "useF0": false,
+  "f0type": "pwri",
+  "unitG": "kN",
+  "unitC": "kPa",
+  "reinfMode": "passive",
+  "compare": true,
+  "compareLoad": true,
+  "method": "janbu",
+  "optimize": true,
+  "tcOn": false,
+  "tcMode": "auto",
+  "tcDepth": null,
+  "tcWater": false
+ }
+}

@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SSA 邊坡穩定分析 使用手冊</title>
+<meta name="description" content="SSA 邊坡穩定分析網頁工具的使用手冊，從第一個邊坡到完整的檢核報告，再逐步介紹進階功能。">
+<link rel="stylesheet" href="manual.css">
+</head>
+<body>
+<!-- 手冊對應的程式版本：建置時會與 ../index.html 的 SSA_VERSION 比對 -->
+<div id="meta" data-ssa-version="2.10.1" data-ssa-date="2026-10-31" data-manual-version="1.0" hidden></div>
+
+<header class="cover" id="cover">
+  <div class="cover-top"><span class="mark">SSA</span><span class="cover-kicker">Slope Stability Analysis</span></div>
+  <h1>SSA 邊坡穩定分析<br>使用手冊</h1>
+  <p class="cover-sub">從第一個邊坡到完整的檢核報告</p>
+  <img class="cover-img" src="img/07-board-global.png" alt="教學案例：加入土釘與坡趾擋土牆後的臨界滑動面">
+  <dl class="cover-meta">
+    <dt>對應程式版本</dt><dd><span class="v-ssa">v2.10.1</span>（<span class="v-date">2026-10-31</span>）</dd>
+    <dt>手冊版本</dt><dd><span class="v-man">1.0</span></dd>
+    <dt>開發者</dt><dd>陳振宇</dd>
+    <dt>聯絡信箱</dt><dd><a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></dd>
+    <dt>程式網址</dt><dd><a href="https://cychen59.github.io/ssa-slope-stability/">cychen59.github.io/ssa-slope-stability</a></dd>
+  </dl>
+  <p class="cover-dl screen-only"><a class="btn" href="SSA-使用手冊.pdf">下載 PDF 版</a> <a class="btn ghost" href="../">開啟 SSA 程式</a></p>
+</header>
+
+<nav class="toc" id="toc" aria-label="目錄">
+  <h2 class="toc-h">目錄</h2>
+  <ol id="tocList"></ol>
+</nav>
+
+<main id="doc">
+
+<!-- ================================================================ -->
+<section class="chap" id="c0">
+<h2><span class="cn">第 0 章</span>開始之前</h2>
+
+<h3>這本手冊怎麼讀</h3>
+<p>手冊分成兩篇。<b>第一篇「入門」</b>用一個教學案例，從輸入地形一路做到產出檢核報告，第 1 章到第 8 章照順序操作一次，就能完成一份最基本的邊坡穩定分析。<b>第二篇「進階」</b>每章介紹一項功能，開頭先說明「什麼情況下會用到」，再示範操作，可以依需要挑著讀。</p>
+<p>每一章用到的模型檔都可以下載後直接匯入，跳過前面的步驟，檔案清單見<a href="#ax">附錄 C</a>。</p>
+
+<table class="plain">
+<thead><tr><th>篇</th><th>章</th><th>內容</th><th>範例檔</th></tr></thead>
+<tbody>
+<tr><td rowspan="8">入門</td><td>1</td><td>輸入地表、土層界面與地下水位</td><td>tutorial-profile.csv</td></tr>
+<tr><td>2</td><td>土層參數</td><td></td></tr>
+<tr><td>3</td><td>坡頂與坡趾載重</td><td></td></tr>
+<tr><td>4</td><td>第一次計算與判讀結果</td><td>tutorial-1-slope.json</td></tr>
+<tr><td>5</td><td>加入補強措施（土釘）</td><td></td></tr>
+<tr><td>6</td><td>常時、暴雨、地震三種情境檢核</td><td>tutorial-2-nails.json</td></tr>
+<tr><td>7</td><td>擋土牆外部穩定檢核</td><td>tutorial-3-wall.json</td></tr>
+<tr><td>8</td><td>產出檢核報告與存檔</td><td>tutorial-report.docx</td></tr>
+<tr><td rowspan="8">進階</td><td>9</td><td>已知滑動面位置：控制點</td><td rowspan="8">各章以 tutorial-1-slope.json 為起點</td></tr>
+<tr><td>10</td><td>指定滑動面與圓弧（比對舊報告）</td></tr>
+<tr><td>11</td><td>反算土壤參數</td></tr>
+<tr><td>12</td><td>分層水壓線與孔隙水壓比 r<sub>u</sub></td></tr>
+<tr><td>13</td><td>坡外積水與張力裂縫</td></tr>
+<tr><td>14</td><td>抑止樁、微型樁與地工合成材</td></tr>
+<tr><td>15</td><td>計算方法與搜尋設定</td></tr>
+<tr><td>16</td><td>單位、存檔、驗證報告與版本</td></tr>
+</tbody>
+</table>
+
+<h3>SSA 能做什麼</h3>
+<p>SSA 是在瀏覽器裡執行的二維邊坡穩定分析工具，不需要安裝，資料也不會上傳到伺服器。它以動態規劃（DP）搜尋任意形狀的非圓弧臨界滑動面，安全係數可以用簡易 Janbu 法、Spencer 法或 Morgenstern–Price 法計算。在這個基礎上可以加入：</p>
+<ul>
+<li>地表載重（均布、梯形、線載重）。</li>
+<li>土釘、地錨、抑止樁、微型樁、地工合成材等補強構件。</li>
+<li>重力式、懸臂式、扶壁式擋土牆，包含外部穩定檢核。</li>
+<li>常時、暴雨、地震等多個情境一次計算，依規範判定。</li>
+<li>Word 或 PDF 格式的計算書。</li>
+</ul>
+
+<h3>畫面導覽</h3>
+<figure class="wide"><img src="img/00-overview.png" alt="SSA 畫面導覽"><figcaption>SSA 的畫面配置</figcaption></figure>
+<table class="plain">
+<thead><tr><th>編號</th><th>區域</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>頂端按鈕</td><td>復原上一步（Ctrl+Z）、載入範例、本使用手冊、原理與公式、語言切換。</td></tr>
+<tr><td>2</td><td>分頁</td><td>剖面、土層、載重、補強、擋土牆、設定、檢核、說明。輸入資料大致依這個順序。</td></tr>
+<tr><td>3</td><td>工具列</td><td>在圖上拖曳、加點、刪點，格點間距，顯示切片或搜尋節點，全圖顯示。</td></tr>
+<tr><td>4</td><td>剖面圖</td><td>即時顯示地形、土層、水位、載重、補強與滑動面，可以直接用滑鼠編輯。</td></tr>
+<tr><td>5</td><td>計算按鈕</td><td>「計算最危險滑動面」做自動搜尋；「試算指定滑動面」只算你指定的那一條。</td></tr>
+<tr><td>6</td><td>計算結果</td><td>安全係數、滑動體資訊、補強構件受力、切片明細。</td></tr>
+<tr><td>7</td><td>狀態列</td><td>計算進度、提示訊息與搜尋網格設定。</td></tr>
+</tbody>
+</table>
+
+<h3>座標與單位</h3>
+<ul>
+<li>剖面以 x（水平，m）與 z（高程，m）表示，x 由左往右增加。坡面朝左或朝右都可以，程式會自動判斷。</li>
+<li>每一條線（地表、土層界面、水位）都以 x 由小到大的點列表示，相鄰兩點以直線相連。</li>
+<li>預設單位為 kN、kPa、kN/m³，可在「土層」頁改為 tf 系統（第 16 章）。</li>
+<li>所有力與載重都以「每公尺寬」計。</li>
+</ul>
+<div class="note tip"><b>提示</b>網頁開啟時會自動載入一個範例剖面。先按右上角「計算最危險滑動面」看看結果，熟悉一下畫面再開始。</div>
+</section>
+
+<!-- ================================================================ -->
+<div class="part" id="part1"><p class="part-no">第一篇</p><p class="part-title">入門：完成第一份檢核報告</p>
+<p class="part-desc">以一處道路上邊坡為例。坡高約 12.5 m，表層為 4 至 6 m 厚的崩積層，下方為風化岩與岩盤，坡頂有道路。目標是依水土保持技術規範檢核常時、暴雨與地震三種情境，不足時以土釘補強，並在坡趾設一座擋土牆，最後產出計算書。</p></div>
+
+<section class="chap" id="c1">
+<h2><span class="cn">第 1 章</span>輸入地表、土層界面與地下水位</h2>
+<p>剖面由幾條線組成：地表線、各土層的頂面（界面線）與地下水位線。教學案例的資料如下，單位 m。</p>
+<table class="data">
+<thead><tr><th>線</th><th>座標點 (x, z)</th></tr></thead>
+<tbody>
+<tr><td>地表線</td><td>(0, 10) (10, 10) (35, 22.5) (50, 24) (70, 25)</td></tr>
+<tr><td>風化岩頂面</td><td>(0, 6) (15, 7.5) (35, 16) (70, 19)</td></tr>
+<tr><td>岩盤頂面</td><td>(0, 2) (35, 9) (70, 12)</td></tr>
+<tr><td>地下水位線</td><td>(0, 7) (15, 8.5) (35, 17) (70, 21)</td></tr>
+</tbody>
+</table>
+
+<h3>1.1 方法一：逐條貼上座標</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/01-ground.png" alt="剖面頁的線清單與座標欄"><figcaption>「剖面」頁，選取地表線後在座標欄貼上點位</figcaption></figure>
+<div>
+<ol class="steps">
+<li>點「剖面」分頁，在「編輯中的線」點選<b>地表線</b>。</li>
+<li>在下方座標欄貼上地表線的點，每行一點，x 與 z 之間用空白、逗號或 Tab 分開。從 Excel 複製兩欄直接貼上也可以。</li>
+<li>按<b>套用座標</b>，右側圖面立即更新。</li>
+<li>依序點選<b>風化岩 頂面</b>、<b>岩盤 頂面</b>、<b>地下水位線</b>，重複第 2、3 步。</li>
+<li>確認「模型範圍」的<b>模型底部高程</b>為 0 m。滑動面不會低於這個高程。</li>
+</ol>
+<div class="note"><b>線的名稱從哪裡來</b>「風化岩 頂面」這類名稱來自「土層」頁的土層名稱。第 1 層的頂面就是地表線，所以清單裡只會列出第 2 層以下的頂面。要增加土層，請先到「土層」頁按「＋ 新增土層」。</div>
+</div>
+</div>
+<figure class="wide"><img src="img/01-profile.png" alt="輸入完成的剖面"><figcaption>輸入完成的剖面。黑線為地表，藍色虛線為地下水位，灰色斜線區為岩盤</figcaption></figure>
+
+<h3>1.2 方法二：匯入 CSV 一次建立</h3>
+<p>測量或鑽探資料通常已經整理在 Excel 裡，這時用 CSV 匯入最快。CSV 有兩種格式：</p>
+<ul>
+<li><b>兩欄（x, z）</b>：匯入到目前選取的那一條線。</li>
+<li><b>三欄以上</b>：第 1 欄 x，第 2 欄地表高程，之後各欄依序為第 2、3…層的頂面。欄名含「水」字的欄視為地下水位線。某條線在該 x 沒有資料時留空即可。</li>
+</ul>
+<div class="fig-row">
+<figure class="side"><img src="img/01-csv.png" alt="匯入地形 CSV 區塊"><figcaption>「剖面」頁下方的「匯入地形 CSV」，展開「範例檔」可看格式</figcaption></figure>
+<div>
+<p>教學案例的 CSV（<a href="examples/tutorial-profile.csv">tutorial-profile.csv</a>）內容如下：</p>
+<pre class="code">x,地表,風化岩頂面,岩盤頂面,地下水位
+0,10,6,2,7
+10,10,,,
+15,,7.5,,8.5
+35,22.5,16,9,17
+50,24,,,
+70,25,19,12,21</pre>
+<ol class="steps">
+<li>在 Excel 依上表整理好資料，另存為 CSV（UTF-8 或 Big5 都可以）。</li>
+<li>「剖面」頁按<b>選擇 CSV 檔…</b>，選取檔案。</li>
+<li>狀態列會顯示匯入了幾個點，例如「已匯入地表 5 點、2 條土層界面、地下水位 4 點」。</li>
+</ol>
+<div class="note warn"><b>注意</b>CSV 只帶入幾何。原本沒有的土層會以預設參數（γ = 20、c′ = 10、φ′ = 30）新增，請一定要到「土層」頁確認參數（第 2 章）。</div>
+</div>
+</div>
+
+<h3>1.3 在圖上微調</h3>
+<p>選取一條線後，可以直接在圖上修改：</p>
+<ul>
+<li><b>拖曳</b>模式下拖動節點移動位置，位置會對齊「格點」設定的間距（預設 0.5 m，設 0 則不對齊）。</li>
+<li><b>加點</b>模式下點擊圖面新增節點；<b>刪點</b>模式下點擊節點刪除。</li>
+<li>改錯了按左上角<b>復原</b>或 Ctrl+Z。</li>
+</ul>
+<div class="note tip"><b>提示</b>「由地表下 2 m 建立水位線」可以快速建立一條初步的地下水位線，再依觀測資料修改。</div>
+</section>
+
+<section class="chap" id="c2">
+<h2><span class="cn">第 2 章</span>土層參數</h2>
+<div class="fig-row">
+<figure class="side"><img src="img/02-soils.png" alt="土層頁"><figcaption>「土層」頁，每一層一張卡片</figcaption></figure>
+<div>
+<p>到「土層」頁，依下表輸入各層參數。土層由上往下排列，第 1 層的頂面就是地表。</p>
+<table class="data">
+<thead><tr><th>土層</th><th>γ<br>kN/m³</th><th>γ<sub>sat</sub><br>kN/m³</th><th>c′<br>kPa</th><th>φ′<br>°</th><th>岩盤</th></tr></thead>
+<tbody>
+<tr><td>崩積層</td><td>18</td><td>20</td><td>5</td><td>28</td><td></td></tr>
+<tr><td>風化岩</td><td>21</td><td>22</td><td>30</td><td>32</td><td></td></tr>
+<tr><td>岩盤</td><td>24</td><td>24</td><td>200</td><td>40</td><td>✓</td></tr>
+</tbody>
+</table>
+<ul>
+<li><b>γ 與 γ<sub>sat</sub></b>：地下水位以上用 γ，以下用飽和單位重 γ<sub>sat</sub>。</li>
+<li><b>c′ 與 φ′</b>：有效應力強度參數。</li>
+<li><b>孔隙水壓</b>：預設「地下水位線」，也就是由水位換算靜水壓。其他選項見第 12 章。</li>
+<li><b>岩盤</b>：勾選後滑動面不會進入這一層，通常用在最下層的堅硬岩盤。</li>
+<li>土層名稱與顏色可以自訂，名稱會出現在「剖面」頁的線清單與計算書中。</li>
+</ul>
+<div class="note"><b>參數從哪裡來</b>c′、φ′ 應依鑽探、試驗或相關規範選定。不確定時可以先用文獻值試算，再以反算（第 11 章）或敏感度分析確認。</div>
+</div>
+</div>
+</section>
+
+<section class="chap" id="c3">
+<h2><span class="cn">第 3 章</span>坡頂與坡趾載重</h2>
+<p>教學案例的坡頂有一條道路。車輛載重屬於臨時載重，以均布載重 10 kPa 表示，作用範圍 x = 36 至 44 m。</p>
+<div class="fig-row">
+<figure class="side"><img src="img/03-load.png" alt="載重頁"><figcaption>「載重」頁加入一筆道路車載</figcaption></figure>
+<div>
+<ol class="steps">
+<li>到「載重」頁，下拉選單選<b>道路車載（均布，不計地震力）</b>，按<b>＋ 加入載重</b>。</li>
+<li>把起點 x 改為 36、終點 x 改為 44、起點 q 改為 10。終點 q 留空表示均布，填入不同值則成為梯形分布。</li>
+<li>道路車載是臨時載重，不勾「計入地震慣性力」。建築物、擋土構造物等永久載重則應勾選。</li>
+</ol>
+<p>載重也可以在圖上拖曳端點調整位置。新加入的載重強度都是佔位數字，請依設計規範與現地狀況修改。</p>
+<h4>坡頂與坡趾的差別</h4>
+<ul>
+<li><b>坡頂（上邊坡）</b>的載重通常會降低安全係數。</li>
+<li><b>坡趾（下邊坡）</b>的載重通常會提高安全係數，也就是壓腳效果。但停車、臨時堆料這類可能被移走的載重，不應拿來提高安全係數。</li>
+<li>勾選頁首的<b>同時計算無載重的情況</b>，結果會並列有、無載重兩個 Fs，便於比較。</li>
+<li>填土本身有強度，滑動面也可能穿過它，應修改地表線並加入填土層，不要用載重代表。</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="chap" id="c4">
+<h2><span class="cn">第 4 章</span>第一次計算與判讀結果</h2>
+<p>按右上角<b>計算最危險滑動面</b>。程式會在剖面上搜尋安全係數最小的滑動面，一般只要數秒。</p>
+<figure class="wide"><img src="img/04-board.png" alt="第一次計算的臨界滑動面"><figcaption>第一次計算的結果。紅線為臨界滑動面，紅色區域為滑動土體，直線為切片</figcaption></figure>
+<figure class="wide"><img src="img/04-results.png" alt="計算結果摘要"><figcaption>圖面下方的計算結果</figcaption></figure>
+<h3>4.1 結果怎麼看</h3>
+<table class="plain">
+<thead><tr><th>項目</th><th>說明</th></tr></thead>
+<tbody>
+<tr><td>安全係數 Fs</td><td>大字顯示的值，本例 1.318。預設以簡易 Janbu 法未修正值判定，與原 SSA 程式相同，較保守。</td></tr>
+<tr><td>修正後 f0·Fs</td><td>簡易 Janbu 法乘上修正係數 f0 的值，僅供參考。若要以此判定，在「設定」頁勾選「以修正後 f0·Fs 判定」。</td></tr>
+<tr><td>嚴密法對照</td><td>同一條滑動面以 Spencer 法與 Morgenstern–Price 法計算的結果（第 15 章）。</td></tr>
+<tr><td>無載重 Fs</td><td>移除所有載重後的 Fs。本例為 1.335，道路車載使 Fs 降低 1.3%。</td></tr>
+<tr><td>要求值判定</td><td>與「設定」頁的要求安全係數（預設 1.50）比較。本例「低於要求值」。</td></tr>
+<tr><td>滑動體資訊</td><td>面積、最大鉛直深度、坡趾出口與坡頂入口座標、抵抗力與滑動力總和。</td></tr>
+<tr><td>切片明細</td><td>展開後可看每一片的寬度、重量、孔隙水壓、強度參數與力，也可以複製成 CSV。</td></tr>
+</tbody>
+</table>
+<p>本例常時 Fs = 1.318，低於水土保持技術規範要求的 1.5，需要補強。在繼續之前，建議先存檔（第 8.3 節），本章完成的模型就是範例檔 <a href="examples/tutorial-1-slope.json">tutorial-1-slope.json</a>。</p>
+<div class="note tip"><b>提示</b>狀態列中間的「網格」按鈕會顯示目前的搜尋網格與建議值。剖面很大或土層很薄時，請參考第 15 章調整。</div>
+</section>
+
+<section class="chap" id="c5">
+<h2><span class="cn">第 5 章</span>加入補強措施</h2>
+<p>本例在坡面打設一排土釘。土釘在滑動面的交點提供拉力，取抗拉、拉拔、面版三者的最小值，再除以水平間距換算為每公尺寬。</p>
+
+<h3>5.1 設定計入方式與第一支土釘</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/05-nail.png" alt="補強頁與土釘卡片"><figcaption>「補強」頁的計入方式與土釘卡片</figcaption></figure>
+<div>
+<ol class="steps">
+<li>到「補強」頁，<b>計入方式</b>選<b>被動法：補強力加入抵抗力</b>。土釘常用被動法，較保守；預力地錨常用主動法。</li>
+<li>確認已勾選<b>同時計算無補強措施的情況</b>，結果會並列補強前後的 Fs。</li>
+<li>按<b>＋ 土釘</b>新增一支，把總長 L 改為 6 m。其餘欄位的意義如下表。</li>
+</ol>
+<table class="data small">
+<thead><tr><th>欄位</th><th>意義</th><th>本例</th></tr></thead>
+<tbody>
+<tr><td>頭部 x、z</td><td>土釘頭部位置，按「貼齊」可貼到地表</td><td>由整排配置決定</td></tr>
+<tr><td>傾角 θ</td><td>向下的傾角（°）</td><td>15</td></tr>
+<tr><td>總長 L</td><td>土釘長度（m）</td><td>6，之後改 9</td></tr>
+<tr><td>間距 Sh</td><td>垂直剖面方向的水平間距（m）</td><td>1.5</td></tr>
+<tr><td>抗拉</td><td>每支容許抗拉力（kN）</td><td>180</td></tr>
+<tr><td>拉拔 q</td><td>每公尺有效長度的拉拔阻抗（kN/m）</td><td>40</td></tr>
+<tr><td>面版</td><td>面版或頭部的容量（kN）</td><td>150</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<h3>5.2 整排配置</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/05-batch.png" alt="整排配置"><figcaption>「整排配置」以清單中最後一支為範本</figcaption></figure>
+<div>
+<ol class="steps">
+<li>在「整排配置」輸入起點 x = 16、終點 x = 34、支數 8。</li>
+<li>按<b>取代全部構件</b>。程式以清單中最後一支土釘為範本，在這段坡面上平均配置 8 支，頭部自動貼齊地表。</li>
+<li>按<b>計算最危險滑動面</b>。</li>
+</ol>
+<p>「加入這一排」會保留原有構件再加一排，適合多排不同長度的配置。</p>
+</div>
+</div>
+
+<h3>5.3 試算與調整</h3>
+<figure class="wide"><img src="img/05-results-L6.png" alt="土釘長 6 m 的結果"><figcaption>土釘長 6 m：Fs = 1.361，仍低於 1.5</figcaption></figure>
+<p>6 m 長的土釘大多只穿過滑動面一小段，拉拔力有限，Fs 只從 1.318 提高到 1.361。表格中的「有效長 Le」是穿出滑動面的長度，「控制」欄說明是抗拉、拉拔或面版控制。</p>
+<p>把清單中最後一支土釘的長度改為 9 m，再按一次<b>取代全部構件</b>與<b>計算最危險滑動面</b>：</p>
+<figure class="wide"><img src="img/05-board-L9.png" alt="土釘長 9 m 的臨界滑動面"><figcaption>土釘長 9 m。灰色虛線為無補強時的臨界滑動面，補強後滑動面往深處與坡頂移動</figcaption></figure>
+<figure class="wide"><img src="img/05-results-L9.png" alt="土釘長 9 m 的結果"><figcaption>土釘長 9 m：Fs = 1.599，符合常時要求值 1.5</figcaption></figure>
+<div class="note"><b>補強後要注意的事</b>加上補強後，臨界滑動面常會換到補強範圍以外，例如從土釘後方或下方通過。每次調整都要重新搜尋，不要只看原本那條滑動面的 Fs。</div>
+</section>
+
+<section class="chap" id="c6">
+<h2><span class="cn">第 6 章</span>常時、暴雨、地震三種情境檢核</h2>
+<p>第 5 章只檢核了目前條件（常時）。規範還要求檢核暴雨與地震情境，各有不同的要求安全係數。「檢核」頁可以一次設定多個情境，一鍵算完。</p>
+<div class="fig-row">
+<figure class="side"><img src="img/06-cases.png" alt="多情境設定"><figcaption>「檢核」頁的三個預設情境</figcaption></figure>
+<div>
+<ol class="steps">
+<li>到「檢核」頁。上方選單預設為<b>水土保持技術規範第 73 條，永久性</b>，三個情境的要求安全係數分別為 1.5、1.2、1.1。要改用其他規範，選好後按「套用要求值」。</li>
+<li><b>S2 暴雨</b>：地下水位選「剖面水位上升 Δh」，填入 <b>Δh = 2</b> m。上升後的水位不會高於地表。</li>
+<li><b>S3 地震</b>：填入水平震度 <b>kh = 0.15</b>，垂直震度 kv 維持 0。</li>
+<li>按<b>計算所有情境</b>。每個情境各自搜尋臨界滑動面。</li>
+</ol>
+<div class="note warn"><b>Δh 與 kh 要自己填</b>暴雨水位上升量與設計水平震度依案例、規範與工址條件而定，程式不預設。未填的情境會顯示「請輸入」而不計算。本例的 2 m 與 0.15 僅為示範。</div>
+<p>每個情境卡片還可以設定：</p>
+<ul>
+<li><b>情境類型</b>：常時、暴雨／高水位、地震。「套用要求值」依類型填入要求安全係數，擋土牆檢核也依類型採用常時或地震時的要求值。</li>
+<li><b>地下水位</b>：使用剖面水位、剖面水位上升 Δh、水位達地表、無地下水。</li>
+<li><b>計入載重、計入補強與擋土牆</b>：可以分別關閉，檢討載重移除或補強失效的情況。</li>
+<li>「複製」可以快速建立相似的情境，例如不同 Δh 的敏感度分析。</li>
+</ul>
+</div>
+</div>
+<figure class="mid"><img src="img/06-summary.png" alt="多情境檢核總表"><figcaption>檢核總表與各情境的臨界滑動面</figcaption></figure>
+<p>三個情境都符合要求：常時 1.599 ≥ 1.5、暴雨 1.323 ≥ 1.2、地震 1.129 ≥ 1.1。總表可以按「複製總表 (CSV)」貼到 Excel，計算書也會列入這張表與各情境的滑動面圖。完成的模型為 <a href="examples/tutorial-2-nails.json">tutorial-2-nails.json</a>。</p>
+<div class="note tip"><b>主畫面與情境的關係</b>主畫面的「計算最危險滑動面」使用「設定」頁的 kh、kv 與剖面水位；「檢核」頁的每個情境則各自取代這些值，兩者互不影響。</div>
+</section>
+
+<section class="chap" id="c7">
+<h2><span class="cn">第 7 章</span>擋土牆外部穩定檢核</h2>
+<p>假設坡趾要設一座重力式擋土牆，牆後回填成一個平台，作為坡面排水與維護通道。擋土牆在 SSA 裡要做兩種檢核：</p>
+<ul>
+<li><b>外部穩定</b>：把牆體當作剛體，檢核滑動、傾倒、偏心（合力位置）與基礎承載力。尺寸一改，結果立即更新。</li>
+<li><b>整體穩定</b>：把牆視為不可穿越、計入重量的結構物，搜尋從牆底下或牆後方通過的滑動面。</li>
+</ul>
+<p>建議的順序是先調整尺寸通過外部穩定，再確認整體穩定。牆身與底版的配筋等結構設計不在本工具範圍內。</p>
+
+<h3>7.1 修改地表線</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/07-ground.png" alt="修改後的地表線"><figcaption>地表線改為牆前道路、牆頂與牆後平台</figcaption></figure>
+<div>
+<p>地表線要畫到牆頂並包含牆後的回填平台。到「剖面」頁選地表線，把座標改為：</p>
+<pre class="code">0     10
+9.07  10
+10.5  12.5
+15    12.5
+35    22.5
+50    24
+70    25</pre>
+<p>(9.07, 10) 到 (10.5, 12.5) 是牆的前坡面，(10.5, 12.5) 到 (15, 12.5) 是牆頂與牆後平台。牆前道路高程 10 m，牆底設在 9 m，埋入 1 m。</p>
+<div class="note"><b>地表線與牆體</b>地表線只要大致沿著牆的外形即可。整體穩定計算時，牆體範圍以牆的形狀為準，牆內的土會被牆取代。</div>
+</div>
+</div>
+
+<h3>7.2 選擇規範並加入擋土牆</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/07-code.png" alt="檢核規範選單"><figcaption>「擋土牆」頁的檢核規範與要求值</figcaption></figure>
+<div>
+<p>到「擋土牆」頁。<b>檢核規範</b>預設為水土保持技術規範第 120 條，也可以改選建築物基礎構造設計規範或公路橋梁設計規範，下方表格會列出各項要求值。</p>
+<table class="data small">
+<thead><tr><th>規範</th><th>滑動</th><th>傾倒</th><th>合力位置</th><th>承載力</th></tr></thead>
+<tbody>
+<tr><td>水土保持技術規範第 120 條</td><td>1.5／1.2</td><td>2.0／1.5</td><td>土層 e ≤ B/6，岩盤 e ≤ B/4</td><td>3.0／3.0</td></tr>
+<tr><td>建築物基礎構造設計規範 7.4 節</td><td>1.5／1.2</td><td>2.0／1.5</td><td>合力在底面內</td><td>3.0／2.0</td></tr>
+<tr><td>公路橋梁設計規範 6.2.8 節</td><td>1.5／1.2</td><td>2.0／1.5</td><td>合力在底面內</td><td>3.0／2.0</td></tr>
+</tbody>
+</table>
+<p class="small">表中斜線前為常時，後為地震時。使用前請以最新版規範條文確認。</p>
+<p>按<b>＋ 重力式</b>加入一座擋土牆，再依下一節輸入尺寸。三種型式的按鈕分別是重力式、懸臂式、扶壁式，加入後也可以在卡片的型式選單切換。</p>
+</div>
+</div>
+
+<h3>7.3 輸入尺寸</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/07-wall-card.png" alt="擋土牆卡片"><figcaption>重力式擋土牆卡片</figcaption></figure>
+<div>
+<table class="data small">
+<thead><tr><th>欄位</th><th>意義</th><th>本例</th></tr></thead>
+<tbody>
+<tr><td>前趾 x</td><td>牆底前緣（靠坡外側）的 x</td><td>8.5</td></tr>
+<tr><td>底面 z</td><td>牆底高程</td><td>9</td></tr>
+<tr><td>牆高 H</td><td>由牆底到牆頂</td><td>3.5</td></tr>
+<tr><td>底寬 B</td><td>牆底寬度</td><td>3.0</td></tr>
+<tr><td>頂寬 b</td><td>牆頂寬度（重力式）</td><td>1.0</td></tr>
+<tr><td>單位重</td><td>牆體單位重</td><td>23.5 kN/m³</td></tr>
+<tr><td>基礎</td><td>土層或岩盤，影響合力位置的容許範圍</td><td>土層</td></tr>
+</tbody>
+</table>
+<p>重力式擋土牆的背面為鉛直，前面為斜面。懸臂式與扶壁式另有底版厚、趾長、牆身頂厚與底厚，扶壁式再加扶壁間距與厚度。牆的方向依坡面自動判斷，前趾永遠在坡外側。</p>
+</div>
+</div>
+
+<h3>7.4 判讀檢核結果</h3>
+<p>尺寸輸入後，下方的「外部穩定檢核」立即列出各情境的結果。各欄就是「檢核」頁啟用的情境，水位、震度與載重都跟著情境改變。</p>
+<figure class="mid"><img src="img/07-check-1.png" alt="第一次檢核"><figcaption>第一次檢核：地震時滑動 Fs = 1.12，低於 1.2</figcaption></figure>
+<p>常時與暴雨都通過，但地震時的抗滑動安全係數 1.12 不足。可行的對策有加大底寬、加設剪力榫，或計入牆前被動土壓。本例牆前道路下方有 1 m 埋入深度，且道路路基會長期存在，因此計入牆前被動土壓：</p>
+<div class="fig-row">
+<figure class="side"><img src="img/07-ext.png" alt="外部穩定設定"><figcaption>展開「外部穩定設定」</figcaption></figure>
+<div>
+<ol class="steps">
+<li>展開卡片中的<b>外部穩定設定</b>。</li>
+<li>勾選<b>滑動計入牆前被動土壓（折減 50%）</b>。</li>
+</ol>
+<p>這裡的其他選項：</p>
+<ul>
+<li><b>牆背摩擦角 δ</b>：重力式擋土牆用，留白時取 2φ′/3。</li>
+<li><b>底面摩擦係數 μ</b>：留白時取 tan(2φ′/3)，φ′ 為基礎土的摩擦角。有試驗資料時可直接輸入。</li>
+<li><b>承載力</b>：預設以 Meyerhof 公式計算極限承載力，也可以改為輸入容許承載力 q<sub>a</sub>。</li>
+<li><b>背填土、基礎土的 φ′、c′、γ</b>：留白時自動取剖面中牆背中段與牆底下方的土層。牆後使用級配良好的回填料時，可在這裡指定。</li>
+<li><b>排水良好</b>：勾選後不計牆後水壓與底面揚壓力。</li>
+</ul>
+</div>
+</div>
+<figure class="mid"><img src="img/07-check-2.png" alt="計入被動土壓後的檢核"><figcaption>計入被動土壓後三個情境都符合</figcaption></figure>
+<p>展開「力系明細」可以看到背填土與基礎土的參數、土壓係數、土壓力合力與作用高度、水壓與揚壓力、重量、力矩與極限承載力，方便與手算核對。開著「擋土牆」頁時，剖面圖上會畫出牆重 W、土壓力 Pa、底面中間三分之一與合力位置。</p>
+<figure class="mid"><img src="img/07-forces.png" alt="力系明細"><figcaption>展開「力系明細」可與手算核對</figcaption></figure>
+<figure class="wide"><img src="img/07-board-forces.png" alt="擋土牆力系圖"><figcaption>開啟「擋土牆」頁時，圖上顯示牆重 W、土壓力 Pa、底面中間三分之一（綠色粗線）與合力位置 R（局部放大）</figcaption></figure>
+
+<h3>7.5 確認整體穩定</h3>
+<p>外部穩定通過後，按<b>計算最危險滑動面</b>，再到「檢核」頁按<b>計算所有情境</b>。這時擋土牆會以結構物的形式計入，滑動面只能從牆底下或牆後方通過。</p>
+<figure class="wide"><img src="img/07-board-global.png" alt="含擋土牆的整體穩定"><figcaption>土釘加擋土牆後的臨界滑動面（常時 Fs = 1.705）</figcaption></figure>
+<figure class="mid"><img src="img/07-summary.png" alt="含擋土牆的情境總表"><figcaption>含擋土牆後三個情境的檢核總表</figcaption></figure>
+<p>擋土牆提供的壓腳效果讓三個情境的 Fs 都再提高一些。完成的模型為 <a href="examples/tutorial-3-wall.json">tutorial-3-wall.json</a>。</p>
+<div class="note warn"><b>限制</b>牆後土壓力只計入均布載重，線載重不計。擋土牆外部穩定把牆當作剛體，牆身與底版的強度、配筋須另行設計檢核。</div>
+</section>
+
+<section class="chap" id="c8">
+<h2><span class="cn">第 8 章</span>產出檢核報告與存檔</h2>
+<h3>8.1 填寫計算書資訊</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/08-report-form.png" alt="計算書輸出"><figcaption>「檢核」頁下方的計算書輸出</figcaption></figure>
+<div>
+<ol class="steps">
+<li>先確認主畫面與「檢核」頁都是最新的計算結果。模型改過之後，結果區會標示「請重新計算」。</li>
+<li>在「檢核」頁下方的<b>計算書輸出</b>填入計算書標題、案名、分析者與備註。</li>
+<li>按<b>下載 Word (.docx)</b>，或按<b>列印／存成 PDF</b>，在列印視窗選「另存為 PDF」。</li>
+</ol>
+<p>Word 檔可以直接編修，例如加上公司格式或補充說明。</p>
+</div>
+</div>
+
+<h3>8.2 計算書的內容</h3>
+<figure class="wide"><img src="img/08-report-pages.png" alt="計算書頁面"><figcaption>教學案例產出的計算書（共 6 頁）</figcaption></figure>
+<table class="plain">
+<thead><tr><th>章節</th><th>內容</th></tr></thead>
+<tbody>
+<tr><td>封面資訊</td><td>案名、分析者、日期、程式版本與網址、計算方法。</td></tr>
+<tr><td>1. 分析方法</td><td>使用的方法、孔隙水壓與地震力的處理方式。</td></tr>
+<tr><td>2. 輸入資料</td><td>剖面幾何、土層參數、載重、補強構件、擋土牆、分析設定。</td></tr>
+<tr><td>3. 擋土牆外部穩定</td><td>有擋土牆時才出現。方法、要求值與各情境的檢核表、力系明細。</td></tr>
+<tr><td>4. 計算結果</td><td>剖面圖與臨界滑動面、安全係數、補強構件受力、切片明細。</td></tr>
+<tr><td>5. 多情境檢核</td><td>有情境計算結果時才出現。總表與各情境的滑動面圖。</td></tr>
+<tr><td>6. 附註</td><td>分析限制、參考文獻與程式版本。</td></tr>
+</tbody>
+</table>
+<p>章節編號會依內容自動調整。教學案例的完整計算書可以下載 <a href="examples/tutorial-report.docx">Word 版</a> 或 <a href="examples/tutorial-report.pdf">PDF 版</a> 參考。</p>
+
+<h3>8.3 存檔與接續分析</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/08-save.png" alt="模型存取"><figcaption>「設定」頁最下方的模型存取</figcaption></figure>
+<div>
+<p>網頁關閉後模型不會保留，請記得存檔。</p>
+<ol class="steps">
+<li>到「設定」頁最下方的<b>模型存取</b>，按<b>儲存模型（JSON 檔）</b>。檔案包含地形、土層、水位、載重、補強、擋土牆、情境與所有設定。</li>
+<li>下次開啟網頁，按<b>匯入模型…</b>選擇這個檔案，就能接續分析。</li>
+</ol>
+<p>也可以展開「以文字方式複製或貼上 JSON」，把模型內容貼到電子郵件或筆記中。</p>
+</div>
+</div>
+<div class="note tip"><b>入門篇完成</b>到這裡已經完成一份包含補強、擋土牆與三種情境的檢核報告。接下來的進階篇，每章介紹一項在特定情況下才會用到的功能。</div>
+</section>
+
+<!-- ================================================================ -->
+<div class="part" id="part2"><p class="part-no">第二篇</p><p class="part-title">進階：依情況選用的功能</p>
+<p class="part-desc">每一章開頭的「什麼時候用」說明適用的情況。除了特別註明，各章都以入門篇第 4 章的模型 <a href="examples/tutorial-1-slope.json">tutorial-1-slope.json</a>（無補強）為起點，到「設定」頁按「匯入模型…」載入即可。</p></div>
+
+<section class="chap" id="c9">
+<h2><span class="cn">第 9 章</span>已知滑動面位置：控制點</h2>
+<div class="when"><p class="when-h">什麼時候用</p>
+<p>已經崩塌或正在滑動的邊坡，常有現地資料指出滑動面的位置，例如傾斜管、TDR 量到的剪動深度，鑽探岩心的剪裂帶，坡頂的崩崖與坡趾的隆起。這時自動搜尋出的「最危險滑動面」不一定是實際在動的那一條，應該讓搜尋的滑動面通過這些已知位置，再據以設計補強或反算參數。</p></div>
+<p>以教學案例為例，假設坡面中段 x = 28 m 的傾斜管 BH-1 在地表下 8 m 量到明顯的剪動。</p>
+<div class="fig-row">
+<figure class="side"><img src="img/09-ctrl.png" alt="控制點設定"><figcaption>「剖面」頁的滑動面控制點</figcaption></figure>
+<div>
+<ol class="steps">
+<li>到「剖面」頁的<b>滑動面控制點</b>，勾選<b>啟用控制點與出入口範圍</b>。</li>
+<li>按<b>＋ 新增控制點</b>，名稱填孔號，位置 x = 28，地表下深度 = 8，容許 ±Δz = 0.3 m。程式會換算並顯示控制點高程 z = 11 m。</li>
+<li>按<b>計算最危險滑動面</b>。搜尋只接受在 x = 28 m 處通過 z = 11 ± 0.3 m 的滑動面。</li>
+</ol>
+<p>另外兩個選項可以限制滑動面的兩端：</p>
+<ul>
+<li><b>限制坡趾出口範圍</b>：坡趾隆起、湧水或擋土牆變形的位置。</li>
+<li><b>限制坡頂入口（崩崖）範圍</b>：坡頂張裂縫或崩崖的位置。</li>
+</ul>
+<p>控制點可以有多個，例如沿主測線的幾支傾斜管。按<b>以控制點建立指定滑動面</b>會把控制點與出入口連成一條滑動面，放到「指定滑動面」，作為第 10、11 章的起點。</p>
+</div>
+</div>
+<figure class="wide"><img src="img/09-board.png" alt="通過控制點的臨界滑動面"><figcaption>通過 BH-1 控制點的臨界滑動面（Fs = 1.672），綠色菱形為控制點</figcaption></figure>
+<p>本例通過控制點的滑動面 Fs = 1.672，比自由搜尋的 1.318 高很多。如果這處邊坡確實沿著 8 m 深的滑動面在動，代表現地的強度比假設的低，或水位比假設的高。這時應以這條滑動面做反算（第 11 章），用反算得到的參數設計補強，而不是直接採用自由搜尋的結果。</p>
+<div class="note"><b>容許 ±Δz</b>設 0 表示滑動面必須精確通過該點。傾斜管讀數本身有剪動帶厚度，一般取 0.3 至 1 m。</div>
+</section>
+
+<section class="chap" id="c10">
+<h2><span class="cn">第 10 章</span>指定滑動面與圓弧</h2>
+<div class="when"><p class="when-h">什麼時候用</p>
+<ul>
+<li>審查舊報告或其他軟體的計算，要以同一條滑動面重算比對。</li>
+<li>崩塌後由測量得到實際的滑動面，要計算它的安全係數或做反算。</li>
+<li>只想知道某一條特定滑動面的 Fs，不做搜尋。</li>
+</ul></div>
+<p>指定滑動面放在「剖面」頁線清單中的<b>指定滑動面（試算用）</b>，建立的方式有五種：</p>
+<ol>
+<li>在座標欄貼上點位，按「套用座標」。</li>
+<li>在圖上用「加點」模式逐點點出。</li>
+<li>計算後按<b>複製目前的臨界滑動面</b>，再修改。</li>
+<li>輸入<b>圓心與半徑</b>產生圓弧（本章示範）。</li>
+<li>由控制點建立（第 9 章）。</li>
+</ol>
+<div class="fig-row">
+<figure class="side"><img src="img/10-circle.png" alt="圓心半徑輸入"><figcaption>選取指定滑動面後出現圓心與半徑欄位</figcaption></figure>
+<div>
+<p>假設舊報告使用圓心 (14, 34)、半徑 26 m 的圓弧：</p>
+<ol class="steps">
+<li>在「剖面」頁點選<b>指定滑動面（試算用）</b>。</li>
+<li>在座標欄下方輸入圓心 x = 14、圓心 z = 34、半徑 R = 26。</li>
+<li>按<b>產生圓弧並試算</b>。程式只取圓弧低於地表的部分，轉成點列放入座標欄，並立即試算。</li>
+</ol>
+<p>之後修改其他條件，按工具列的<b>試算指定滑動面</b>即可重算這條圓弧。計算書會註明圓心與半徑。</p>
+</div>
+</div>
+<figure class="wide"><img src="img/10-board.png" alt="圓弧試算結果"><figcaption>指定圓弧的試算結果（Fs = 1.768）</figcaption></figure>
+<div class="note"><b>為什麼跟舊報告不一樣</b>比對時常見的差異來源有：方法不同（例如 Bishop 法與 Janbu 法）、孔隙水壓的計算方式、切片數、是否計入 f0 修正。SSA 對同一條滑動面也會同時列出 Spencer 法與 Morgenstern–Price 法的結果，可以作為比對基準。</div>
+</section>
+
+<section class="chap" id="c11">
+<h2><span class="cn">第 11 章</span>反算土壤參數</h2>
+<div class="when"><p class="when-h">什麼時候用</p>
+<p>邊坡已經崩塌或正在滑動時，可以假設崩塌當時的 Fs 約等於 1.0，反求土層的強度參數。反算得到的參數反映現地的實際狀態，常比試驗值更適合用來設計整治工程。</p></div>
+<p>假設教學案例在一場豪雨後沿著原本的臨界滑動面崩塌，當時的地下水位約比剖面水位高 2 m。</p>
+<ol class="steps">
+<li>按<b>計算最危險滑動面</b>，到「剖面」頁點選<b>指定滑動面</b>，按<b>複製目前的臨界滑動面</b>。實務上這裡應改用測量或控制點得到的實際滑動面。</li>
+<li>把地下水位線改為崩塌當時的水位：(0, 9) (15, 10.5) (35, 19) (70, 23)。</li>
+<li>按<b>試算指定滑動面</b>，本例 Fs = 1.069。</li>
+<li>到「設定」頁的<b>反算分析</b>，反算土層選「自動」（取滑動面通過最長的土層），反算參數選<b>摩擦角 φ′（c′ 固定）</b>，目標 Fs = 1。</li>
+<li>按<b>開始反算</b>。</li>
+</ol>
+<div class="fig-row">
+<figure class="side"><img src="img/11-back.png" alt="反算結果"><figcaption>反算結果與 c′–φ′ 組合</figcaption></figure>
+<div>
+<p>結果顯示崩積層 φ′ = 26.12°（c′ = 5 kPa 固定）時 Fs 恰為 1.000。按<b>套用到土層並試算</b>可以把這個值寫回「土層」頁。</p>
+<p>勾選「同時列出 c′–φ′ 組合」時，程式會畫出所有使 Fs = 1 的 c′ 與 φ′ 組合。一條滑動面只能決定一條曲線，無法同時定出 c′ 與 φ′，需要：</p>
+<ul>
+<li>依試驗、相鄰案例或經驗先固定其中一個，例如崩積層的 c′ 取很小的值；</li>
+<li>或用兩個以上的崩塌面（不同時間、不同斷面）交會決定。</li>
+</ul>
+<div class="note warn"><b>注意</b>反算結果與假設的水位、單位重以及計算方法密切相關。設計時應使用與反算相同的方法與水位條件，否則反算的意義會打折扣。</div>
+</div>
+</div>
+</section>
+
+<section class="chap" id="c12">
+<h2><span class="cn">第 12 章</span>分層水壓線與孔隙水壓比 r<sub>u</sub></h2>
+<div class="when"><p class="when-h">什麼時候用</p>
+<ul>
+<li><b>分層水壓線</b>：不同地層有不同的水頭，例如上方崩積層是一般地下水，下方風化岩或砂礫層是受壓含水層，鑽孔水位計量到的水頭比地下水位高，甚至在坡趾自流湧出。</li>
+<li><b>孔隙水壓比 r<sub>u</sub></b>：沒有地下水位資料，或填土、廢土堆置場等依規範以 r<sub>u</sub> 表示孔隙水壓的情況。</li>
+<li><b>不計</b>：確定乾燥或排水良好的地層。</li>
+</ul></div>
+<h3>12.1 分層水壓線</h3>
+<p>假設教學案例在 BH-2 鑽孔的風化岩中量到受壓水頭，接近地表，坡趾處的水頭甚至高於地表。</p>
+<div class="fig-row">
+<figure class="side"><img src="img/12-piezo-line.png" alt="新增水壓線"><figcaption>在「剖面」頁新增水壓線</figcaption></figure>
+<div>
+<ol class="steps">
+<li>「剖面」頁按<b>＋ 新增水壓線</b>。新的水壓線先複製地下水位線，並成為目前編輯的線。</li>
+<li>在座標欄貼上 (0, 11) (15, 14) (35, 22) (70, 24.5)，按<b>套用座標</b>。</li>
+<li>在「水壓線名稱」填入「BH-2 風化岩水頭」。</li>
+<li>到「土層」頁，把<b>風化岩</b>的孔隙水壓選為「BH-2 風化岩水頭」。</li>
+<li>按<b>計算最危險滑動面</b>。</li>
+</ol>
+</div>
+</div>
+<div class="fig-row">
+<figure class="side"><img src="img/12-soil-pore.png" alt="土層孔隙水壓選單"><figcaption>風化岩改用水壓線計算孔隙水壓</figcaption></figure>
+<figure class="side"><img src="img/12-ru.png" alt="ru 設定"><figcaption>改用孔隙水壓比 r<sub>u</sub> 時出現 r<sub>u</sub> 欄位</figcaption></figure>
+</div>
+<figure class="wide"><img src="img/12-board.png" alt="受壓水頭的影響"><figcaption>風化岩受壓水頭使臨界滑動面變深（Fs 由 1.318 降為 1.259），綠色點線為水壓線</figcaption></figure>
+<p>風化岩的孔隙水壓變大後，臨界滑動面改為切入風化岩，最大深度由 5.9 m 變為 8.6 m。每一層使用哪一種孔隙水壓，計算書的土層參數表都會列出。</p>
+<h3>12.2 孔隙水壓比 r<sub>u</sub></h3>
+<p>選擇「孔隙水壓比 r<sub>u</sub>」後填入數值，該層的孔隙水壓為 u = r<sub>u</sub>·σ<sub>v</sub>，σ<sub>v</sub> 為滑動面以上土柱的總應力。r<sub>u</sub> 常用 0.1 至 0.5，依規範或經驗選定。</p>
+<div class="note"><b>水壓線與滲流</b>SSA 以水位線或水壓線計算靜水壓，不做滲流分析。有明顯滲流的邊坡，可以用滲流分析結果整理出各層的水壓線再輸入。</div>
+</section>
+
+<section class="chap" id="c13">
+<h2><span class="cn">第 13 章</span>坡外積水與張力裂縫</h2>
+<div class="when"><p class="when-h">什麼時候用</p>
+<ul>
+<li><b>坡外積水</b>：河岸、水庫、滯洪池邊坡，或坡趾排水不良而積水。外側的水重與水壓對穩定有利，水位驟降時則可能不利。</li>
+<li><b>張力裂縫</b>：坡頂已有張裂縫，或 c′ 較大的黏性土在坡頂可能開裂。裂縫深度內的土不提供抗剪強度，裂縫充水時還會產生水平推力。</li>
+</ul></div>
+<h3>13.1 坡外積水</h3>
+<p>不需要特別的設定。只要把地下水位線畫到地表以上，高出地表的部分就自動視為坡外積水，圖上以淺藍色表示。積水的重量作用在切片頂面，斜坡面上的水壓水平分量抵抗滑動，計算結果另列「坡外積水水平推力」。</p>
+<p>本例假設坡趾前方為河道，水位 13 m，比坡趾道路高 3 m：地下水位線改為 (0, 13) (16, 13) (35, 17) (70, 21)。</p>
+<h3>13.2 張力裂縫</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/13-tc.png" alt="張力裂縫設定"><figcaption>「設定」頁的張力裂縫</figcaption></figure>
+<div>
+<ol class="steps">
+<li>到「設定」頁，勾選<b>考慮坡頂張力裂縫</b>。</li>
+<li><b>裂縫深度</b>選「Rankine 公式」時，以 z<sub>c</sub> = 2c′/(γ√K<sub>a</sub>) 依坡頂地表的土層計算，下方會顯示算出的深度；也可以選「指定深度」直接輸入。</li>
+<li>勾選<b>裂縫充水</b>時，水壓 P<sub>w</sub> = ½γ<sub>w</sub>z<sub>c</sub>² 水平推向坡外。</li>
+</ol>
+<p>裂縫的位置由搜尋決定，若不設裂縫的 Fs 較小，程式就不設裂縫。「檢核」頁的每個情境可以分別設定裂縫是否充水，例如只有暴雨情境充水。</p>
+</div>
+</div>
+<figure class="wide"><img src="img/13-board.png" alt="坡外積水與張力裂縫"><figcaption>坡趾積水 3 m 且坡頂裂縫充水時的臨界滑動面（Fs = 1.117）</figcaption></figure>
+<div class="note warn"><b>水位驟降</b>SSA 以靜水壓處理積水，不含水位驟降時的超額孔隙水壓。水庫或河道水位快速下降的情況，可以用「積水移除、坡內水位維持高水位」的組合做保守估計，必要時另做暫態滲流分析。</div>
+</section>
+
+<section class="chap" id="c14">
+<h2><span class="cn">第 14 章</span>抑止樁、微型樁與地工合成材</h2>
+<div class="when"><p class="when-h">什麼時候用</p>
+<ul>
+<li><b>抑止樁</b>：深層地滑，土釘與地錨的長度或錨碇力不足，需要以鋼管樁的抗剪與抗彎抵抗滑動。</li>
+<li><b>微型樁</b>：施工空間有限的道路邊坡，以小口徑樁群同時提供軸力與剪力。</li>
+<li><b>地工合成材</b>：加勁填土邊坡或加勁擋土牆，以地工格網或織物分層補強。</li>
+</ul></div>
+<p>這三種構件與土釘、地錨一樣在「補強」頁加入，抵抗力一律計入抵抗側（被動）。</p>
+<h3>14.1 抑止樁</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/14-pile-card.png" alt="抑止樁卡片"><figcaption>抑止樁卡片</figcaption></figure>
+<div>
+<ol class="steps">
+<li>「補強」頁按<b>＋ 抑止樁</b>，位置 x = 22、樁長 L = 12 m、間距 D = 2 m、排數 N = 1。</li>
+<li>鋼管外徑、管厚、鋼材與容許應力（長期或短期）依設計選定，預設為 φ318.5×10.3 mm、SKK490、長期。</li>
+<li><b>樁型</b>：楔形樁（くさび杭）用於滑動面下方有地盤反力的一般情況；懸臂樁（抑え杭）用於下坡側沒有地盤反力的情況。</li>
+<li>移動層與穩定層的變形係數 E<sub>0</sub> 用來計算水平地盤反力係數，展開「進階」可設定其他參數。</li>
+<li>按<b>計算最危險滑動面</b>。結果中每支樁會列出滑動面以上長度、根入長度、可承受的水平荷重與控制條件。</li>
+</ol>
+</div>
+</div>
+<h3>14.2 抑止樁設計</h3>
+<p>「補強」頁的<b>抑止樁設計</b>依日本地すべり防止技術指針，在無補強的臨界滑動面上求使 Fs 達到計畫安全率的必要抑止力 P<sub>r</sub>，換算每支樁的設計荷重，再檢核彎曲應力、剪應力、根入長度與地盤降伏。</p>
+<ol class="steps">
+<li>先按<b>計算最危險滑動面</b>。</li>
+<li>計畫安全率 PFs 填 1.5，按<b>計算必要抑止力與樁體檢核</b>。</li>
+</ol>
+<div class="fig-row">
+<figure class="side"><img src="img/14-pd.png" alt="抑止樁設計結果"><figcaption>第一次設計：彎曲應力不足</figcaption></figure>
+<figure class="side"><img src="img/14-pd2.png" alt="調整後的設計結果"><figcaption>調整管徑、間距與樁長後全部通過</figcaption></figure>
+</div>
+<p>第一次設計的必要抑止力 P<sub>r</sub> = 173.9 kN/m，每支樁 H = 319 kN，彎曲應力 279.7 N/mm² 超過容許的 185 N/mm²。把鋼管改為 φ406.4×12.7 mm、間距改為 1.5 m 後，彎曲應力降為 129.7 N/mm²，但根入長度 6.51 m 小於需要的 7.01 m；再把樁長加到 14 m，全部檢核通過。</p>
+<div class="note"><b>加樁之後</b>抑止樁設計使用的是無補強的臨界滑動面。加樁後請重新計算最危險滑動面，確認滑動面不會從樁底下方或樁的前、後方另外滑出。</div>
+
+<h3>14.3 微型樁與地工合成材</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/14-mpile.png" alt="微型樁卡片"><figcaption>微型樁卡片</figcaption></figure>
+<figure class="side"><img src="img/14-geo.png" alt="地工合成材卡片"><figcaption>地工合成材卡片</figcaption></figure>
+</div>
+<ul>
+<li><b>微型樁</b>：軸力取握裹 q 乘上穿出滑動面的長度與軸向強度的較小值，沿樁軸作用；容許剪力 V<sub>a</sub> 垂直樁軸。兩者都取抵抗滑動的方向。傾角 θ 小於 90° 表示向坡內傾斜。</li>
+<li><b>地工合成材</b>：容許拉力 T<sub>a</sub> = T<sub>ult</sub>/(RF<sub>ID</sub>·RF<sub>CR</sub>·RF<sub>D</sub>)，再與滑動面兩側的拉拔阻抗比較取小值。拉力方向可選水平或沿滑動面。勾選「坡面端包覆或連結」時，前端不受拉拔控制。多層配置可用「整排配置」或「複製」建立。</li>
+</ul>
+</section>
+
+<section class="chap" id="c15">
+<h2><span class="cn">第 15 章</span>計算方法與搜尋設定</h2>
+<div class="when"><p class="when-h">什麼時候用</p>
+<ul>
+<li>規範或審查要求使用同時滿足力與力矩平衡的嚴密法。</li>
+<li>剖面很長、土層很薄，或計算結果看起來不合理，需要調整搜尋網格。</li>
+<li>要排除過淺的表層滑動，或檢討淺層崩塌。</li>
+</ul></div>
+<h3>15.1 計算方法</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/15-method.png" alt="計算方法"><figcaption>「設定」頁的計算方法</figcaption></figure>
+<div>
+<table class="data small">
+<thead><tr><th>方法</th><th>平衡條件</th><th>適用</th></tr></thead>
+<tbody>
+<tr><td>簡易 Janbu 法</td><td>力平衡</td><td>原 SSA 程式的方法，計算快，未修正值偏保守。可乘修正係數 f0。</td></tr>
+<tr><td>Spencer 法</td><td>力與力矩</td><td>切片間力的方向固定（f(x) = 1）。</td></tr>
+<tr><td>Morgenstern–Price 法</td><td>力與力矩</td><td>切片間力的方向以半正弦函數分布。</td></tr>
+</tbody>
+</table>
+<p>不論選哪一種，DP 都先以簡易 Janbu 法找出臨界滑動面。選嚴密法時，勾選<b>嚴密法搜尋後局部最佳化滑動面</b>，程式會再移動滑動面的頂點與兩端，使所選方法的 Fs 最小。三種方法的結果都會列在計算結果中。</p>
+</div>
+</div>
+<figure class="wide"><img src="img/15-results.png" alt="Spencer 法結果"><figcaption>選用 Spencer 法時的結果。局部最佳化使 Fs 由 1.462 降為 1.429</figcaption></figure>
+<h4>修正係數 f0</h4>
+<p>簡易 Janbu 法忽略切片間剪力，結果通常偏低。修正係數 f0 有兩種公式可選：f0 = (50d/L)<sup>0.03</sup>（土木研究所資料 1987）與 Janbu 修正曲線。預設以未修正值判定，與原 SSA 程式相同；勾選<b>以修正後 f0·Fs 判定</b>才會改用修正值。嚴密法不需要 f0。</p>
+
+<h3>15.2 搜尋網格</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/15-search.png" alt="滑動面搜尋設定"><figcaption>「設定」頁的滑動面搜尋</figcaption></figure>
+<div>
+<p>DP 在剖面上畫一組垂直分割線，每條線上放一組節點，滑動面就是從第一條線走到最後一條線、每條線選一點連成的折線。</p>
+<table class="data small">
+<thead><tr><th>設定</th><th>建議</th></tr></thead>
+<tbody>
+<tr><td>垂直分割線數</td><td>線距 1 至 2 m，約等於水平長度 ÷ 1.5，常用 60 至 120。</td></tr>
+<tr><td>每線節點數</td><td>節點間距約 0.3 m，約等於最大土層厚度 ÷ 0.3，常用 80 至 120。</td></tr>
+<tr><td>每段切片數</td><td>一般 3 至 4，土層很薄或水位起伏大時用 5。</td></tr>
+<tr><td>最小滑動深度</td><td>c′ = 0 的砂土或崩積層建議 1 至 2 m；檢討淺層崩塌時設 0。</td></tr>
+</tbody>
+</table>
+<p>上方的「目前模型的搜尋網格」會依剖面估算線距、節點間距與計算時間，並提供<b>套用建議值</b>按鈕。點狀態列中間的「網格」按鈕也會跳到這裡。計算量約與「分割線數 × 節點數²」成正比，節點數加倍，時間約變 4 倍。</p>
+<ul>
+<li><b>限制滑動面為凹形</b>：排除運動學上不合理的形狀，建議保持勾選。</li>
+<li><b>滑動面不穿越模型左右邊界</b>：兩端的分割線只允許在地表以上，避免滑動面從模型邊界穿出。</li>
+<li>工具列勾選<b>搜尋節點</b>可以在圖上看到節點位置。</li>
+</ul>
+</div>
+</div>
+<h3>15.3 收斂與判定</h3>
+<figure class="mid"><img src="img/15-conv.png" alt="收斂與判定"><figcaption>「設定」頁的收斂與判定</figcaption></figure>
+<p>容許誤差 ΔF、最大迭代次數與起始 F 一般不需要更動。<b>要求安全係數</b>是主畫面計算的判定標準，多情境檢核則各自使用「檢核」頁的要求值。</p>
+</section>
+
+<section class="chap" id="c16">
+<h2><span class="cn">第 16 章</span>單位、存檔、驗證報告與版本</h2>
+<h3>16.1 單位</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/16-units.png" alt="單位選擇"><figcaption>「土層」頁上方的單位選擇</figcaption></figure>
+<div>
+<p>「土層」頁上方可以分別選擇單位重（kN/m³ 或 tf/m³）與凝聚力、應力（kPa 或 tf/m²）的單位。切換時已輸入的數值會自動換算，計算結果與計算書也以相同單位顯示。換算採 1 tf = 9.80665 kN。</p>
+</div>
+</div>
+<h3>16.2 存檔與交換</h3>
+<ul>
+<li><b>JSON 模型檔</b>：「設定」頁的「儲存模型」與「匯入模型…」，包含所有輸入與設定（第 8.3 節）。</li>
+<li><b>CSV</b>：地形可由 CSV 匯入（第 1.2 節）；切片明細與多情境總表可以複製為 CSV。</li>
+<li><b>計算書</b>：Word 或 PDF（第 8 章）。</li>
+<li><b>復原</b>：Ctrl+Z 或左上角「復原」可以回到上一步。</li>
+</ul>
+<h3>16.3 驗證報告</h3>
+<figure class="mid"><img src="img/16-verify.png" alt="驗證報告"><figcaption>「說明」頁執行驗證報告的結果</figcaption></figure>
+<p>「說明」頁的<b>執行驗證</b>會以目前版本的計算核心，在您的瀏覽器中重算全部驗證考題，包含閉合解、Fredlund and Krahn、ACADS 標準題、坡外積水與張力裂縫、分層水壓、補強構件、鋼管杭計算例與擋土牆外部穩定，列出參考值、本工具的結果、差異與是否通過，約需 2 分鐘。結果可以下載 Word 或列印為 PDF，作為送審時的程式驗證文件。v2.10.1 共 146 項檢核全部通過。</p>
+<h3>16.4 版本與語言</h3>
+<p>網頁標題旁、計算書與存檔都標示程式版本號。「說明」頁的版本紀錄列出各版的修改內容。本手冊封面註明對應的程式版本，程式有功能更新時，手冊也會同步修訂。</p>
+<p>右上角可以切換中文、English、日本語，計算書也會以目前的語言產生。</p>
+</section>
+
+<!-- ================================================================ -->
+<section class="chap appendix" id="ax">
+<h2><span class="cn">附錄</span>常見問題與參考表</h2>
+<h3>A. 常見問題</h3>
+<dl class="faq">
+<dt>按了計算，沒有找到滑動面。</dt>
+<dd>先看狀態列的訊息。常見原因有：地表線少於 2 點；模型底部高程高於地表的某一段；最小滑動深度太大；控制點或出入口範圍彼此矛盾。關閉控制點、把最小滑動深度設為 0 試試看。</dd>
+<dt>臨界滑動面出現在很奇怪的位置，例如模型邊緣。</dt>
+<dd>確認勾選了「滑動面不穿越模型左右邊界」，並把剖面兩端延伸到離坡頂、坡趾足夠遠的地方（一般至少一倍坡高）。</dd>
+<dt>Fs 跟其他軟體差很多。</dt>
+<dd>先以同一條滑動面比對（第 10 章），再逐項檢查計算方法、孔隙水壓、單位重的使用（水位上下）、f0 修正與載重是否計入地震力。</dd>
+<dt>補強後 Fs 沒有提高。</dt>
+<dd>看計算結果中補強構件的表格。若顯示「未穿過臨界滑動面」，代表滑動面換到構件範圍以外，需要加長構件或擴大配置範圍。</dd>
+<dt>擋土牆頁顯示「只計入整體穩定」。</dt>
+<dd>以頂點座標自訂形狀的擋土牆無法做外部穩定檢核。在卡片中輸入尺寸，就會改回參數式斷面。</dd>
+<dt>情境顯示「請輸入 Δh」或「請輸入 kh」。</dt>
+<dd>暴雨的水位上升量與地震的水平震度須依案例填入，程式不預設（第 6 章）。</dd>
+<dt>關掉網頁後模型不見了。</dt>
+<dd>SSA 不會把資料存在伺服器，請用「儲存模型（JSON 檔）」存檔（第 8.3 節）。</dd>
+</dl>
+
+<h3>B. 邊坡最小安全係數（預設值）</h3>
+<table class="data">
+<thead><tr><th>規範</th><th>常時</th><th>暴雨／高水位</th><th>地震</th></tr></thead>
+<tbody>
+<tr><td>水土保持技術規範第 73 條，永久性</td><td>1.5</td><td>1.2</td><td>1.1</td></tr>
+<tr><td>水土保持技術規範第 73 條，臨時性</td><td>1.2</td><td>1.1</td><td>1.0</td></tr>
+<tr><td>公路邊坡工程設計規範表 4.6-1，長久性</td><td>1.5</td><td>1.2</td><td>1.1</td></tr>
+<tr><td>公路邊坡工程設計規範表 4.6-1，臨時性</td><td>1.2</td><td>1.1</td><td>1.0</td></tr>
+</tbody>
+</table>
+<p class="small">擋土牆外部穩定的要求值見第 7.2 節。規範可能修訂，使用前請以最新條文確認。</p>
+
+<h3>C. 範例檔一覽</h3>
+<table class="plain">
+<thead><tr><th>檔案</th><th>內容</th><th>用於</th></tr></thead>
+<tbody>
+<tr><td><a href="examples/tutorial-profile.csv">tutorial-profile.csv</a></td><td>教學案例的地表、土層界面與地下水位</td><td>第 1 章</td></tr>
+<tr><td><a href="examples/tutorial-1-slope.json">tutorial-1-slope.json</a></td><td>剖面、土層參數與道路車載，無補強</td><td>第 4 章，進階各章的起點</td></tr>
+<tr><td><a href="examples/tutorial-2-nails.json">tutorial-2-nails.json</a></td><td>加入 8 支 9 m 土釘與三個情境</td><td>第 5、6 章</td></tr>
+<tr><td><a href="examples/tutorial-3-wall.json">tutorial-3-wall.json</a></td><td>再加入坡趾重力式擋土牆</td><td>第 7、8 章</td></tr>
+<tr><td><a href="examples/tutorial-report.docx">tutorial-report.docx</a>、<a href="examples/tutorial-report.pdf">.pdf</a></td><td>教學案例的計算書</td><td>第 8 章</td></tr>
+</tbody>
+</table>
+
+<h3>D. 名詞與符號</h3>
+<table class="data small">
+<thead><tr><th>符號</th><th>意義</th></tr></thead>
+<tbody>
+<tr><td>Fs</td><td>安全係數，抵抗力與滑動力之比</td></tr>
+<tr><td>γ、γ<sub>sat</sub>、γ<sub>w</sub></td><td>單位重、飽和單位重、水的單位重</td></tr>
+<tr><td>c′、φ′</td><td>有效凝聚力、有效摩擦角</td></tr>
+<tr><td>k<sub>h</sub>、k<sub>v</sub></td><td>水平、垂直震度（擬靜態地震力）</td></tr>
+<tr><td>r<sub>u</sub></td><td>孔隙水壓比</td></tr>
+<tr><td>f0</td><td>簡易 Janbu 法的修正係數</td></tr>
+<tr><td>Δh</td><td>暴雨情境的地下水位上升量</td></tr>
+<tr><td>e、B</td><td>擋土牆合力偏心距、底寬</td></tr>
+<tr><td>P<sub>r</sub>、PFs</td><td>必要抑止力、計畫安全率</td></tr>
+</tbody>
+</table>
+<p>完整的理論、公式與參考文獻請見 SSA 網頁下方的「方法原理與公式」。</p>
+
+<h3>E. 聯絡與回饋</h3>
+<p>使用上有問題、發現錯誤或有功能建議，歡迎來信 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a>（陳振宇）。</p>
+<p class="small">本工具為二維極限平衡分析的輔助工具，計算結果僅供參考，實際工程判斷與設計仍應由專業人員依現地調查與相關規範負責。</p>
+</section>
+
+</main>
+<footer class="docfoot screen-only"><p>SSA 邊坡穩定分析 使用手冊 <span class="v-man">1.0</span>・對應程式 <span class="v-ssa">v2.10.1</span>・陳振宇 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
+<script src="manual.js"></script>
+</body>
+</html>
