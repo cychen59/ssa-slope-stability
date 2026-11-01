@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SSA Slope Stability Analysis User Manual</title>
+<meta name="description" content="User manual for the SSA slope stability web app, from your first slope to a complete check report, followed by the advanced features.">
+<link rel="stylesheet" href="../manual.css">
+</head>
+<body>
+<!-- program version this manual describes; checked against ../../index.html SSA_VERSION at build time -->
+<div id="meta" data-ssa-version="2.10.2" data-ssa-date="2026-11-01" data-manual-version="1.1" hidden></div>
+
+<header class="cover" id="cover">
+  <div class="cover-top"><span class="mark">SSA</span><span class="cover-kicker">Slope Stability Analysis</span></div>
+  <h1>SSA Slope Stability Analysis<br>User Manual</h1>
+  <p class="cover-sub">From your first slope to a complete check report</p>
+  <img class="cover-img" src="img/07-board-global.png" alt="Tutorial case: critical slip surface with soil nails and a retaining wall at the toe">
+  <dl class="cover-meta">
+    <dt>Program version</dt><dd><span class="v-ssa">v2.10.2</span> (<span class="v-date">2026-11-01</span>)</dd>
+    <dt>Manual version</dt><dd><span class="v-man">1.1</span></dd>
+    <dt>Developer</dt><dd>Chen-Yu Chen (陳振宇)</dd>
+    <dt>Contact</dt><dd><a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></dd>
+    <dt>Web app</dt><dd><a href="https://cychen59.github.io/ssa-slope-stability/?lang=en">cychen59.github.io/ssa-slope-stability</a></dd>
+  </dl>
+  <p class="cover-dl screen-only"><a class="btn" href="SSA-User-Manual-EN.pdf">Download PDF</a> <a class="btn ghost" href="../../?lang=en">Open SSA</a></p>
+  <p class="langs screen-only"><a href="../">中文</a><a href="../ja/">日本語</a></p>
+</header>
+
+<nav class="toc" id="toc" aria-label="Contents">
+  <h2 class="toc-h">Contents</h2>
+  <ol id="tocList"></ol>
+</nav>
+
+<main id="doc">
+
+<!-- ================================================================ -->
+<section class="chap" id="c0">
+<h2><span class="cn">Chapter 0</span>Before you start</h2>
+
+<h3>How to read this manual</h3>
+<p>The manual has two parts. <b>Part 1, Getting started,</b> follows one tutorial case from entering the terrain to producing a check report. Work through Chapters 1 to 8 in order and you will have completed a basic slope stability analysis. <b>Part 2, Advanced,</b> introduces one feature per chapter. Each chapter starts with when you would use it, then shows how, so you can read only what you need.</p>
+<p>The model file for each chapter can be downloaded and imported directly to skip the earlier steps. The file list is in <a href="#ax">Appendix C</a>.</p>
+
+<table class="plain">
+<thead><tr><th>Part</th><th>Ch.</th><th>Content</th><th>Example file</th></tr></thead>
+<tbody>
+<tr><td rowspan="8">Getting started</td><td>1</td><td>Ground surface, layer boundaries and water table</td><td>tutorial-profile.csv</td></tr>
+<tr><td>2</td><td>Soil parameters</td><td></td></tr>
+<tr><td>3</td><td>Loads at the crest and toe</td><td></td></tr>
+<tr><td>4</td><td>First calculation and reading the results</td><td>tutorial-1-slope.json</td></tr>
+<tr><td>5</td><td>Adding reinforcement (soil nails)</td><td></td></tr>
+<tr><td>6</td><td>Normal, heavy rain and earthquake cases</td><td>tutorial-2-nails.json</td></tr>
+<tr><td>7</td><td>External stability of a retaining wall</td><td>tutorial-3-wall.json</td></tr>
+<tr><td>8</td><td>Producing the report and saving</td><td>tutorial-report.docx</td></tr>
+<tr><td rowspan="8">Advanced</td><td>9</td><td>Known slip surface locations: control points</td><td rowspan="8">Each chapter starts from tutorial-1-slope.json</td></tr>
+<tr><td>10</td><td>Specified slip surfaces and circles (checking an old report)</td></tr>
+<tr><td>11</td><td>Back-calculating soil parameters</td></tr>
+<tr><td>12</td><td>Piezometric lines per layer and pore pressure ratio r<sub>u</sub></td></tr>
+<tr><td>13</td><td>Ponded water and tension cracks</td></tr>
+<tr><td>14</td><td>Stabilizing piles, micropiles and geosynthetics</td></tr>
+<tr><td>15</td><td>Calculation methods and search settings</td></tr>
+<tr><td>16</td><td>Units, saving, verification report and versions</td></tr>
+</tbody>
+</table>
+
+<h3>What SSA does</h3>
+<p>SSA is a two-dimensional slope stability tool that runs in the browser. Nothing to install, and your data is never uploaded to a server. It uses dynamic programming (DP) to search for non-circular critical slip surfaces of any shape, and computes the factor of safety with the simplified Janbu, Spencer or Morgenstern–Price method. On top of that you can add:</p>
+<ul>
+<li>Surface loads (uniform, trapezoidal, line loads).</li>
+<li>Reinforcement: soil nails, ground anchors, stabilizing piles, micropiles and geosynthetics.</li>
+<li>Gravity, cantilever and counterfort retaining walls, including external stability checks.</li>
+<li>Several cases such as normal, heavy rain and earthquake, computed in one go and judged against the code.</li>
+<li>Calculation reports in Word or PDF.</li>
+</ul>
+
+<h3>Tutorial videos</h3>
+<p>Three tutorial videos follow the same case as this manual, and an introductory video explains what SSA is. They are narrated in Chinese, with English and Japanese subtitles available.</p>
+<ul class="videos">
+<li><a href="https://youtu.be/WJplLLHTVXU">Introduction</a><span>What SSA is</span></li>
+<li><a href="https://youtu.be/RL-3NAe49ZM">Episode 1: Getting started</a><span>Profile, reinforcement, retaining wall, report (Chapters 1–8)</span></li>
+<li><a href="https://youtu.be/QsGGpsN5J_8">Episode 2: Field data</a><span>Surface signs, inclinometers, back analysis, piezometric lines (Chapters 9–12)</span></li>
+<li><a href="https://youtu.be/LjtjP_0jO74">Episode 3: Special conditions and verification</a><span>Ponded water, tension cracks, piles, methods, verification (Chapters 13–16)</span></li>
+</ul>
+
+<h3>Screen layout</h3>
+<figure class="wide"><img src="img/00-overview.png" alt="SSA screen layout"><figcaption>The SSA screen layout</figcaption></figure>
+<table class="plain">
+<thead><tr><th>No.</th><th>Area</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Top buttons</td><td>Undo (Ctrl+Z), Load example, this user manual, Theory, language switch.</td></tr>
+<tr><td>2</td><td>Tabs</td><td>Profile, Soils, Loads, Reinf., Walls, Settings, Check, Help. Data is entered roughly in this order.</td></tr>
+<tr><td>3</td><td>Toolbar</td><td>Drag, add or delete points on the drawing, snap spacing, show slices or search nodes, fit to window.</td></tr>
+<tr><td>4</td><td>Profile drawing</td><td>Shows terrain, layers, water, loads, reinforcement and slip surfaces live, and can be edited with the mouse.</td></tr>
+<tr><td>5</td><td>Calculation buttons</td><td>“Find critical slip surface” runs the automatic search; “Check specified surface” evaluates only the surface you specified.</td></tr>
+<tr><td>6</td><td>Results</td><td>Factor of safety, sliding mass details, reinforcement forces and slice details.</td></tr>
+<tr><td>7</td><td>Status bar</td><td>Calculation progress, messages and the search grid setting.</td></tr>
+</tbody>
+</table>
+
+<h3>Coordinates and units</h3>
+<ul>
+<li>The profile uses x (horizontal, m) and z (elevation, m), with x increasing to the right. The slope may face left or right; the program detects it.</li>
+<li>Every line (ground, layer boundaries, water table) is a list of points sorted by x, joined by straight segments.</li>
+<li>Default units are kN, kPa and kN/m³. They can be switched to tf units on the Soils tab (Chapter 16).</li>
+<li>All forces and loads are per metre width.</li>
+</ul>
+<div class="note tip"><b>Tip</b>An example profile loads when the page opens. Press “Find critical slip surface” at the top right to see a result and get used to the screen first.</div>
+</section>
+
+<!-- ================================================================ -->
+<div class="part" id="part1"><p class="part-no">Part 1</p><p class="part-title">Getting started: your first check report</p>
+<p class="part-desc">The example is a slope above a road. It is about 12.5 m high, with 4 to 6 m of colluvium at the surface over weathered rock and bedrock, and a road at the crest. The goal is to check the normal, heavy rain and earthquake cases under Taiwan's Soil and Water Conservation Technical Regulations, reinforce with soil nails where needed, add a retaining wall at the toe and produce a calculation report.</p></div>
+
+<section class="chap" id="c1">
+<h2><span class="cn">Chapter 1</span>Ground surface, layer boundaries and water table</h2>
+<p>A profile consists of several lines: the ground surface, the top of each layer (boundary lines) and the water table. The tutorial data are below, in metres.</p>
+<table class="data">
+<thead><tr><th>Line</th><th>Points (x, z)</th></tr></thead>
+<tbody>
+<tr><td>Ground surface</td><td>(0, 10) (10, 10) (35, 22.5) (50, 24) (70, 25)</td></tr>
+<tr><td>Top of weathered rock</td><td>(0, 6) (15, 7.5) (35, 16) (70, 19)</td></tr>
+<tr><td>Top of bedrock</td><td>(0, 2) (35, 9) (70, 12)</td></tr>
+<tr><td>Water table</td><td>(0, 7) (15, 8.5) (35, 17) (70, 21)</td></tr>
+</tbody>
+</table>
+
+<h3>1.1 Method 1: paste the coordinates line by line</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/01-ground.png" alt="Line list and coordinate box on the Profile tab"><figcaption>Profile tab: select the ground surface and paste its points into the coordinate box</figcaption></figure>
+<div>
+<ol class="steps">
+<li>Open the Profile tab and, under “Line being edited”, click <b>Ground surface</b>.</li>
+<li>Paste the ground points into the coordinate box below, one point per line, with x and z separated by a space, comma or tab. Two columns copied from Excel can be pasted directly.</li>
+<li>Press <b>Apply coordinates</b>. The drawing updates immediately.</li>
+<li>Click <b>Top of Weathered rock</b>, <b>Top of Bedrock</b> and <b>Water table</b> in turn and repeat steps 2 and 3.</li>
+<li>Check that <b>Model base elevation</b> under “Model extent” is 0 m. Slip surfaces never go below this elevation.</li>
+</ol>
+<div class="note"><b>Where the line names come from</b>Names such as “Top of Weathered rock” come from the layer names on the Soils tab. The top of layer 1 is the ground surface, so the list only shows the tops of layer 2 and below. To add a layer, go to the Soils tab and press “+ Add layer” first.</div>
+</div>
+</div>
+<figure class="wide"><img src="img/01-profile.png" alt="The completed profile"><figcaption>The completed profile. The black line is the ground surface, the blue dashed line the water table and the grey hatched area bedrock</figcaption></figure>
+
+<h3>1.2 Method 2: import a CSV file in one step</h3>
+<p>Survey and borehole data are usually already in Excel, and a CSV import is the quickest route. Two layouts are accepted:</p>
+<ul>
+<li><b>Two columns (x, z)</b>: imported into the line currently selected.</li>
+<li><b>Three or more columns</b>: column 1 is x, column 2 the ground elevation, and the following columns the tops of layers 2, 3 and so on. A column whose name contains “water” is read as the water table. Leave a cell empty where a line has no value at that x.</li>
+</ul>
+<div class="fig-row">
+<figure class="side"><img src="img/01-csv.png" alt="Import terrain from CSV"><figcaption>“Import terrain from CSV” at the bottom of the Profile tab. Open “Example files” to see the layout</figcaption></figure>
+<div>
+<p>The tutorial CSV (<a href="examples/tutorial-profile.csv">tutorial-profile.csv</a>) contains:</p>
+<pre class="code">x,Ground,Top of weathered rock,Top of bedrock,Water table
+0,10,6,2,7
+10,10,,,
+15,,7.5,,8.5
+35,22.5,16,9,17
+50,24,,,
+70,25,19,12,21</pre>
+<ol class="steps">
+<li>Arrange the data in Excel as above and save as CSV (UTF-8).</li>
+<li>On the Profile tab, press <b>Choose CSV file…</b> and select the file.</li>
+<li>The status bar reports how many points were imported, for example the ground surface with 5 points, 2 layer boundaries and the water table with 4 points.</li>
+</ol>
+<div class="note warn"><b>Note</b>A CSV file carries geometry only. Missing layers are added with default parameters (γ = 20, c′ = 10, φ′ = 30). Always check the parameters on the Soils tab (Chapter 2).</div>
+</div>
+</div>
+
+<h3>1.3 Fine-tuning on the drawing</h3>
+<p>With a line selected, you can edit it on the drawing:</p>
+<ul>
+<li>In <b>Drag</b> mode, drag a vertex to move it. Positions snap to the spacing set in “Snap” (0.5 m by default; 0 turns snapping off).</li>
+<li>In <b>Add point</b> mode, click the drawing to add a vertex; in <b>Delete point</b> mode, click a vertex to delete it.</li>
+<li>To undo a mistake, press <b>Undo</b> at the top left or Ctrl+Z.</li>
+</ul>
+<div class="note tip"><b>Tip</b>“Create water table 2 m below ground” quickly gives a first water table, which you can then adjust to the observations.</div>
+</section>
+
+<section class="chap" id="c2">
+<h2><span class="cn">Chapter 2</span>Soil parameters</h2>
+<div class="fig-row">
+<figure class="side"><img src="img/02-soils.png" alt="Soils tab"><figcaption>The Soils tab, one card per layer</figcaption></figure>
+<div>
+<p>On the Soils tab, enter the parameters of each layer as below. Layers are listed from top to bottom, and the top of layer 1 is the ground surface.</p>
+<table class="data">
+<thead><tr><th>Layer</th><th>γ<br>kN/m³</th><th>γ<sub>sat</sub><br>kN/m³</th><th>c′<br>kPa</th><th>φ′<br>°</th><th>Bedrock</th></tr></thead>
+<tbody>
+<tr><td>Colluvium</td><td>18</td><td>20</td><td>5</td><td>28</td><td></td></tr>
+<tr><td>Weathered rock</td><td>21</td><td>22</td><td>30</td><td>32</td><td></td></tr>
+<tr><td>Bedrock</td><td>24</td><td>24</td><td>200</td><td>40</td><td>✓</td></tr>
+</tbody>
+</table>
+<ul>
+<li><b>γ and γ<sub>sat</sub></b>: γ is used above the water table and the saturated unit weight γ<sub>sat</sub> below it.</li>
+<li><b>c′ and φ′</b>: effective stress strength parameters.</li>
+<li><b>Pore water pressure</b>: “Water table” by default, i.e. hydrostatic pressure from the water table. Other options are in Chapter 12.</li>
+<li><b>Bedrock</b>: when checked, slip surfaces do not enter the layer. Normally used for the hard bedrock at the bottom.</li>
+<li>Layer names and colours can be changed. The names appear in the line list on the Profile tab and in the report.</li>
+</ul>
+<div class="note"><b>Where the parameters come from</b>Choose c′ and φ′ from borings, tests or the applicable codes. When unsure, start with literature values, then confirm by back analysis (Chapter 11) or sensitivity analysis.</div>
+</div>
+</div>
+</section>
+
+<section class="chap" id="c3">
+<h2><span class="cn">Chapter 3</span>Loads at the crest and toe</h2>
+<p>The tutorial slope has a road at the crest. Traffic is a temporary load, modelled as a uniform load of 10 kPa over x = 36 to 44 m.</p>
+<div class="fig-row">
+<figure class="side"><img src="img/03-load.png" alt="Loads tab"><figcaption>A traffic load added on the Loads tab</figcaption></figure>
+<div>
+<ol class="steps">
+<li>On the Loads tab, choose <b>Traffic (distributed, no seismic inertia)</b> from the list and press <b>+ Add load</b>.</li>
+<li>Set the start x to 36, the end x to 44 and the start q to 10. Leave the end q empty for a uniform load; a different value gives a trapezoidal load.</li>
+<li>Traffic is temporary, so leave “seismic inertia” unchecked. Permanent loads such as buildings and retaining structures should be checked.</li>
+</ol>
+<p>Loads can also be moved by dragging their end points on the drawing. The intensity of a new load is a placeholder; change it to suit the design code and the site.</p>
+<h4>Crest versus toe</h4>
+<ul>
+<li>A load at the <b>crest (upslope)</b> usually lowers the factor of safety.</li>
+<li>A load at the <b>toe (downslope)</b> usually raises it, the toe-weighting effect. Loads that may be removed, such as parked vehicles or temporary stockpiles, should not be used to raise the factor of safety.</li>
+<li>Check <b>Also compute the case without loads</b> at the top of the tab to list the Fs with and without loads side by side.</li>
+<li>Fill has its own strength and slip surfaces may pass through it. Model fill by editing the ground line and adding a fill layer, not as a load.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="chap" id="c4">
+<h2><span class="cn">Chapter 4</span>First calculation and reading the results</h2>
+<p>Press <b>Find critical slip surface</b> at the top right. The program searches the profile for the slip surface with the lowest factor of safety, usually in a few seconds.</p>
+<figure class="wide"><img src="img/04-board.png" alt="Critical slip surface of the first calculation"><figcaption>Result of the first calculation. The red line is the critical slip surface, the red area the sliding mass and the straight lines the slices</figcaption></figure>
+<figure class="wide"><img src="img/04-results.png" alt="Result summary"><figcaption>The results below the drawing</figcaption></figure>
+<h3>4.1 Reading the results</h3>
+<table class="plain">
+<thead><tr><th>Item</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>Factor of safety Fs</td><td>The large number, 1.318 here. By default the uncorrected simplified Janbu value is used, as in the original SSA program, which is more conservative.</td></tr>
+<tr><td>Corrected f0·Fs</td><td>The simplified Janbu value multiplied by the correction factor f0, for reference. To judge by it, check “Judge by the corrected f0·Fs” on the Settings tab.</td></tr>
+<tr><td>Rigorous methods</td><td>Spencer and Morgenstern–Price results for the same slip surface (Chapter 15).</td></tr>
+<tr><td>Fs without loads</td><td>Fs with all loads removed. Here 1.335, so the traffic load lowers Fs by 1.3%.</td></tr>
+<tr><td>Required value</td><td>Comparison with the required factor of safety on the Settings tab (1.50 by default). Here “Below required”.</td></tr>
+<tr><td>Sliding mass</td><td>Area, maximum vertical depth, toe exit and crest entry coordinates, and the sums of resisting and driving forces.</td></tr>
+<tr><td>Slice details</td><td>Expand to see the width, weight, pore pressure, strength parameters and forces of every slice. Can be copied as CSV.</td></tr>
+</tbody>
+</table>
+<p>The normal-condition Fs = 1.318 is below the 1.5 required by the Soil and Water Conservation Technical Regulations, so reinforcement is needed. Save the model before continuing (Section 8.3). The model at the end of this chapter is the example file <a href="examples/tutorial-1-slope.json">tutorial-1-slope.json</a>.</p>
+<div class="note tip"><b>Tip</b>The grid button in the middle of the status bar shows the current search grid and the recommended values. For very large profiles or thin layers, adjust the grid as described in Chapter 15.</div>
+</section>
+
+<section class="chap" id="c5">
+<h2><span class="cn">Chapter 5</span>Adding reinforcement</h2>
+<p>Here a row of soil nails is installed in the slope face. Where a nail crosses the slip surface it provides a tensile force, the smallest of its tensile, pull-out and facing capacities, divided by the horizontal spacing to give a force per metre width.</p>
+
+<h3>5.1 Method and the first soil nail</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/05-nail.png" alt="Reinf. tab and soil nail card"><figcaption>Method and soil nail card on the Reinf. tab</figcaption></figure>
+<div>
+<ol class="steps">
+<li>On the Reinf. tab, set <b>Method</b> to <b>Passive: reinforcement adds to the resistance</b>. Soil nails usually use the passive method, which is more conservative; prestressed anchors usually use the active method.</li>
+<li>Make sure <b>Also compute the case without reinforcement</b> is checked, so the Fs before and after reinforcement are listed side by side.</li>
+<li>Press <b>+ Soil nail</b> to add one, and change its length L to 6 m. The other fields are listed below.</li>
+</ol>
+<table class="data small">
+<thead><tr><th>Field</th><th>Meaning</th><th>Here</th></tr></thead>
+<tbody>
+<tr><td>Head x, z</td><td>Position of the nail head; “Snap” moves it to the ground surface</td><td>Set by Place a row</td></tr>
+<tr><td>Inclination θ</td><td>Downward inclination (°)</td><td>15</td></tr>
+<tr><td>Length L</td><td>Nail length (m)</td><td>6, later 9</td></tr>
+<tr><td>Spacing Sh</td><td>Horizontal spacing perpendicular to the profile (m)</td><td>1.5</td></tr>
+<tr><td>Tensile</td><td>Allowable tensile force per nail (kN)</td><td>180</td></tr>
+<tr><td>Pull-out q</td><td>Pull-out resistance per metre of effective length (kN/m)</td><td>40</td></tr>
+<tr><td>Facing</td><td>Capacity of the facing or head (kN)</td><td>150</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<h3>5.2 Place a row</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/05-batch.png" alt="Place a row"><figcaption>“Place a row” uses the last member in the list as a template</figcaption></figure>
+<div>
+<ol class="steps">
+<li>Under “Place a row”, enter start x = 16, end x = 34 and count 8.</li>
+<li>Press <b>Replace all members</b>. Using the last nail in the list as a template, the program spaces 8 nails evenly along this part of the slope with their heads snapped to the ground.</li>
+<li>Press <b>Find critical slip surface</b>.</li>
+</ol>
+<p>“Add this row” keeps the existing members and adds another row, useful for several rows of different lengths.</p>
+</div>
+</div>
+
+<h3>5.3 Trying and adjusting</h3>
+<figure class="wide"><img src="img/05-results-L6.png" alt="Result with 6 m nails"><figcaption>6 m nails: Fs = 1.361, still below 1.5</figcaption></figure>
+<p>Most 6 m nails extend only a short way beyond the slip surface, so their pull-out capacity is limited and Fs only rises from 1.318 to 1.361. In the table, the effective length Le is the length beyond the slip surface, and the “Governed by” column shows whether tensile, pull-out or facing capacity controls.</p>
+<p>Change the length of the last nail in the list to 9 m, then press <b>Replace all members</b> and <b>Find critical slip surface</b> again:</p>
+<figure class="wide"><img src="img/05-board-L9.png" alt="Critical slip surface with 9 m nails"><figcaption>9 m nails. The grey dashed line is the critical surface without reinforcement; with reinforcement it moves deeper and towards the crest</figcaption></figure>
+<figure class="wide"><img src="img/05-results-L9.png" alt="Result with 9 m nails"><figcaption>9 m nails: Fs = 1.599, meeting the normal-condition requirement of 1.5</figcaption></figure>
+<div class="note"><b>After adding reinforcement</b>With reinforcement, the critical slip surface often moves outside the reinforced zone, for example behind or below the nails. Search again after every change instead of looking only at the Fs of the original surface.</div>
+</section>
+
+<section class="chap" id="c6">
+<h2><span class="cn">Chapter 6</span>Normal, heavy rain and earthquake cases</h2>
+<p>Chapter 5 checked only the current conditions (normal). The code also requires heavy rain and earthquake cases, each with its own required factor of safety. The Check tab sets up several cases and computes them with one click.</p>
+<div class="fig-row">
+<figure class="side"><img src="img/06-cases.png" alt="Case settings"><figcaption>The three default cases on the Check tab</figcaption></figure>
+<div>
+<ol class="steps">
+<li>Open the Check tab. The list at the top defaults to <b>Soil and Water Conservation Technical Regulations Art. 73, permanent</b>, with required factors of safety of 1.5, 1.2 and 1.1 for the three cases. To use another code, select it and press “Apply required values”.</li>
+<li><b>S2 Heavy rain</b>: set the water table to “Water table raised by Δh” and enter <b>Δh = 2</b> m. The raised water table never goes above the ground surface.</li>
+<li><b>S3 Earthquake</b>: enter the horizontal seismic coefficient <b>kh = 0.15</b> and leave the vertical coefficient kv at 0.</li>
+<li>Press <b>Compute all cases</b>. Each case searches for its own critical slip surface.</li>
+</ol>
+<div class="note warn"><b>Enter Δh and kh yourself</b>The water table rise for heavy rain and the design horizontal seismic coefficient depend on the case, the code and the site, so the program sets no default. A case with a missing value shows a prompt and is not computed. The 2 m and 0.15 here are for demonstration only.</div>
+<p>Each case card can also set:</p>
+<ul>
+<li><b>Case type</b>: normal, heavy rain / high water, or earthquake. “Apply required values” fills in the required factor of safety by type, and the retaining wall checks also use the normal or seismic requirements by type.</li>
+<li><b>Water table</b>: profile water table, raised by Δh, water table at ground, or no groundwater.</li>
+<li><b>Include loads, Include reinforcement and walls</b>: can be turned off separately to study load removal or reinforcement failure.</li>
+<li>“Copy” quickly creates a similar case, for example for a sensitivity analysis with different Δh.</li>
+</ul>
+</div>
+</div>
+<figure class="mid"><img src="img/06-summary.png" alt="Multi-case summary"><figcaption>The summary table and the critical slip surface of each case</figcaption></figure>
+<p>All three cases pass: normal 1.599 ≥ 1.5, heavy rain 1.323 ≥ 1.2, earthquake 1.129 ≥ 1.1. The summary can be copied to Excel with “Copy summary (CSV)”, and the report includes this table and the slip surface of each case. The model at this point is <a href="examples/tutorial-2-nails.json">tutorial-2-nails.json</a>.</p>
+<div class="note tip"><b>Main view and cases</b>“Find critical slip surface” in the main view uses the kh, kv and water table from the Settings tab. Each case on the Check tab replaces these with its own values, and the two do not affect each other.</div>
+</section>
+
+<section class="chap" id="c7">
+<h2><span class="cn">Chapter 7</span>External stability of a retaining wall</h2>
+<p>Suppose a gravity retaining wall is built at the toe, with the backfill forming a platform for slope drainage and maintenance access. SSA checks a retaining wall in two ways:</p>
+<ul>
+<li><b>External stability</b>: the wall is treated as a rigid body and checked for sliding, overturning, eccentricity (resultant position) and bearing capacity. Results update as soon as a dimension changes.</li>
+<li><b>Global stability</b>: the wall is treated as an impenetrable structure with weight, and slip surfaces passing under or behind it are searched.</li>
+</ul>
+<p>Adjust the dimensions until external stability passes, then confirm global stability. Structural design of the stem and base, such as reinforcement, is outside the scope of this tool.</p>
+
+<h3>7.1 Editing the ground line</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/07-ground.png" alt="Edited ground line"><figcaption>Ground line changed to the road in front of the wall, the wall top and the platform behind</figcaption></figure>
+<div>
+<p>The ground line must reach the top of the wall and include the backfilled platform. On the Profile tab, select the ground surface and change the points to:</p>
+<pre class="code">0     10
+9.07  10
+10.5  12.5
+15    12.5
+35    22.5
+50    24
+70    25</pre>
+<p>(9.07, 10) to (10.5, 12.5) is the front face of the wall, and (10.5, 12.5) to (15, 12.5) the wall top and the platform behind. The road in front is at 10 m and the wall base at 9 m, giving 1 m of embedment.</p>
+<div class="note"><b>Ground line and wall</b>The ground line only needs to follow the outline of the wall roughly. In the global stability calculation the wall body is taken from the wall's own shape, and the soil inside it is replaced by the wall.</div>
+</div>
+</div>
+
+<h3>7.2 Choosing the code and adding a wall</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/07-code.png" alt="Design code list"><figcaption>Design code and required values on the Walls tab</figcaption></figure>
+<div>
+<p>Open the Walls tab. <b>Design code</b> defaults to the Soil and Water Conservation Technical Regulations Art. 120. The Building Foundation Structure Design Code or the Highway Bridge Design Code can be chosen instead, and the table below lists their requirements.</p>
+<table class="data small">
+<thead><tr><th>Code</th><th>Sliding</th><th>Overturning</th><th>Resultant</th><th>Bearing</th></tr></thead>
+<tbody>
+<tr><td>Soil and Water Conservation Technical Regulations Art. 120</td><td>1.5 / 1.2</td><td>2.0 / 1.5</td><td>Soil e ≤ B/6, rock e ≤ B/4</td><td>3.0 / 3.0</td></tr>
+<tr><td>Building Foundation Structure Design Code Sec. 7.4</td><td>1.5 / 1.2</td><td>2.0 / 1.5</td><td>Within the base</td><td>3.0 / 2.0</td></tr>
+<tr><td>Highway Bridge Design Code Sec. 6.2.8</td><td>1.5 / 1.2</td><td>2.0 / 1.5</td><td>Within the base</td><td>3.0 / 2.0</td></tr>
+</tbody>
+</table>
+<p class="small">Normal / seismic. These are Taiwanese codes; check the latest edition before use.</p>
+<p>Press <b>+ Gravity</b> to add a retaining wall and enter its dimensions as in the next section. The three buttons add gravity, cantilever and counterfort walls, and the type can also be changed on the card afterwards.</p>
+</div>
+</div>
+
+<h3>7.3 Entering the dimensions</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/07-wall-card.png" alt="Retaining wall card"><figcaption>Gravity wall card</figcaption></figure>
+<div>
+<table class="data small">
+<thead><tr><th>Field</th><th>Meaning</th><th>Here</th></tr></thead>
+<tbody>
+<tr><td>Toe x</td><td>x of the front (outer) edge of the base</td><td>8.5</td></tr>
+<tr><td>Base z</td><td>Elevation of the base</td><td>9</td></tr>
+<tr><td>Height H</td><td>From base to top</td><td>3.5</td></tr>
+<tr><td>Base width B</td><td>Width of the base</td><td>3.0</td></tr>
+<tr><td>Top width b</td><td>Width of the top (gravity wall)</td><td>1.0</td></tr>
+<tr><td>Unit weight</td><td>Unit weight of the wall</td><td>23.5 kN/m³</td></tr>
+<tr><td>Foundation</td><td>Soil or rock; sets the allowable range of the resultant</td><td>Soil</td></tr>
+</tbody>
+</table>
+<p>A gravity wall has a vertical back and a battered front. Cantilever and counterfort walls also have base thickness, toe length and stem top and bottom thickness, and counterfort walls add counterfort spacing and thickness. The wall direction follows the slope automatically, with the toe always on the outer side.</p>
+</div>
+</div>
+
+<h3>7.4 Reading the check results</h3>
+<p>Once the dimensions are entered, “External stability” below lists the results for each case. The columns are the cases enabled on the Check tab, and the water table, seismic coefficients and loads follow each case.</p>
+<figure class="mid"><img src="img/07-check-1.png" alt="First check"><figcaption>First check: seismic sliding Fs = 1.12, below 1.2</figcaption></figure>
+<p>Normal and heavy rain pass, but the seismic sliding safety factor of 1.12 is not enough. Options include a wider base, a shear key, or counting the passive pressure in front of the wall. Here the road in front gives 1 m of embedment and the roadbed will stay in place, so the passive pressure in front of the wall is counted:</p>
+<div class="fig-row">
+<figure class="side"><img src="img/07-ext.png" alt="External stability options"><figcaption>“External stability options” expanded</figcaption></figure>
+<div>
+<ol class="steps">
+<li>Expand <b>External stability options</b> on the card.</li>
+<li>Check <b>Count passive resistance in front for sliding (reduced 50%)</b>.</li>
+</ol>
+<p>The other options here:</p>
+<ul>
+<li><b>Wall friction angle δ</b>: for gravity walls; 2φ′/3 when left blank.</li>
+<li><b>Base friction μ</b>: tan(2φ′/3) when left blank, with φ′ of the foundation soil. Enter a value if you have test data.</li>
+<li><b>Bearing capacity</b>: the ultimate bearing capacity from the Meyerhof formula by default, or enter an allowable bearing capacity q<sub>a</sub>.</li>
+<li><b>φ′, c′, γ of the backfill and foundation soil</b>: when blank, taken from the layers at mid-height behind the wall and below the base. Specify them here when the backfill is a well-graded fill material.</li>
+<li><b>Well drained</b>: when checked, no water pressure behind the wall and no uplift on the base.</li>
+</ul>
+</div>
+</div>
+<figure class="mid"><img src="img/07-check-2.png" alt="Check with passive pressure"><figcaption>All three cases pass with the passive pressure counted</figcaption></figure>
+<p>Expand “Force details” to see the backfill and foundation parameters, earth pressure coefficients, earth pressure resultants and their heights, water pressure and uplift, weights, moments and the ultimate bearing capacity, for checking by hand. While the Walls tab is open, the drawing shows the wall weight W, the earth pressure Pa, the middle third of the base and the resultant position.</p>
+<figure class="mid"><img src="img/07-forces.png" alt="Force details"><figcaption>“Force details” expanded for checking by hand</figcaption></figure>
+<figure class="wide"><img src="img/07-board-forces.png" alt="Wall force diagram"><figcaption>With the Walls tab open, the drawing shows the wall weight W, earth pressure Pa, the middle third of the base (thick green line) and the resultant R (detail)</figcaption></figure>
+
+<h3>7.5 Confirming global stability</h3>
+<p>Once external stability passes, press <b>Find critical slip surface</b>, then <b>Compute all cases</b> on the Check tab. The wall now counts as a structure, and slip surfaces can only pass under or behind it.</p>
+<figure class="wide"><img src="img/07-board-global.png" alt="Global stability with the wall"><figcaption>Critical slip surface with soil nails and the retaining wall (normal Fs = 1.705)</figcaption></figure>
+<figure class="mid"><img src="img/07-summary.png" alt="Case summary with the wall"><figcaption>Summary of the three cases with the retaining wall</figcaption></figure>
+<p>The toe weight of the wall raises the Fs of all three cases a little further. The model at this point is <a href="examples/tutorial-3-wall.json">tutorial-3-wall.json</a>.</p>
+<div class="note warn"><b>Limitations</b>Earth pressure behind the wall includes uniform loads only, not line loads. External stability treats the wall as a rigid body; the strength and reinforcement of the stem and base must be designed and checked separately.</div>
+</section>
+
+<section class="chap" id="c8">
+<h2><span class="cn">Chapter 8</span>Producing the report and saving</h2>
+<h3>8.1 Report details</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/08-report-form.png" alt="Calculation report"><figcaption>“Calculation report” at the bottom of the Check tab</figcaption></figure>
+<div>
+<ol class="steps">
+<li>Make sure the main view and the Check tab show up-to-date results. After the model changes, the results area says they are out of date.</li>
+<li>Under <b>Calculation report</b> at the bottom of the Check tab, enter the report title, project name, analyst and notes.</li>
+<li>Press <b>Download Word (.docx)</b>, or press <b>Print / save as PDF</b> and choose “Save as PDF” in the print dialog.</li>
+</ol>
+<p>The Word file can be edited directly, for example to apply a company template or add explanations.</p>
+</div>
+</div>
+
+<h3>8.2 What the report contains</h3>
+<figure class="wide"><img src="img/08-report-pages.png" alt="Report pages"><figcaption>The report produced for the tutorial case</figcaption></figure>
+<table class="plain">
+<thead><tr><th>Section</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Cover details</td><td>Project, analyst, date, program version and URL, calculation method.</td></tr>
+<tr><td>1. Method</td><td>The method used and how pore pressure and seismic forces are handled.</td></tr>
+<tr><td>2. Input data</td><td>Profile geometry, soil parameters, loads, reinforcement, retaining walls and analysis settings.</td></tr>
+<tr><td>3. External stability of retaining walls</td><td>Only when there is a wall. Method, requirements, the check table for each case and force details.</td></tr>
+<tr><td>4. Results</td><td>Profile with the critical slip surface, factor of safety, reinforcement forces and slice details.</td></tr>
+<tr><td>5. Multi-case check</td><td>Only when cases have been computed. Summary table and the slip surface of each case.</td></tr>
+<tr><td>6. Notes</td><td>Limitations, references and program version.</td></tr>
+</tbody>
+</table>
+<p>Section numbers adjust to the content. The complete tutorial report is available as <a href="examples/tutorial-report.docx">Word</a> or <a href="examples/tutorial-report.pdf">PDF</a>.</p>
+
+<h3>8.3 Saving and resuming</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/08-save.png" alt="Model file"><figcaption>“Model file” at the bottom of the Settings tab</figcaption></figure>
+<div>
+<p>The model is not kept after the page closes, so remember to save.</p>
+<ol class="steps">
+<li>Under <b>Model file</b> at the bottom of the Settings tab, press <b>Save model (JSON)</b>. The file holds the terrain, layers, water, loads, reinforcement, walls, cases and all settings.</li>
+<li>Next time, press <b>Import model…</b> and choose the file to carry on.</li>
+</ol>
+<p>You can also expand “Copy or paste JSON as text” to paste the model into an email or notes.</p>
+</div>
+</div>
+<div class="note tip"><b>Part 1 complete</b>You now have a check report with reinforcement, a retaining wall and three cases. Each chapter of Part 2 covers a feature used only in particular situations.</div>
+</section>
+
+<!-- ================================================================ -->
+<div class="part" id="part2"><p class="part-no">Part 2</p><p class="part-title">Advanced: features for particular situations</p>
+<p class="part-desc">“When to use it” at the start of each chapter describes the situations. Unless noted otherwise, each chapter starts from the Chapter 4 model <a href="examples/tutorial-1-slope.json">tutorial-1-slope.json</a> (no reinforcement); load it with “Import model…” on the Settings tab.</p></div>
+
+<section class="chap" id="c9">
+<h2><span class="cn">Chapter 9</span>Known slip surface locations: control points</h2>
+<div class="when"><p class="when-h">When to use it</p>
+<p>For a slope that has failed or is moving, field data often show where the slip surface is: shear depths from inclinometers or TDR, shear zones in borehole cores, the head scarp at the crest and bulging at the toe. The automatic “most critical” surface is then not necessarily the one actually moving. Make the search pass through these known locations, and base the reinforcement design or back analysis on that surface.</p></div>
+<p>In the tutorial case, suppose inclinometer BH-1 at x = 28 m in the middle of the slope shows clear shearing 8 m below the ground.</p>
+<div class="fig-row">
+<figure class="side"><img src="img/09-ctrl.png" alt="Control point settings"><figcaption>Slip surface control points on the Profile tab</figcaption></figure>
+<div>
+<ol class="steps">
+<li>Under <b>Slip surface control points</b> on the Profile tab, check <b>Use control points and entry/exit ranges</b>.</li>
+<li>Press <b>+ Add control point</b>. Enter the borehole name, position x = 28, depth below ground = 8 and tolerance ±Δz = 0.3 m. The program converts and shows the control elevation z = 11 m.</li>
+<li>Press <b>Find critical slip surface</b>. Only slip surfaces passing z = 11 ± 0.3 m at x = 28 m are accepted.</li>
+</ol>
+<p>Two further options limit the ends of the slip surface:</p>
+<ul>
+<li><b>Limit the toe exit</b>: where the toe bulges, water seeps out or a retaining wall deforms.</li>
+<li><b>Limit the crest entry (head scarp)</b>: where there are tension cracks or a scarp at the crest.</li>
+</ul>
+<p>You can add several control points, for example several inclinometers along the main survey line. <b>Create specified surface from control points</b> joins the control points and the entry and exit into one slip surface and places it in the specified slip surface, as a starting point for Chapters 10 and 11.</p>
+</div>
+</div>
+<figure class="wide"><img src="img/09-board.png" alt="Critical slip surface through the control point"><figcaption>Critical slip surface through control point BH-1 (Fs = 1.672); the green diamond is the control point</figcaption></figure>
+<p>Here the surface through the control point has Fs = 1.672, much higher than the 1.318 of the free search. If the slope really is moving along an 8 m deep surface, the strength on site must be lower than assumed, or the water higher. Back-calculate on this surface (Chapter 11) and design the reinforcement with the back-calculated parameters instead of the free-search result.</p>
+<div class="note"><b>Tolerance ±Δz</b>0 means the slip surface must pass exactly through the point. Inclinometer shear zones have some thickness, so 0.3 to 1 m is typical.</div>
+</section>
+
+<section class="chap" id="c10">
+<h2><span class="cn">Chapter 10</span>Specified slip surfaces and circles</h2>
+<div class="when"><p class="when-h">When to use it</p>
+<ul>
+<li>Reviewing an old report or another program's calculation by recomputing the same slip surface.</li>
+<li>Computing the factor of safety of an actual failure surface obtained by survey, or back-calculating from it.</li>
+<li>Finding the Fs of one particular surface without a search.</li>
+</ul></div>
+<p>The specified surface is <b>Specified slip surface (trial)</b> in the line list on the Profile tab. There are five ways to create it:</p>
+<ol>
+<li>Paste points into the coordinate box and press “Apply coordinates”.</li>
+<li>Click the points one by one on the drawing in “Add point” mode.</li>
+<li>After a calculation, press <b>Copy current critical surface</b> and edit it.</li>
+<li>Enter a <b>centre and radius</b> to generate a circle (shown in this chapter).</li>
+<li>Create it from control points (Chapter 9).</li>
+</ol>
+<div class="fig-row">
+<figure class="side"><img src="img/10-circle.png" alt="Centre and radius input"><figcaption>The centre and radius fields appear when the specified surface is selected</figcaption></figure>
+<div>
+<p>Suppose an old report used a circle centred at (14, 34) with a radius of 26 m:</p>
+<ol class="steps">
+<li>On the Profile tab, click <b>Specified slip surface (trial)</b>.</li>
+<li>Below the coordinate box, enter centre x = 14, centre z = 34 and radius R = 26.</li>
+<li>Press <b>Generate circle and evaluate</b>. The program keeps the part of the circle below the ground, converts it to points in the coordinate box and evaluates it at once.</li>
+</ol>
+<p>After changing other conditions, press <b>Check specified surface</b> on the toolbar to recompute this circle. The report records the centre and radius.</p>
+</div>
+</div>
+<figure class="wide"><img src="img/10-board.png" alt="Result for the circle"><figcaption>Result for the specified circle (Fs = 1.768)</figcaption></figure>
+<div class="note"><b>Why it differs from the old report</b>Common sources of difference are the method (for example Bishop versus Janbu), how pore pressure is computed, the number of slices and whether the f0 correction is applied. For the same surface SSA also lists the Spencer and Morgenstern–Price results, which make a good common reference. Note that a given circle is usually not the critical surface, so its Fs is higher than the search result (1.318 here); compare numbers on the same surface.</div>
+</section>
+
+<section class="chap" id="c11">
+<h2><span class="cn">Chapter 11</span>Back-calculating soil parameters</h2>
+<div class="when"><p class="when-h">When to use it</p>
+<p>When a slope has failed or is moving, Fs at failure can be taken as about 1.0 and the strength parameters back-calculated. Back-calculated parameters reflect the actual state on site and are often better suited to remediation design than test values.</p></div>
+<p>Suppose the tutorial slope failed along the original critical surface after heavy rain, with the water table about 2 m above the profile water table.</p>
+<ol class="steps">
+<li>Press <b>Find critical slip surface</b>, click <b>Specified slip surface</b> on the Profile tab and press <b>Copy current critical surface</b>. In practice, use the actual surface from a survey or control points here.</li>
+<li>Change the water table to the level at the time of failure: (0, 9) (15, 10.5) (35, 19) (70, 23).</li>
+<li>Press <b>Check specified surface</b>; here Fs = 1.069.</li>
+<li>Under <b>Back analysis</b> on the Settings tab, set the layer to automatic (the layer the surface crosses for the longest distance), the parameter to <b>Friction angle φ′ (c′ fixed)</b> and the target Fs to 1.</li>
+<li>Press <b>Back-calculate</b>.</li>
+</ol>
+<div class="fig-row">
+<figure class="side"><img src="img/11-back.png" alt="Back analysis result"><figcaption>Back analysis result and c′–φ′ pairs</figcaption></figure>
+<div>
+<p>Fs is exactly 1.000 when φ′ of the colluvium is 26.12° (with c′ = 5 kPa fixed). <b>Apply to the layer and evaluate</b> writes the value back to the Soils tab.</p>
+<p>With “Also list c′–φ′ pairs” checked, the program draws every c′ and φ′ pair that gives Fs = 1. One slip surface defines only one curve and cannot fix both c′ and φ′, so either:</p>
+<ul>
+<li>fix one of them from tests, nearby cases or experience, for example a very small c′ for colluvium; or</li>
+<li>intersect two or more failure surfaces (different times or sections).</li>
+</ul>
+<div class="note warn"><b>Note</b>Back-calculated values depend strongly on the assumed water table, unit weights and calculation method. Design with the same method and water conditions as the back analysis, otherwise the back analysis loses much of its meaning.</div>
+</div>
+</div>
+</section>
+
+<section class="chap" id="c12">
+<h2><span class="cn">Chapter 12</span>Piezometric lines per layer and pore pressure ratio r<sub>u</sub></h2>
+<div class="when"><p class="when-h">When to use it</p>
+<ul>
+<li><b>Piezometric lines per layer</b>: when layers have different heads, for example ordinary groundwater in the colluvium above a confined aquifer in the weathered rock or gravel below. The head measured by a piezometer is higher than the water table and may even flow out at the toe.</li>
+<li><b>Pore pressure ratio r<sub>u</sub></b>: when there are no water table data, or where codes express pore pressure in fills or spoil areas as r<sub>u</sub>.</li>
+<li><b>None</b>: layers known to be dry or well drained.</li>
+</ul></div>
+<h3>12.1 Piezometric lines per layer</h3>
+<p>Suppose borehole BH-2 in the tutorial case measured a confined head in the weathered rock close to the ground surface, and above the ground at the toe.</p>
+<div class="fig-row">
+<figure class="side"><img src="img/12-piezo-line.png" alt="Adding a piezometric line"><figcaption>Adding a piezometric line on the Profile tab</figcaption></figure>
+<div>
+<ol class="steps">
+<li>On the Profile tab, press <b>+ Add piezometric line</b>. The new line starts as a copy of the water table and becomes the line being edited.</li>
+<li>Paste (0, 11) (15, 14) (35, 22) (70, 24.5) into the coordinate box and press <b>Apply coordinates</b>.</li>
+<li>Enter “BH-2 head in weathered rock” as the line name.</li>
+<li>On the Soils tab, set the pore water pressure of <b>Weathered rock</b> to “BH-2 head in weathered rock”.</li>
+<li>Press <b>Find critical slip surface</b>.</li>
+</ol>
+</div>
+</div>
+<div class="fig-row">
+<figure class="side"><img src="img/12-soil-pore.png" alt="Pore pressure option of a layer"><figcaption>Weathered rock switched to the piezometric line</figcaption></figure>
+<figure class="side"><img src="img/12-ru.png" alt="ru setting"><figcaption>The r<sub>u</sub> field appears when pore pressure ratio is selected</figcaption></figure>
+</div>
+<figure class="wide"><img src="img/12-board.png" alt="Effect of the confined head"><figcaption>The confined head in the weathered rock deepens the critical surface (Fs from 1.318 to 1.259); the green dotted line is the piezometric line</figcaption></figure>
+<p>With higher pore pressure in the weathered rock, the critical surface cuts into it and the maximum depth goes from 5.9 m to 8.6 m. The soil parameter table in the report lists which pore pressure each layer uses.</p>
+<h3>12.2 Pore pressure ratio r<sub>u</sub></h3>
+<p>Select “Pore pressure ratio r<sub>u</sub>” and enter a value. The pore pressure of the layer is then u = r<sub>u</sub>·σ<sub>v</sub>, where σ<sub>v</sub> is the total stress of the soil column above the slip surface. r<sub>u</sub> is commonly 0.1 to 0.5, chosen from the code or experience.</p>
+<div class="note"><b>Piezometric lines and seepage</b>SSA computes hydrostatic pressure from water table or piezometric lines and does not perform seepage analysis. For slopes with significant seepage, derive piezometric lines for each layer from a seepage analysis and enter them.</div>
+</section>
+
+<section class="chap" id="c13">
+<h2><span class="cn">Chapter 13</span>Ponded water and tension cracks</h2>
+<div class="when"><p class="when-h">When to use it</p>
+<ul>
+<li><b>Ponded water</b>: slopes along rivers, reservoirs or detention ponds, or where water ponds at a poorly drained toe. The weight and pressure of the outside water help stability, but rapid drawdown can be unfavourable.</li>
+<li><b>Tension cracks</b>: when the crest already has tension cracks, or cohesive soil with a large c′ may crack at the crest. Soil within the crack depth provides no shear strength, and a water-filled crack adds a horizontal thrust.</li>
+</ul></div>
+<h3>13.1 Ponded water</h3>
+<p>No special setting is needed. Draw the water table above the ground surface, and the part above ground is treated as ponded water, shown in light blue. The weight of the ponded water acts on the tops of the slices, and the horizontal component of the water pressure on the slope face resists sliding. The results list the ponded water thrust separately.</p>
+<p>Here the river in front of the toe is assumed at 13 m, 3 m above the road at the toe: change the water table to (0, 13) (16, 13) (35, 17) (70, 21).</p>
+<h3>13.2 Tension cracks</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/13-tc.png" alt="Tension crack settings"><figcaption>Tension crack on the Settings tab</figcaption></figure>
+<div>
+<ol class="steps">
+<li>On the Settings tab, check <b>Consider a tension crack at the crest</b>.</li>
+<li>With <b>Crack depth</b> set to “Rankine formula”, z<sub>c</sub> = 2c′/(γ√K<sub>a</sub>) is computed from the layer at the crest and shown below; or choose “Specified depth” and enter it.</li>
+<li>With <b>Water-filled crack</b> checked, the water force P<sub>w</sub> = ½γ<sub>w</sub>z<sub>c</sub>² pushes horizontally out of the slope.</li>
+</ol>
+<p>The search decides where the crack is, and leaves it out if the Fs without a crack is lower. Each case on the Check tab can set separately whether the crack is filled with water, for example in the heavy rain case only.</p>
+</div>
+</div>
+<figure class="wide"><img src="img/13-board.png" alt="Ponded water and tension crack"><figcaption>Critical slip surface with 3 m of ponded water at the toe and a water-filled crack at the crest (Fs = 1.117)</figcaption></figure>
+<div class="note warn"><b>Rapid drawdown</b>SSA treats ponded water as hydrostatic and does not include excess pore pressure from rapid drawdown. For a reservoir or river that drops quickly, a conservative estimate removes the ponded water while keeping the high water table in the slope; carry out a transient seepage analysis when needed.</div>
+</section>
+
+<section class="chap" id="c14">
+<h2><span class="cn">Chapter 14</span>Stabilizing piles, micropiles and geosynthetics</h2>
+<div class="when"><p class="when-h">When to use it</p>
+<ul>
+<li><b>Stabilizing piles</b>: deep landslides where soil nails and anchors lack length or anchorage, and the shear and bending resistance of steel pipe piles is needed.</li>
+<li><b>Micropiles</b>: road slopes with limited working space, where groups of small-diameter piles provide both axial and shear forces.</li>
+<li><b>Geosynthetics</b>: reinforced fill slopes or reinforced earth walls with layers of geogrid or geotextile.</li>
+</ul></div>
+<p>These three members are added on the Reinf. tab like soil nails and anchors, and their resistance always counts on the resisting side (passive).</p>
+<h3>14.1 Stabilizing piles</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/14-pile-card.png" alt="Stabilizing pile card"><figcaption>Stabilizing pile card</figcaption></figure>
+<div>
+<ol class="steps">
+<li>On the Reinf. tab, press <b>+ Stabilizing pile</b>, with position x = 22, length L = 12 m, spacing D = 2 m and one row (N = 1).</li>
+<li>Choose the pipe diameter, wall thickness, steel grade and allowable stress (long-term or short-term) for the design. The default is φ318.5×10.3 mm, SKK490, long-term.</li>
+<li><b>Pile type</b>: a wedge pile (くさび杭) for the usual case with ground reaction below the slip surface; a restraint pile (抑え杭) where there is no ground reaction on the downslope side.</li>
+<li>The deformation moduli E<sub>0</sub> of the moving and stable layers give the coefficients of horizontal subgrade reaction. Expand “Advanced” for other parameters.</li>
+<li>Press <b>Find critical slip surface</b>. The results list, for each pile, the length above the slip surface, the embedment, the horizontal load it can carry and the governing condition.</li>
+</ol>
+</div>
+</div>
+<h3>14.2 Stabilizing pile design</h3>
+<p><b>Stabilizing pile design</b> on the Reinf. tab follows Japan's Technical Guidelines for Landslide Prevention (地すべり防止技術指針). On the critical surface without reinforcement it finds the required restraint force P<sub>r</sub> that brings Fs to the planned safety factor, converts it to a design load per pile, and checks bending stress, shear stress, embedment length and ground yield.</p>
+<ol class="steps">
+<li>Press <b>Find critical slip surface</b> first.</li>
+<li>Enter 1.5 for the planned safety factor PFs and press <b>Compute required restraint force and check piles</b>.</li>
+</ol>
+<div class="fig-row">
+<figure class="side"><img src="img/14-pd.png" alt="Pile design result"><figcaption>First design: bending stress exceeded</figcaption></figure>
+<figure class="side"><img src="img/14-pd2.png" alt="Revised design result"><figcaption>All checks pass after changing the diameter, spacing and length</figcaption></figure>
+</div>
+<p>In the first design the required restraint force is P<sub>r</sub> = 173.9 kN/m, H = 319 kN per pile, and the bending stress of 279.7 N/mm² exceeds the allowable 185 N/mm². With a φ406.4×12.7 mm pipe at 1.5 m spacing, the bending stress drops to 129.7 N/mm², but the embedment of 6.51 m is less than the 7.01 m needed. Increasing the pile length to 14 m makes all checks pass.</p>
+<div class="note"><b>After adding piles</b>The pile design uses the critical surface without reinforcement. After adding piles, search again for the critical surface to make sure no surface passes below the piles or slides out in front of or behind them.</div>
+
+<h3>14.3 Micropiles and geosynthetics</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/14-mpile.png" alt="Micropile card"><figcaption>Micropile card</figcaption></figure>
+<figure class="side"><img src="img/14-geo.png" alt="Geosynthetic card"><figcaption>Geosynthetic card</figcaption></figure>
+</div>
+<ul>
+<li><b>Micropile</b>: the axial force is the smaller of the bond q times the length beyond the slip surface and the axial strength, acting along the pile; the allowable shear V<sub>a</sub> acts across the pile. Both take the direction that resists sliding. An inclination θ below 90° leans into the slope.</li>
+<li><b>Geosynthetic</b>: the allowable tension T<sub>a</sub> = T<sub>ult</sub>/(RF<sub>ID</sub>·RF<sub>CR</sub>·RF<sub>D</sub>) is compared with the pull-out resistance on both sides of the slip surface, taking the smaller. The force can act horizontally or along the slip surface. With “Wrapped or connected at the face” checked, the front end is not limited by pull-out. Use “Place a row” or “Copy” for multiple layers.</li>
+</ul>
+</section>
+
+<section class="chap" id="c15">
+<h2><span class="cn">Chapter 15</span>Calculation methods and search settings</h2>
+<div class="when"><p class="when-h">When to use it</p>
+<ul>
+<li>The code or the reviewer requires a rigorous method that satisfies both force and moment equilibrium.</li>
+<li>The profile is long, the layers are thin, or the result looks unreasonable and the search grid needs adjusting.</li>
+<li>Very shallow surface slips should be excluded, or shallow failures examined.</li>
+</ul></div>
+<h3>15.1 Calculation methods</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/15-method.png" alt="Calculation method"><figcaption>Calculation method on the Settings tab</figcaption></figure>
+<div>
+<table class="data small">
+<thead><tr><th>Method</th><th>Equilibrium</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Simplified Janbu</td><td>Force</td><td>The method of the original SSA program. Fast; the uncorrected value is conservative. Can be multiplied by the correction factor f0.</td></tr>
+<tr><td>Spencer</td><td>Force and moment</td><td>Constant direction of interslice forces (f(x) = 1).</td></tr>
+<tr><td>Morgenstern–Price</td><td>Force and moment</td><td>Interslice force direction follows a half-sine function.</td></tr>
+</tbody>
+</table>
+<p>Whatever the method, DP first finds the critical surface with the simplified Janbu method. With a rigorous method, check <b>Optimise the slip surface for rigorous methods</b> and the program then moves the vertices and both ends of the surface to minimise the Fs of the selected method. The results list all three methods.</p>
+</div>
+</div>
+<figure class="wide"><img src="img/15-results.png" alt="Spencer result"><figcaption>Results with the Spencer method. Local optimisation lowers Fs from 1.462 to 1.429</figcaption></figure>
+<h4>Correction factor f0</h4>
+<p>The simplified Janbu method ignores interslice shear and usually underestimates Fs. Two formulas are available for the correction factor f0: f0 = (50d/L)<sup>0.03</sup> (PWRI report, 1987) and the Janbu correction curve. By default the uncorrected value is used, as in the original SSA program; check <b>Judge by the corrected f0·Fs</b> to use the corrected value. Rigorous methods need no f0.</p>
+
+<h3>15.2 Search grid</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/15-search.png" alt="Slip surface search settings"><figcaption>Slip surface search on the Settings tab</figcaption></figure>
+<div>
+<p>DP draws a set of vertical lines across the profile with a set of nodes on each. A slip surface is a polyline from the first line to the last, picking one node on each line.</p>
+<table class="data small">
+<thead><tr><th>Setting</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td>Vertical lines</td><td>Spacing 1 to 2 m, about horizontal length ÷ 1.5; usually 60 to 120.</td></tr>
+<tr><td>Nodes per line</td><td>Node spacing about 0.3 m, about maximum layer thickness ÷ 0.3; usually 80 to 120.</td></tr>
+<tr><td>Slices per segment</td><td>Usually 3 to 4; use 5 for very thin layers or an irregular water table.</td></tr>
+<tr><td>Minimum slip depth</td><td>1 to 2 m for sand or colluvium with c′ = 0; 0 when checking shallow failures.</td></tr>
+</tbody>
+</table>
+<p>“Search grid for the current model” above estimates the line spacing, node spacing and computing time from the profile and offers an <b>Apply recommended</b> button. The grid button in the middle of the status bar also jumps here. The work grows roughly with lines × nodes², so doubling the nodes takes about four times as long.</p>
+<ul>
+<li><b>Restrict slip surface to concave shape</b>: excludes kinematically unreasonable shapes; keep it checked.</li>
+<li><b>Slip surface may not cross the left or right model boundary</b>: the end lines accept only nodes above the ground, so the surface does not exit through the model boundary.</li>
+<li>Check <b>Search nodes</b> on the toolbar to see the node positions on the drawing.</li>
+</ul>
+</div>
+</div>
+<h3>15.3 Convergence and judgment</h3>
+<figure class="mid"><img src="img/15-conv.png" alt="Convergence and judgment"><figcaption>Convergence and judgment on the Settings tab</figcaption></figure>
+<p>The tolerance ΔF, maximum iterations and initial F rarely need changing. The <b>Required factor of safety</b> is the criterion for the main view; the multi-case check uses the requirements on the Check tab.</p>
+</section>
+
+<section class="chap" id="c16">
+<h2><span class="cn">Chapter 16</span>Units, saving, verification report and versions</h2>
+<h3>16.1 Units</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/16-units.png" alt="Unit selection"><figcaption>Unit selection at the top of the Soils tab</figcaption></figure>
+<div>
+<p>At the top of the Soils tab you can choose the unit of unit weight (kN/m³ or tf/m³) and of cohesion and stress (kPa or tf/m²) separately. Values already entered are converted automatically, and the results and report use the same units. 1 tf = 9.80665 kN.</p>
+</div>
+</div>
+<h3>16.2 Saving and exchange</h3>
+<ul>
+<li><b>JSON model file</b>: “Save model” and “Import model…” on the Settings tab, holding all input and settings (Section 8.3).</li>
+<li><b>CSV</b>: terrain can be imported from CSV (Section 1.2); slice details and the multi-case summary can be copied as CSV.</li>
+<li><b>Report</b>: Word or PDF (Chapter 8).</li>
+<li><b>Undo</b>: Ctrl+Z or “Undo” at the top left goes back one step.</li>
+</ul>
+<h3>16.3 Verification report</h3>
+<figure class="mid"><img src="img/16-verify.png" alt="Verification report"><figcaption>Result of the verification report on the Help tab</figcaption></figure>
+<p><b>Run verification</b> on the Help tab recomputes every verification problem in your browser with the current calculation core: closed-form solutions, Fredlund and Krahn, the ACADS benchmarks, ponded water and tension cracks, piezometric lines, reinforcement members, steel pipe pile examples and retaining wall external stability. It lists the reference value, this tool's result, the difference and pass or fail, and takes about three minutes. The result can be downloaded as Word or printed to PDF as program verification documentation for design review. In v2.10.2 all 146 checks pass.</p>
+<h3>16.4 Versions and languages</h3>
+<p>The program version appears next to the page title, in reports and in saved files. The version history on the Help tab lists the changes in each version. The cover of this manual states the program version it describes, and the manual is revised when the program gains features.</p>
+<p>The buttons at the top right switch between 中文, English and 日本語, and reports are produced in the current language. This manual is also available in <a href="../">Chinese</a> and <a href="../ja/">Japanese</a>.</p>
+</section>
+
+<!-- ================================================================ -->
+<section class="chap appendix" id="ax">
+<h2><span class="cn">Appendix</span>FAQ and reference tables</h2>
+<h3>A. Frequently asked questions</h3>
+<dl class="faq">
+<dt>I pressed Calculate but no slip surface was found.</dt>
+<dd>Check the message in the status bar first. Common causes: the ground line has fewer than 2 points; the model base is above the ground somewhere; the minimum slip depth is too large; control points or entry and exit ranges contradict each other. Try turning off the control points and setting the minimum slip depth to 0.</dd>
+<dt>The critical surface appears in a strange place, such as the model edge.</dt>
+<dd>Check that “Slip surface may not cross the left or right model boundary” is checked, and extend the profile far enough beyond the crest and toe (generally at least one slope height).</dd>
+<dt>Fs differs a lot from another program.</dt>
+<dd>First compare on the same slip surface (Chapter 10), then check the method, pore pressure, use of unit weights above and below the water table, the f0 correction and whether loads carry seismic inertia.</dd>
+<dt>Fs did not rise after adding reinforcement.</dt>
+<dd>Look at the reinforcement table in the results. “Does not cross the critical surface” means the slip surface moved outside the members; lengthen them or extend the layout.</dd>
+<dt>The Walls tab says the wall counts in global stability only.</dt>
+<dd>Walls with a custom shape defined by vertex coordinates cannot be checked for external stability. Enter the dimensions on the card to return to a parametric section.</dd>
+<dt>A case asks for Δh or kh.</dt>
+<dd>The water table rise for heavy rain and the seismic coefficient must be entered for each project; the program sets no default (Chapter 6).</dd>
+<dt>The model was gone after I closed the page.</dt>
+<dd>SSA does not store data on a server. Save with “Save model (JSON)” (Section 8.3).</dd>
+</dl>
+
+<h3>B. Minimum factors of safety for slopes (defaults)</h3>
+<table class="data">
+<thead><tr><th>Code (Taiwan)</th><th>Normal</th><th>Heavy rain / high water</th><th>Earthquake</th></tr></thead>
+<tbody>
+<tr><td>Soil and Water Conservation Technical Regulations Art. 73, permanent</td><td>1.5</td><td>1.2</td><td>1.1</td></tr>
+<tr><td>Soil and Water Conservation Technical Regulations Art. 73, temporary</td><td>1.2</td><td>1.1</td><td>1.0</td></tr>
+<tr><td>Highway Slope Engineering Design Code Table 4.6-1, long-term</td><td>1.5</td><td>1.2</td><td>1.1</td></tr>
+<tr><td>Highway Slope Engineering Design Code Table 4.6-1, temporary</td><td>1.2</td><td>1.1</td><td>1.0</td></tr>
+</tbody>
+</table>
+<p class="small">The requirements for retaining wall external stability are in Section 7.2. Codes may be revised; check the latest edition before use.</p>
+
+<h3>C. Example files</h3>
+<table class="plain">
+<thead><tr><th>File</th><th>Content</th><th>Used in</th></tr></thead>
+<tbody>
+<tr><td><a href="examples/tutorial-profile.csv">tutorial-profile.csv</a></td><td>Ground, layer boundaries and water table of the tutorial case</td><td>Chapter 1</td></tr>
+<tr><td><a href="examples/tutorial-1-slope.json">tutorial-1-slope.json</a></td><td>Profile, soil parameters and traffic load, no reinforcement</td><td>Chapter 4; start of each advanced chapter</td></tr>
+<tr><td><a href="examples/tutorial-2-nails.json">tutorial-2-nails.json</a></td><td>With 8 soil nails 9 m long and three cases</td><td>Chapters 5 and 6</td></tr>
+<tr><td><a href="examples/tutorial-3-wall.json">tutorial-3-wall.json</a></td><td>With a gravity retaining wall at the toe</td><td>Chapters 7 and 8</td></tr>
+<tr><td><a href="examples/tutorial-report.docx">tutorial-report.docx</a>, <a href="examples/tutorial-report.pdf">.pdf</a></td><td>Report for the tutorial case</td><td>Chapter 8</td></tr>
+</tbody>
+</table>
+
+<h3>D. Terms and symbols</h3>
+<table class="data small">
+<thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>Fs</td><td>Factor of safety, the ratio of resisting to driving forces</td></tr>
+<tr><td>γ, γ<sub>sat</sub>, γ<sub>w</sub></td><td>Unit weight, saturated unit weight, unit weight of water</td></tr>
+<tr><td>c′, φ′</td><td>Effective cohesion, effective friction angle</td></tr>
+<tr><td>k<sub>h</sub>, k<sub>v</sub></td><td>Horizontal and vertical seismic coefficients (pseudo-static)</td></tr>
+<tr><td>r<sub>u</sub></td><td>Pore pressure ratio</td></tr>
+<tr><td>f0</td><td>Correction factor of the simplified Janbu method</td></tr>
+<tr><td>Δh</td><td>Water table rise in the heavy rain case</td></tr>
+<tr><td>e, B</td><td>Eccentricity of the wall resultant, base width</td></tr>
+<tr><td>P<sub>r</sub>, PFs</td><td>Required restraint force, planned safety factor</td></tr>
+</tbody>
+</table>
+<p>The full theory, equations and references are under “Theory and equations” at the bottom of the SSA page.</p>
+
+<h3>E. Contact and feedback</h3>
+<p>For questions, bug reports or feature suggestions, please email <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a> (Chen-Yu Chen).</p>
+<p class="small">This tool supports two-dimensional limit equilibrium analysis, and its results are for reference only. Engineering judgment and design remain the responsibility of qualified professionals, based on site investigation and the applicable codes.</p>
+</section>
+
+</main>
+<footer class="docfoot screen-only"><p>SSA Slope Stability Analysis User Manual <span class="v-man">1.1</span> · Program <span class="v-ssa">v2.10.2</span> · Chen-Yu Chen <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
+<script src="../manual.js"></script>
+</body>
+</html>

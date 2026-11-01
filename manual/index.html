@@ -9,7 +9,7 @@
 </head>
 <body>
 <!-- 手冊對應的程式版本：建置時會與 ../index.html 的 SSA_VERSION 比對 -->
-<div id="meta" data-ssa-version="2.10.1" data-ssa-date="2026-10-31" data-manual-version="1.0" hidden></div>
+<div id="meta" data-ssa-version="2.10.2" data-ssa-date="2026-11-01" data-manual-version="1.1" hidden></div>
 
 <header class="cover" id="cover">
   <div class="cover-top"><span class="mark">SSA</span><span class="cover-kicker">Slope Stability Analysis</span></div>
@@ -17,13 +17,14 @@
   <p class="cover-sub">從第一個邊坡到完整的檢核報告</p>
   <img class="cover-img" src="img/07-board-global.png" alt="教學案例：加入土釘與坡趾擋土牆後的臨界滑動面">
   <dl class="cover-meta">
-    <dt>對應程式版本</dt><dd><span class="v-ssa">v2.10.1</span>（<span class="v-date">2026-10-31</span>）</dd>
-    <dt>手冊版本</dt><dd><span class="v-man">1.0</span></dd>
+    <dt>對應程式版本</dt><dd><span class="v-ssa">v2.10.2</span>（<span class="v-date">2026-11-01</span>）</dd>
+    <dt>手冊版本</dt><dd><span class="v-man">1.1</span></dd>
     <dt>開發者</dt><dd>陳振宇</dd>
     <dt>聯絡信箱</dt><dd><a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></dd>
     <dt>程式網址</dt><dd><a href="https://cychen59.github.io/ssa-slope-stability/">cychen59.github.io/ssa-slope-stability</a></dd>
   </dl>
   <p class="cover-dl screen-only"><a class="btn" href="SSA-使用手冊.pdf">下載 PDF 版</a> <a class="btn ghost" href="../">開啟 SSA 程式</a></p>
+  <p class="langs screen-only"><a href="en/">English</a><a href="ja/">日本語</a></p>
 </header>
 
 <nav class="toc" id="toc" aria-label="目錄">
@@ -71,6 +72,15 @@
 <li>重力式、懸臂式、扶壁式擋土牆，包含外部穩定檢核。</li>
 <li>常時、暴雨、地震等多個情境一次計算，依規範判定。</li>
 <li>Word 或 PDF 格式的計算書。</li>
+</ul>
+
+<h3>教學影片</h3>
+<p>三集教學影片沿用本手冊的同一個案例，另有一支前導影片介紹 SSA。影片為中文旁白，可選英文與日文字幕。</p>
+<ul class="videos">
+<li><a href="https://youtu.be/WJplLLHTVXU">前導</a><span>SSA 是什麼</span></li>
+<li><a href="https://youtu.be/RL-3NAe49ZM">第一集：入門教學</a><span>剖面、補強、擋土牆、計算書（第 1 至 8 章）</span></li>
+<li><a href="https://youtu.be/QsGGpsN5J_8">第二集：現地資料</a><span>地表跡象、傾斜管、反算、分層水壓（第 9 至 12 章）</span></li>
+<li><a href="https://youtu.be/LjtjP_0jO74">第三集：特殊條件與可信度</a><span>坡外積水、張力裂縫、抑止樁、計算方法、驗證（第 13 至 16 章）</span></li>
 </ul>
 
 <h3>畫面導覽</h3>
@@ -518,7 +528,7 @@
 </div>
 </div>
 <figure class="wide"><img src="img/10-board.png" alt="圓弧試算結果"><figcaption>指定圓弧的試算結果（Fs = 1.768）</figcaption></figure>
-<div class="note"><b>為什麼跟舊報告不一樣</b>比對時常見的差異來源有：方法不同（例如 Bishop 法與 Janbu 法）、孔隙水壓的計算方式、切片數、是否計入 f0 修正。SSA 對同一條滑動面也會同時列出 Spencer 法與 Morgenstern–Price 法的結果，可以作為比對基準。</div>
+<div class="note"><b>為什麼跟舊報告不一樣</b>比對時常見的差異來源有：方法不同（例如 Bishop 法與 Janbu 法）、孔隙水壓的計算方式、切片數、是否計入 f0 修正。SSA 對同一條滑動面也會同時列出 Spencer 法與 Morgenstern–Price 法的結果，可以作為比對基準。另外，指定的圓弧通常不是臨界滑動面，Fs 會比搜尋結果（本例 1.318）高，要比的是同一條滑動面上的數字。</div>
 </section>
 
 <section class="chap" id="c11">
@@ -724,10 +734,10 @@
 </ul>
 <h3>16.3 驗證報告</h3>
 <figure class="mid"><img src="img/16-verify.png" alt="驗證報告"><figcaption>「說明」頁執行驗證報告的結果</figcaption></figure>
-<p>「說明」頁的<b>執行驗證</b>會以目前版本的計算核心，在您的瀏覽器中重算全部驗證考題，包含閉合解、Fredlund and Krahn、ACADS 標準題、坡外積水與張力裂縫、分層水壓、補強構件、鋼管杭計算例與擋土牆外部穩定，列出參考值、本工具的結果、差異與是否通過，約需 2 分鐘。結果可以下載 Word 或列印為 PDF，作為送審時的程式驗證文件。v2.10.1 共 146 項檢核全部通過。</p>
+<p>「說明」頁的<b>執行驗證</b>會以目前版本的計算核心，在您的瀏覽器中重算全部驗證考題，包含閉合解、Fredlund and Krahn、ACADS 標準題、坡外積水與張力裂縫、分層水壓、補強構件、鋼管杭計算例與擋土牆外部穩定，列出參考值、本工具的結果、差異與是否通過，約需 3 分鐘。結果可以下載 Word 或列印為 PDF，作為送審時的程式驗證文件。v2.10.2 共 146 項檢核全部通過。</p>
 <h3>16.4 版本與語言</h3>
 <p>網頁標題旁、計算書與存檔都標示程式版本號。「說明」頁的版本紀錄列出各版的修改內容。本手冊封面註明對應的程式版本，程式有功能更新時，手冊也會同步修訂。</p>
-<p>右上角可以切換中文、English、日本語，計算書也會以目前的語言產生。</p>
+<p>右上角可以切換中文、English、日本語，計算書也會以目前的語言產生。本手冊另有<a href="en/">英文版</a>與<a href="ja/">日文版</a>。</p>
 </section>
 
 <!-- ================================================================ -->
@@ -798,7 +808,7 @@
 </section>
 
 </main>
-<footer class="docfoot screen-only"><p>SSA 邊坡穩定分析 使用手冊 <span class="v-man">1.0</span>・對應程式 <span class="v-ssa">v2.10.1</span>・陳振宇 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
+<footer class="docfoot screen-only"><p>SSA 邊坡穩定分析 使用手冊 <span class="v-man">1.1</span>・對應程式 <span class="v-ssa">v2.10.2</span>・陳振宇 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
 <script src="manual.js"></script>
 </body>
 </html>

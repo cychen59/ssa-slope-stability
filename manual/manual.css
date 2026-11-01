@@ -5,6 +5,16 @@
   --font: "Noto Sans TC", "Noto Sans CJK TC", "Microsoft JhengHei", "PingFang TC", "Heiti TC", sans-serif;
   --mono: "Noto Sans Mono CJK TC", "Consolas", "Menlo", monospace;
 }
+:root:lang(en) { --font: "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
+:root:lang(ja) { --font: "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif; --mono: "Noto Sans Mono CJK JP", "Consolas", "Menlo", monospace; }
+:lang(en) .toc-chap .tc-n { min-width: 6.2em; }
+:lang(en) .toc-sub { padding-left: 7.1em !important; }
+.langs { margin: 4px 0 0; font-size: 14px; }
+.langs a { margin-right: 12px; }
+.videos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 10px 0 16px; padding: 0; list-style: none; }
+.videos li { margin: 0; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.videos a { font-weight: 700; text-decoration: none; }
+.videos span { display: block; font-size: 13px; color: var(--muted); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) { --ink: #e3ebe8; --muted: #a3b2ad; --line: #34413d; --paper: #151b19; --canvas: #1d2522; --accent: #7fc4ae; --accent-soft: #23332e; --warn: #f0c36b; --warn-bg: #3a2f17; --tip: #8cc3ef; --tip-bg: #1c2b38; }
 }

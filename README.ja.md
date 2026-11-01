@@ -6,6 +6,10 @@
 
 **オンラインで使う：<https://cychen59.github.io/ssa-slope-stability/?lang=ja>**
 
+**解説動画（YouTube、中国語ナレーション、英語・日本語字幕あり）**：[導入](https://youtu.be/WJplLLHTVXU)｜[第 1 回 入門](https://youtu.be/RL-3NAe49ZM)｜[第 2 回 現地データ](https://youtu.be/QsGGpsN5J_8)｜[第 3 回 特殊条件と検証](https://youtu.be/LjtjP_0jO74)
+
+**ユーザーマニュアル**：[日本語](https://cychen59.github.io/ssa-slope-stability/manual/ja/)（[PDF](https://cychen59.github.io/ssa-slope-stability/manual/ja/SSA-User-Manual-JA.pdf)）｜[English](https://cychen59.github.io/ssa-slope-stability/manual/en/)（[PDF](https://cychen59.github.io/ssa-slope-stability/manual/en/SSA-User-Manual-EN.pdf)）｜[中文](https://cychen59.github.io/ssa-slope-stability/manual/)（[PDF](https://cychen59.github.io/ssa-slope-stability/manual/SSA-使用手冊.pdf)）
+
 ![Users](https://abacus.jasoncameron.dev/get/cychen59.github.io/ssa-slope-stability-visitors/shield) ![Visits](https://abacus.jasoncameron.dev/get/cychen59.github.io/ssa-slope-stability-views/shield)
 
 ---
@@ -30,8 +34,8 @@
 - **逆算解析**：指定すべり面を実際の崩壊面とみなし、Fs = 1（または他の目標値）と仮定して、ある地層の c′ または φ′ を二分法で逆算します。同じ Fs となる c′–φ′ の組合せも表示し、ワンクリックで地層に適用できます。
 - **複数ケースの照査**：「照査」タブで常時、豪雨時、地震時などのケースを設定し、それぞれの地下水位（断面の水位、Δh 上昇、地表面、なし）、震度、所要安全率を指定して一度に計算し、「ケース、Fs、所要値、判定」の一覧を出力します。所要安全率の既定値は水土保持技術規範第 73 条の永久のり面（常時 1.5、豪雨時 1.2、地震時 1.1）で、仮設の値や公路邊坡工程設計規範 表 4.6-1 をワンクリックで適用でき、直接変更もできます。
 - **計算書の出力**：Word (.docx) のダウンロード、または印刷／PDF 保存ができます。入力データ、断面図と臨界すべり面、計算結果、スライス明細、各ケースの結果を含みます。
-- **使用マニュアル**：繁体字中国語のマニュアルを[オンライン版](https://cychen59.github.io/ssa-slope-stability/manual/)と [PDF](https://cychen59.github.io/ssa-slope-stability/manual/SSA-使用手冊.pdf) で提供しています。第 1 部は道路の切土斜面を例に、地形の入力、土質定数、荷重、ソイルネイル、3 ケースの照査、擁壁を経て計算書の作成まで、第 2 部は制御点、円弧の比較、逆算、水頭線、湛水と引張亀裂、抑止杭、計算方法、検証報告書を扱います。各章の例題ファイルはそのまま読み込めます。
-- **版番号と検証報告書**：ページ見出し、計算書、保存ファイルに版番号（現在 v2.10.1）を表示します。「説明」タブで検証報告書を実行すると、現在の版の計算核で全 146 項目の検証（閉じた解、Fredlund and Krahn、ACADS、湛水と亀裂、ru、補強材、鋼管杭の計算例、擁壁の外的安定など）をブラウザ上で再計算し、参考値、差、合否を一覧にして Word または PDF で出力できます。審査用のプログラム検証資料として使えます。版の履歴も「説明」タブにあります。
+- **ユーザーマニュアルと解説動画**：マニュアルは日本語、英語、中国語の 3 版があり、それぞれオンライン版と PDF で読めます（リンクはこのページの冒頭）。解説動画も 3 本あります。第 1 部は道路の切土斜面を例に、地形の入力、土質定数、荷重、ソイルネイル、3 ケースの照査、擁壁を経て計算書の作成まで、第 2 部は制御点、円弧の比較、逆算、水頭線、湛水と引張亀裂、抑止杭、計算方法、検証報告書を扱います。各章の例題ファイルはそのまま読み込めます。
+- **版番号と検証報告書**：ページ見出し、計算書、保存ファイルに版番号（現在 v2.10.2）を表示します。「説明」タブで検証報告書を実行すると、現在の版の計算核で全 146 項目の検証（閉じた解、Fredlund and Krahn、ACADS、湛水と亀裂、ru、補強材、鋼管杭の計算例、擁壁の外的安定など）をブラウザ上で再計算し、参考値、差、合否を一覧にして Word または PDF で出力できます。審査用のプログラム検証資料として使えます。版の履歴も「説明」タブにあります。
 - **結果**：安全率 Fs と補正後の f0·Fs、すべり土塊の面積、入口と出口の座標、スライス明細、反復記録。いずれも CSV でコピーできます。
 - **中国語・英語・日本語の表示**：ヘッダーの「中文／EN／日本語」で切り替えます。選択はブラウザに記憶され、アドレスに `?lang=ja` を付けると日本語表示で開きます。
 - **保存と再開**：モデル全体（地形、地層、地下水位、パラメータ、設定）を JSON ファイルに保存し、後で読み込んで作業を続けられます。

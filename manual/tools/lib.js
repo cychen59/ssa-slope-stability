@@ -2,20 +2,37 @@
 const { chromium } = require('playwright');
 const path = require('path');
 const BASE = process.env.SSA_URL || 'http://127.0.0.1:8766/index.html';
-const IMG = path.join(__dirname, '..', 'img');
-const EX = path.join(__dirname, '..', 'examples');
+// MLANG=en|ja builds the English or Japanese manual (manual/en, manual/ja); default zh builds manual/
+const LANG = ['en', 'ja'].includes(process.env.MLANG) ? process.env.MLANG : 'zh';
+const DIR = LANG === 'zh' ? path.join(__dirname, '..') : path.join(__dirname, '..', LANG);
+const IMG = path.join(DIR, 'img');
+const EX = path.join(DIR, 'examples');
+require('fs').mkdirSync(IMG, { recursive: true }); require('fs').mkdirSync(EX, { recursive: true });
+// names typed into the model, per language
+const NAMES = {
+  wall: { zh: '坡趾重力式擋土牆', en: 'Gravity wall at the toe', ja: 'のり尻の重力式擁壁' },
+  repTitle: { zh: '道路上邊坡穩定分析計算書', en: 'Stability Analysis of the Slope above the Road', ja: '道路上部斜面の安定解析計算書' },
+  repProject: { zh: 'SSA 使用手冊教學案例', en: 'SSA user manual tutorial case', ja: 'SSA ユーザーマニュアル例題' },
+  repAuthor: { zh: '○○工程顧問公司 王○○', en: 'ABC Engineering Consultants, J. Doe', ja: '○○コンサルタント 山田○○' },
+  repNote: { zh: '教學用案例，參數為假設值。', en: 'Tutorial case; parameters are assumed values.', ja: '説明用の例題で、定数は仮定値です。' },
+  bh1: { zh: 'BH-1 傾斜管', en: 'BH-1 inclinometer', ja: 'BH-1 孔内傾斜計' },
+  bh2: { zh: 'BH-2 風化岩水頭', en: 'BH-2 head in weathered rock', ja: 'BH-2 風化岩の水頭' },
+};
+const T = k => NAMES[k][LANG];
+// line keys in the "line being edited" list (labels differ by language)
+const LINE_KEY = { '地表線': 'ground', '風化岩': 'L1', '岩盤': 'L2', '地下水位線': 'water', '指定滑動面': 'trial' };
 async function open(o = {}) {
   const b = await chromium.launch();
-  const ctx = await b.newContext({ viewport: { width: o.w || 1400, height: o.h || 1000 }, deviceScaleFactor: 2, acceptDownloads: true, locale: 'zh-TW' });
+  const ctx = await b.newContext({ viewport: { width: o.w || 1400, height: o.h || 1000 }, deviceScaleFactor: 2, acceptDownloads: true, locale: { zh: 'zh-TW', en: 'en-US', ja: 'ja-JP' }[LANG] });
   const p = await ctx.newPage();
   p.errs = []; p.on('pageerror', e => p.errs.push(e.message));
-  await p.goto(BASE + '?lang=zh'); await p.waitForTimeout(1200);
+  await p.goto(BASE + '?lang=' + LANG); await p.waitForTimeout(1200);
   return { b, p };
 }
 const tab = (p, t) => p.click('#tab-' + t);
 async function setLine(p, label, pts) {
   await tab(p, 'geo');
-  await p.click(`#lineList .lrow:has-text("${label}")`);
+  await p.click(`#lineList .lrow[data-key="${LINE_KEY[label] || label}"]`);
   await p.fill('#coords', pts.map(q => q.join('\t')).join('\n'));
   await p.click('#btnApply'); await p.waitForTimeout(150);
 }
@@ -56,4 +73,4 @@ async function runScen(p) {
 async function loadJSON(p, file) { await p.setInputFiles('#fileIn', file); await p.waitForTimeout(800); }
 async function saveJSON(p, file) { await tab(p, 'set'); const [d] = await Promise.all([p.waitForEvent('download'), p.click('#btnSaveJson')]); await d.saveAs(file); }
 const fsText = p => p.$eval('#results', e => e.textContent.replace(/\s+/g, ' ').slice(0, 200));
-module.exports = { open, tab, setLine, shotUnion, shot, badges, clearBadges, runSearch, runScen, loadJSON, saveJSON, fsText, IMG, EX, path };
+module.exports = { LANG, T, LINE_KEY, open, tab, setLine, shotUnion, shot, badges, clearBadges, runSearch, runScen, loadJSON, saveJSON, fsText, IMG, EX, path };

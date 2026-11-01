@@ -11,7 +11,7 @@ const log = (...a) => console.log(...a);
   await L.tab(p, 'wall'); await p.click('#btnAddWall'); await p.waitForTimeout(200);
   const c = '[data-w="0"]';
   for (const [f, v] of [['x0', '8.5'], ['z0', '9'], ['H', '3.5'], ['B', '3'], ['b', '1']]) { await p.fill(`${c} [data-p="${f}"]`, v); await p.press(`${c} [data-p="${f}"]`, 'Tab'); }
-  await p.fill(`${c} [data-wf="name"]`, '坡趾重力式擋土牆'); await p.press(`${c} [data-wf="name"]`, 'Tab');
+  await p.fill(`${c} [data-wf="name"]`, L.T('wall')); await p.press(`${c} [data-wf="name"]`, 'Tab');
   await p.fill(`${c} [data-wf="gamma"]`, '23.5'); await p.press(`${c} [data-wf="gamma"]`, 'Tab');
   await p.waitForTimeout(300);
   await L.shotUnion(p, ['[data-pane="wall"] .sec:nth-of-type(1)'], '07-code.png');
@@ -34,7 +34,7 @@ const log = (...a) => console.log(...a);
   await L.shot(p, '#scenOut table', '07-summary.png');
   // ---- chapter 8: report
   await L.tab(p, 'case');
-  for (const [id, v] of [['#rep-title', '道路上邊坡穩定分析計算書'], ['#rep-project', 'SSA 使用手冊教學案例'], ['#rep-author', '○○工程顧問公司 王○○'], ['#rep-note', '教學用案例，參數為假設值。']]) { await p.fill(id, v); await p.press(id, 'Tab'); }
+  for (const [id, v] of [['#rep-title', L.T('repTitle')], ['#rep-project', L.T('repProject')], ['#rep-author', L.T('repAuthor')], ['#rep-note', L.T('repNote')]]) { await p.fill(id, v); await p.press(id, 'Tab'); }
   await L.shotUnion(p, ['[data-pane="case"] .sec:nth-of-type(2)'], '08-report-form.png');
   const [d] = await Promise.all([p.waitForEvent('download'), p.click('#btnRepDocx')]);
   const docx = L.path.join(L.EX, 'tutorial-report.docx'); await d.saveAs(docx);

@@ -2,7 +2,8 @@
 import subprocess, glob, os, tempfile
 from PIL import Image, ImageDraw
 here = os.path.dirname(os.path.abspath(__file__))
-pdf = os.path.join(here, '..', 'examples', 'tutorial-report.pdf')
+LANG = os.environ.get('MLANG', 'zh'); BASE = os.path.join(here, '..') if LANG not in ('en', 'ja') else os.path.join(here, '..', LANG)
+pdf = os.path.join(BASE, 'examples', 'tutorial-report.pdf')
 tmp = tempfile.mkdtemp()
 subprocess.run(['pdftoppm', '-r', '80', '-png', pdf, os.path.join(tmp, 'p')], check=True)
 pages = [Image.open(f).convert('RGB') for f in sorted(glob.glob(os.path.join(tmp, 'p*.png')))]
@@ -12,4 +13,4 @@ d = ImageDraw.Draw(sheet)
 for i, im in enumerate(pages):
     x = g + (i % cols) * (w + g); y = g + (i // cols) * (h + g)
     sheet.paste(im, (x, y)); d.rectangle([x - 1, y - 1, x + w, y + h], outline=(180, 190, 186))
-sheet.save(os.path.join(here, '..', 'img', '08-report-pages.png')); print(len(pages), sheet.size)
+sheet.save(os.path.join(BASE, 'img', '08-report-pages.png')); print(len(pages), sheet.size)

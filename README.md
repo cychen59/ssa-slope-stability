@@ -6,6 +6,10 @@
 
 **線上使用：<https://cychen59.github.io/ssa-slope-stability/>**
 
+**教學影片（YouTube，中文旁白，可開英文、日文字幕）**：[前導](https://youtu.be/WJplLLHTVXU)｜[第一集 入門教學](https://youtu.be/RL-3NAe49ZM)｜[第二集 現地資料](https://youtu.be/QsGGpsN5J_8)｜[第三集 特殊條件與可信度](https://youtu.be/LjtjP_0jO74)
+
+**使用手冊**：[中文](https://cychen59.github.io/ssa-slope-stability/manual/)（[PDF](https://cychen59.github.io/ssa-slope-stability/manual/SSA-使用手冊.pdf)）｜[English](https://cychen59.github.io/ssa-slope-stability/manual/en/)（[PDF](https://cychen59.github.io/ssa-slope-stability/manual/en/SSA-User-Manual-EN.pdf)）｜[日本語](https://cychen59.github.io/ssa-slope-stability/manual/ja/)（[PDF](https://cychen59.github.io/ssa-slope-stability/manual/ja/SSA-User-Manual-JA.pdf)）
+
 ![使用人數](https://abacus.jasoncameron.dev/get/cychen59.github.io/ssa-slope-stability-visitors/shield) ![累計開啟次數](https://abacus.jasoncameron.dev/get/cychen59.github.io/ssa-slope-stability-views/shield)
 
 ---
@@ -30,8 +34,8 @@
 - **反算分析**：以指定滑動面作為實際崩塌面，假設 Fs = 1（或其他目標值），以二分法反求某一土層的 c′ 或 φ′，並列出同樣使 Fs 等於目標值的 c′–φ′ 組合，可一鍵套用到土層。崩塌案例檢討常用。
 - **多情境檢核**：在「檢核」頁設定常時、暴雨、地震等情境，各自指定地下水位（剖面水位、上升 Δh、達地表或無水）、震度與要求安全係數，一次算完並列出「情境、Fs、要求值、是否符合」總表。要求安全係數預設採水土保持技術規範第 73 條永久性邊坡（常時 1.5、暴雨 1.2、地震 1.1），也可一鍵改套臨時性或公路邊坡工程設計規範表 4.6-1，或自行修改。
 - **計算書輸出**：可下載 Word (.docx) 或列印／另存 PDF，內容包含輸入參數、剖面圖與臨界滑動面、計算結果、切片明細與各情境結果。
-- **使用手冊**：繁體中文使用手冊有[線上版](https://cychen59.github.io/ssa-slope-stability/manual/)與 [PDF](https://cychen59.github.io/ssa-slope-stability/manual/SSA-使用手冊.pdf)，第一篇以一個道路上邊坡為例，從輸入地形、土層參數、載重、土釘補強、三種情境檢核、擋土牆外部穩定，一路做到產出計算書；第二篇依使用情況介紹控制點、圓弧比對、反算、分層水壓、坡外積水與張力裂縫、抑止樁、計算方法與驗證報告。各章的範例檔可直接匯入。
-- **版本號與驗證報告**：網頁標題、計算書與存檔都標示版本號（目前 v2.10.1）。「說明」頁可執行驗證報告，以當版計算核心在瀏覽器中重算全部 146 項驗證檢核（閉合解、Fredlund and Krahn、ACADS、積水與裂縫、ru、補強構件、鋼管杭計算例、擋土牆外部穩定等），列出參考值、差異與是否通過，並可下載 Word 或列印 PDF，作為送審的程式驗證文件。版本紀錄也列在「說明」頁。
+- **使用手冊與教學影片**：使用手冊有中文、英文、日文三種版本，各有線上版與 PDF（連結見本頁開頭），另有三集教學影片。手冊第一篇以一個道路上邊坡為例，從輸入地形、土層參數、載重、土釘補強、三種情境檢核、擋土牆外部穩定，一路做到產出計算書；第二篇依使用情況介紹控制點、圓弧比對、反算、分層水壓、坡外積水與張力裂縫、抑止樁、計算方法與驗證報告。各章的範例檔可直接匯入。
+- **版本號與驗證報告**：網頁標題、計算書與存檔都標示版本號（目前 v2.10.2）。「說明」頁可執行驗證報告，以當版計算核心在瀏覽器中重算全部 146 項驗證檢核（閉合解、Fredlund and Krahn、ACADS、積水與裂縫、ru、補強構件、鋼管杭計算例、擋土牆外部穩定等），列出參考值、差異與是否通過，並可下載 Word 或列印 PDF，作為送審的程式驗證文件。版本紀錄也列在「說明」頁。
 - **結果**：安全係數 Fs 與修正後 f0·Fs、滑動體面積、出入口座標、切片明細與迭代紀錄，可複製為 CSV。
 - **中、英、日文介面**：頁首按「中文／EN／日本語」即可切換，選擇會記在瀏覽器裡。網址加上 `?lang=en` 或 `?lang=ja` 可直接開啟英文或日文介面。
 - **存檔與接續**：把整個模型（地形、土層、水位、參數、設定）存成 JSON 檔，下次匯入即可繼續分析。

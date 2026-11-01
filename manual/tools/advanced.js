@@ -12,20 +12,20 @@ const waitBusy = async p => { await p.waitForTimeout(300); await p.waitForFuncti
     await fresh(); await L.tab(p, 'geo'); await p.check('#ctrlOn'); await p.click('#btnCtrlAdd'); await p.waitForTimeout(200);
     const c = '#ctrlList [data-c="0"]';
     const sel = (await p.$(c)) ? c : '#ctrlList .rcard:first-child';
-    for (const [f, v] of [['name', 'BH-1 傾斜管'], ['x', '28'], ['depth', '8'], ['tol', '0.3']]) { await p.fill(`${sel} [data-cf="${f}"]`, v); await p.press(`${sel} [data-cf="${f}"]`, 'Tab'); }
+    for (const [f, v] of [['name', L.T('bh1')], ['x', '28'], ['depth', '8'], ['tol', '0.3']]) { await p.fill(`${sel} [data-cf="${f}"]`, v); await p.press(`${sel} [data-cf="${f}"]`, 'Tab'); }
     await p.waitForTimeout(200);
     await L.shot(p, '#ctrlSec', '09-ctrl.png');
     await L.runSearch(p); log('ctrl', await L.fsText(p));
     await L.shot(p, '.board', '09-board.png'); 
   }
   if (want('circle')) { // ---- 10 specified surface from a circle, 11 back analysis
-    await fresh(); await L.tab(p, 'geo'); await p.click('#lineList .lrow:has-text("指定滑動面")');
+    await fresh(); await L.tab(p, 'geo'); await p.click('#lineList .lrow[data-key="trial"]');
     await p.fill('#ciXc', '14'); await p.fill('#ciZc', '34'); await p.fill('#ciR', '26'); await p.click('#btnCircle'); await waitBusy(p);
     log('circle', await L.fsText(p));
     await L.shotUnion(p, ['[data-pane="geo"] .sec:nth-of-type(2)'], '10-circle.png');
     await L.shot(p, '.board', '10-board.png');
     // back analysis on the critical surface after a rain (water raised 2 m)
-    await fresh(); await L.runSearch(p); await L.tab(p, 'geo'); await p.click('#lineList .lrow:has-text("指定滑動面")'); await p.click('#btnCopyCrit'); await p.waitForTimeout(300);
+    await fresh(); await L.runSearch(p); await L.tab(p, 'geo'); await p.click('#lineList .lrow[data-key="trial"]'); await p.click('#btnCopyCrit'); await p.waitForTimeout(300);
     await L.setLine(p, '地下水位線', [[0, 9], [15, 10.5], [35, 19], [70, 23]]);
     await p.click('#btnTrial'); await waitBusy(p); log('trial', await L.fsText(p));
     await L.tab(p, 'set'); await p.selectOption('#bkParam', 'phi'); await p.fill('#bkTarget', '1'); await p.click('#btnBack');
@@ -36,7 +36,7 @@ const waitBusy = async p => { await p.waitForTimeout(300); await p.waitForFuncti
   if (want('piezo')) {  // ---- 12 piezometric line and ru
     await fresh(); await L.tab(p, 'geo'); await p.click('#btnAddPiezo'); await p.waitForTimeout(200);
     await p.fill('#coords', [[0, 11], [15, 14], [35, 22], [70, 24.5]].map(q => q.join('\t')).join('\n')); await p.click('#btnApply');
-    await p.fill('#piezoName', 'BH-2 風化岩水頭'); await p.$eval('#piezoName', e => { e.dispatchEvent(new Event('change', { bubbles: true })); e.blur(); }); await p.waitForTimeout(200);
+    await p.fill('#piezoName', L.T('bh2')); await p.$eval('#piezoName', e => { e.dispatchEvent(new Event('change', { bubbles: true })); e.blur(); }); await p.waitForTimeout(200);
     await L.shotUnion(p, ['[data-pane="geo"] .sec:nth-of-type(1)', '[data-pane="geo"] .sec:nth-of-type(2)'], '12-piezo-line.png');
     await L.tab(p, 'soil'); await p.selectOption('.layer[data-i="1"] [data-f="poreType"]', 'p0'); await p.waitForTimeout(300);
     await L.shot(p, '.layer[data-i="1"]', '12-soil-pore.png');

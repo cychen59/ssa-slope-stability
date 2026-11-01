@@ -2,8 +2,9 @@
 import glob, os
 from PIL import Image
 here = os.path.dirname(os.path.abspath(__file__))
+LANG = os.environ.get('MLANG', 'zh'); BASE = os.path.join(here, '..') if LANG not in ('en', 'ja') else os.path.join(here, '..', LANG)
 tot0 = tot1 = 0
-for f in sorted(glob.glob(os.path.join(here, '..', 'img', '*.png'))):
+for f in sorted(glob.glob(os.path.join(BASE, 'img', '*.png'))):
     s0 = os.path.getsize(f); im = Image.open(f)
     if im.mode == 'P': tot0 += s0; tot1 += s0; continue
     q = im.convert('RGB').quantize(colors=256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)

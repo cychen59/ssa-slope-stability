@@ -7,6 +7,7 @@
 1. 在儲存庫根目錄啟動本機伺服器：`python3 -m http.server 8766 --bind 127.0.0.1`
 2. 執行 `manual/tools/build-all.sh`（需要 Node.js、Playwright、Python 3、Pillow、pdfplumber、pypdf、LibreOffice、poppler-utils）。
 3. 產出：`manual/img/*.png`、`manual/examples/*`、`manual/SSA-使用手冊.pdf`。
+4. 英文版與日文版：`MLANG=en ./build-all.sh`、`MLANG=ja ./build-all.sh`。程式會以該語言開啟 SSA 重新截圖，產出放在 `manual/en/`、`manual/ja/`（`SSA-User-Manual-EN.pdf`、`SSA-User-Manual-JA.pdf`）。
 
 | 腳本 | 內容 |
 |---|---|
@@ -38,5 +39,5 @@
 
 改完後：
 
-1. 更新 `manual/index.html` 開頭 `#meta` 的 `data-ssa-version`（必須與程式的 `SSA_VERSION` 相同，`build-pdf.js` 會檢查並提出警告）與 `data-ssa-date`；內容有修訂時把 `data-manual-version` 加一。
-2. 重跑 `build-all.sh`，翻閱 PDF 確認截圖與內文的數字一致（各章引用的 Fs 值來自教學案例的實際計算結果）。
+1. 中文、英文、日文三份原稿（`manual/index.html`、`manual/en/index.html`、`manual/ja/index.html`）要一起修訂。更新各份開頭 `#meta` 的 `data-ssa-version`（必須與程式的 `SSA_VERSION` 相同，`build-pdf.js` 會檢查並提出警告）與 `data-ssa-date`；內容有修訂時把 `data-manual-version` 加一。
+2. 三種語言各重跑一次 `build-all.sh`，翻閱 PDF 確認截圖與內文的數字一致（各章引用的 Fs 值來自教學案例的實際計算結果）。

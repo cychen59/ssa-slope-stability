@@ -2,6 +2,7 @@
 # Regenerate every screenshot, example file and the PDF of the SSA manual.
 # Run from the repository root's manual/tools folder with the repository served at http://127.0.0.1:8766/
 #   python3 -m http.server 8766 --bind 127.0.0.1   (in the repository root)
+# MLANG=en ./build-all.sh or MLANG=ja ./build-all.sh builds the English or Japanese manual (default: Chinese).
 set -e
 cd "$(dirname "$0")"
 node tutorial.js     # chapters 0–6, examples tutorial-1/2
