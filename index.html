@@ -2953,10 +2953,11 @@ if (typeof module !== 'undefined') module.exports = SSA;
   const DEF_SET = { kh: 0, kv: 0, gw: 9.81, cos2: false, nCol: 60, nState: 80, nSub: 4, dmin: 1, convex: true, noBoundary: true, tol: 0.0001, maxIter: 30, F0: 2, Freq: 1.5, useF0: false, f0type: 'pwri', unitG: 'kN', unitC: 'kPa', reinfMode: 'active', compare: true, compareLoad: true, method: 'janbu', optimize: true, tcOn: false, tcMode: 'auto', tcDepth: null, tcWater: false };
   const TF = 9.80665;
   /* ---------- version ---------- */
-  const SSA_VERSION = '2.10.2', SSA_DATE = '2026-11-01';
+  const SSA_VERSION = '2.10.3', SSA_DATE = '2026-11-03';
   const verStr = () => L(`v${SSA_VERSION}（${SSA_DATE}）`, `v${SSA_VERSION} (${SSA_DATE})`, `v${SSA_VERSION}（${SSA_DATE}）`);
   // [version, date, zh, en, ja]
   const VERSIONS = [
+    ['2.10.3', '2026-11-03', '滑動體面積的單位由 m²/m 更正為 m²（剖面面積），結果與計算書同步修正。', 'The unit of the sliding mass area is corrected from m²/m to m² (area in the section), in the results and the report.', 'すべり土塊の面積の単位を m²/m から m²（断面積）に修正し、結果と計算書に反映。'],
     ['2.10.2', '2026-11-01', '使用手冊新增英文版與日文版；頁首與頁面下方加入教學影片與三種語言的手冊連結；日文介面新增的載重改用日文名稱。', 'User manual now also in English and Japanese; tutorial videos and manual links in all three languages added to the header and further down the page; new loads get Japanese names in the Japanese interface.', 'ユーザーマニュアルに英語版と日本語版を追加。ヘッダーとページ下部に解説動画と 3 言語のマニュアルへのリンクを追加。日本語画面で追加した荷重の名前を日本語に。'],
     ['2.10.1', '2026-10-31', '新增使用手冊（線上版與 PDF），由頁首與「說明」頁開啟；擋土牆計算書的要求值改以一位小數顯示。', 'User manual added (online and PDF, in Traditional Chinese), linked from the header and the Help tab; required values in the wall report shown with one decimal.', '使用マニュアル（オンライン版と PDF、繁体字中国語）を追加し、ヘッダーと「説明」タブから開けるようにしました。擁壁計算書の所要値を小数 1 桁で表示。'],
     ['2.10.0', '2026-10-31', '擋土牆獨立成頁：重力式、懸臂式、扶壁式的外部穩定檢核（滑動、傾倒、偏心、承載力），可選水保、建築或公路規範，隨多情境計算並列入計算書。', 'Retaining walls get their own tab: external stability of gravity, cantilever and counterfort walls (sliding, overturning, eccentricity, bearing) after the soil and water conservation, building or highway code, for every check case and in the report.', '擁壁を独立したタブに：重力式・片持ばり式・控え壁式の外的安定（滑動、転倒、偏心、支持力）を水保、建築、道路の基準で照査し、複数ケースと計算書に対応。'],
@@ -4192,7 +4193,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
           ${chip}
         </div>
         <dl class="stats">
-          <div><dt>${L('滑動體面積', 'Sliding mass area', 'すべり土塊の面積')}</dt><dd>${fmt(r.area, 1)} m²/m</dd></div>
+          <div><dt>${L('滑動體面積', 'Sliding mass area', 'すべり土塊の面積')}</dt><dd>${fmt(r.area, 1)} m²</dd></div>
           <div><dt>${L('最大鉛直深度', 'Max vertical depth', '最大鉛直深さ')}</dt><dd>${fmt(r.dmaxV, 2)} m</dd></div>
           <div><dt>${L('坡趾出口 (x, z)', 'Toe exit (x, z)', '末端の出口 (x, z)')}</dt><dd>${fmt(toe[0], 2)}, ${fmt(toe[1], 2)}</dd></div>
           ${r.mode === 'trial' && trialCircleNow() ? `<div><dt>${L('圓弧 圓心／半徑', 'Circle centre / radius', '円弧 中心／半径')}</dt><dd>(${fmt(trialCircleNow().xc, 2)}, ${fmt(trialCircleNow().zc, 2)}) / ${fmt(trialCircleNow().R, 2)} m</dd></div>` : ''}
@@ -5195,7 +5196,7 @@ if (typeof module !== 'undefined') module.exports = SSA;
         [L('簡易 Janbu Fs／修正後 f0·Fs', 'Simplified Janbu Fs / f0·Fs', '簡易 Janbu Fs／補正後 f0·Fs'), `${n(r.F, 3)} / ${n(r.Fc, 3)}（f0 = ${n(r.f0, 3)}）`],
         [L('Spencer 法 Fs（λ）', 'Spencer Fs (λ)', 'Spencer 法 Fs（λ）'), r.rig && r.rig.spencer.ok ? `${n(r.rig.spencer.F, 3)}（${n(r.rig.spencer.lam, 3)}）` : L('未收斂', 'no convergence', '収束せず')],
         [L('Morgenstern–Price 法 Fs（λ）', 'Morgenstern–Price Fs (λ)', 'Morgenstern–Price 法 Fs（λ）'), r.rig && r.rig.mp.ok ? `${n(r.rig.mp.F, 3)}（${n(r.rig.mp.lam, 3)}）` : L('未收斂', 'no convergence', '収束せず')],
-        [L('滑動體面積／最大鉛直深度', 'Sliding mass area / max depth', 'すべり土塊面積／最大鉛直深さ'), `${n(r.area, 1)} m²/m / ${n(r.dmaxV, 2)} m`],
+        [L('滑動體面積／最大鉛直深度', 'Sliding mass area / max depth', 'すべり土塊面積／最大鉛直深さ'), `${n(r.area, 1)} m² / ${n(r.dmaxV, 2)} m`],
         [L('坡趾出口／坡頂入口 (x, z)', 'Toe exit / crest entry (x, z)', '末端出口／頭部入口 (x, z)'), `(${n(toe[0], 2)}, ${n(toe[1], 2)}) / (${n(head[0], 2)}, ${n(head[1], 2)})`],
         ...(r.mode === 'trial' && trialCircleNow() ? [[L('指定滑動面', 'Specified surface', '指定すべり面'), L(`圓弧，圓心 (${n(trialCircleNow().xc, 2)}, ${n(trialCircleNow().zc, 2)})，半徑 ${n(trialCircleNow().R, 2)} m`, `circle, centre (${n(trialCircleNow().xc, 2)}, ${n(trialCircleNow().zc, 2)}), radius ${n(trialCircleNow().R, 2)} m`, `円弧、中心 (${n(trialCircleNow().xc, 2)}, ${n(trialCircleNow().zc, 2)})、半径 ${n(trialCircleNow().R, 2)} m`)]] : []),
         ...(r.crack ? [[L('張力裂縫 x／深度／水壓 Pw', 'Tension crack x / depth / Pw', '引張亀裂 x／深さ／水圧 Pw'), `${n(r.crack.x, 2)} m / ${n(r.crack.d, 2)} m / ${r.crack.water ? `${G(r.crack.Pw)} ${uF()}` : L('乾裂縫', 'dry', '乾燥')}`]] : s.tcOn ? [[L('張力裂縫', 'Tension crack', '引張亀裂'), L('臨界滑動面不含裂縫', 'none on the critical surface', '臨界すべり面に亀裂なし')]] : []),
