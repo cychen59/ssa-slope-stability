@@ -9,7 +9,7 @@
 </head>
 <body>
 <!-- program version this manual describes; checked against ../../index.html SSA_VERSION at build time -->
-<div id="meta" data-ssa-version="2.10.3" data-ssa-date="2026-11-03" data-manual-version="1.1" hidden></div>
+<div id="meta" data-ssa-version="2.11.0" data-ssa-date="2026-11-25" data-manual-version="1.2" hidden></div>
 
 <header class="cover" id="cover">
   <div class="cover-top"><span class="mark">SSA</span><span class="cover-kicker">Slope Stability Analysis</span></div>
@@ -17,8 +17,8 @@
   <p class="cover-sub">最初の斜面から照査報告書まで</p>
   <img class="cover-img" src="img/07-board-global.png" alt="例題：鉄筋挿入工とのり尻の擁壁を含む臨界すべり面">
   <dl class="cover-meta">
-    <dt>プログラムの版</dt><dd><span class="v-ssa">v2.10.3</span>（<span class="v-date">2026-11-03</span>）</dd>
-    <dt>マニュアルの版</dt><dd><span class="v-man">1.1</span></dd>
+    <dt>プログラムの版</dt><dd><span class="v-ssa">v2.11.0</span>（<span class="v-date">2026-11-25</span>）</dd>
+    <dt>マニュアルの版</dt><dd><span class="v-man">1.2</span></dd>
     <dt>開発者</dt><dd>陳振宇（Chen-Yu Chen）</dd>
     <dt>連絡先</dt><dd><a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></dd>
     <dt>Web アプリ</dt><dd><a href="https://cychen59.github.io/ssa-slope-stability/?lang=ja">cychen59.github.io/ssa-slope-stability</a></dd>
@@ -53,7 +53,7 @@
 <tr><td>6</td><td>常時・豪雨時・地震時のケース</td><td>tutorial-2-nails.json</td></tr>
 <tr><td>7</td><td>擁壁の外的安定</td><td>tutorial-3-wall.json</td></tr>
 <tr><td>8</td><td>報告書の作成と保存</td><td>tutorial-report.docx</td></tr>
-<tr><td rowspan="8">応用</td><td>9</td><td>すべり面の位置が分かっているとき：制御点</td><td rowspan="8">各章とも tutorial-1-slope.json から開始</td></tr>
+<tr><td rowspan="9">応用</td><td>9</td><td>すべり面の位置が分かっているとき：制御点</td><td rowspan="8">各章とも tutorial-1-slope.json から開始</td></tr>
 <tr><td>10</td><td>指定すべり面と円弧（旧報告書の照合）</td></tr>
 <tr><td>11</td><td>土質定数の逆算</td></tr>
 <tr><td>12</td><td>地層別の水頭線と間隙水圧比 r<sub>u</sub></td></tr>
@@ -61,6 +61,7 @@
 <tr><td>14</td><td>抑止杭、マイクロパイル、ジオシンセティックス</td></tr>
 <tr><td>15</td><td>計算方法と探索の設定</td></tr>
 <tr><td>16</td><td>単位、保存、検証レポート、版</td></tr>
+<tr><td>17</td><td>観測井の水位と Fs 時系列</td><td>tutorial-4-wells.json</td></tr>
 </tbody>
 </table>
 
@@ -71,6 +72,7 @@
 <li>補強材：鉄筋挿入工、グラウンドアンカー、抑止杭、マイクロパイル、ジオシンセティックス。</li>
 <li>重力式、片持ばり式、控え壁式の擁壁と、その外的安定の照査。</li>
 <li>常時、豪雨時、地震時などの複数ケースを一度に計算し、基準値で判定。</li>
+<li>観測井の水位記録から各時刻の安全率を計算（Fs 時系列）。</li>
 <li>Word または PDF の計算書。</li>
 </ul>
 
@@ -89,7 +91,7 @@
 <thead><tr><th>番号</th><th>領域</th><th>用途</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>上部のボタン</td><td>元に戻す（Ctrl+Z）、例題を読み込む、本マニュアル、理論、言語の切替え。</td></tr>
-<tr><td>2</td><td>タブ</td><td>断面、土質、荷重、補強、擁壁、設定、照査、説明。おおむねこの順に入力します。</td></tr>
+<tr><td>2</td><td>タブ</td><td>断面、土質、荷重、補強、擁壁、設定、照査、時系列、説明。おおむねこの順に入力します。</td></tr>
 <tr><td>3</td><td>ツールバー</td><td>図上での点のドラッグ・追加・削除、吸着間隔、スライスや探索節点の表示、全体表示。</td></tr>
 <tr><td>4</td><td>断面図</td><td>地形、地層、水位、荷重、補強材、すべり面をリアルタイムに表示し、マウスで編集できます。</td></tr>
 <tr><td>5</td><td>計算ボタン</td><td>「臨界すべり面を計算」は自動探索、「指定すべり面を試算」は指定したすべり面だけを計算します。</td></tr>
@@ -730,14 +732,95 @@
 <li><b>JSON モデルファイル</b>：「設定」タブの「モデルを保存」と「モデルを読み込む…」。すべての入力と設定を含みます（8.3 節）。</li>
 <li><b>CSV</b>：地形を CSV から取り込めます（1.2 節）。スライスの明細と複数ケースの一覧は CSV でコピーできます。</li>
 <li><b>報告書</b>：Word または PDF（第 8 章）。</li>
+<li><b>観測井の時系列</b>：水位と雨量は CSV で読み込み、JSON モデルと一緒に保存されます。Fs 時系列は CSV と SVG のグラフでダウンロードできます（第 17 章）。</li>
 <li><b>元に戻す</b>：Ctrl+Z または左上の「元に戻す」で 1 つ前に戻ります。</li>
 </ul>
 <h3>16.3 検証レポート</h3>
 <figure class="mid"><img src="img/16-verify.png" alt="検証レポート"><figcaption>「説明」タブの検証レポートの結果</figcaption></figure>
-<p>「説明」タブの<b>検証を実行</b>は、現在の計算コアでブラウザ内のすべての検証問題を計算し直します。解析解、Fredlund and Krahn、ACADS の標準問題、湛水と引張亀裂、水頭線、補強材、鋼管杭の計算例、擁壁の外的安定が含まれます。参考値、本ツールの結果、差、合否を一覧にし、所要時間は約 3 分です。結果は Word でダウンロードするか PDF に印刷でき、審査提出時のプログラム検証資料として使えます。v2.10.3 では 146 項目の照査がすべて合格しています。</p>
+<p>「説明」タブの<b>検証を実行</b>は、現在の計算コアでブラウザ内のすべての検証問題を計算し直します。解析解、Fredlund and Krahn、ACADS の標準問題、湛水と引張亀裂、水頭線、補強材、鋼管杭の計算例、擁壁の外的安定が含まれます。参考値、本ツールの結果、差、合否を一覧にし、所要時間は約 3 分です。結果は Word でダウンロードするか PDF に印刷でき、審査提出時のプログラム検証資料として使えます。v2.11.0 では 146 項目の照査がすべて合格しています。</p>
 <h3>16.4 版と言語</h3>
 <p>プログラムの版はページの表題の横、報告書、保存したファイルに表示されます。「説明」タブの版の履歴に各版の変更点があります。本書の表紙には対象とするプログラムの版を記載しており、機能が追加されると本書も改訂します。</p>
 <p>右上のボタンで中文、English、日本語を切り替えられ、報告書は現在の言語で作成されます。本書には<a href="../">中国語版</a>と<a href="../en/">英語版</a>もあります。</p>
+</section>
+
+<section class="chap" id="c17">
+<h2><span class="cn">第 17 章</span>観測井の水位と Fs 時系列</h2>
+<div class="when"><p class="when-h">どんなときに使うか</p>
+<ul>
+<li>斜面に地下水位の観測井と雨量計があり、降雨ごとに安全率がどう変わるか、どの降雨で Fs が所要値を下回り、どれだけ続いたかを知りたいとき。</li>
+<li>警戒避難の計画で、水位がどこまで上がると Fs が所要値や 1.0 まで下がるかを把握し、水位や雨量の基準値を決める根拠にしたいとき。</li>
+</ul></div>
+<p>この章では第 4 章のモデルから始め、プログラムに組み込まれた仮想デモデータで操作します。完成したモデルは <a href="examples/tutorial-4-wells.json">tutorial-4-wells.json</a>（時系列データを含む）、時系列データは <a href="examples/wells-demo.csv">wells-demo.csv</a> です。</p>
+<h3>17.1 各時刻の地下水位線</h3>
+<p>観測井で分かるのは数点の水位だけですが、計算には 1 本の地下水位線が必要です。SSA は「断面」タブの地下水位線を基準形状とし、各井戸でその時刻の観測水位を通るように水位線を動かします。</p>
+<p>z<sub>w</sub>(x, t) = z<sub>w0</sub>(x) + Δh(x, t)、Δh<sub>i</sub>(t) = h<sub>i</sub>(t) − z<sub>w0</sub>(x<sub>i</sub>)</p>
+<p>z<sub>w0</sub> は断面の地下水位線、h<sub>i</sub>(t) は時刻 t における井戸 i の水位です。Δh は井戸間で直線補間し、最も外側の井戸より外はその井戸の値とし、上昇後に地表より高くなる部分は地表とします。水頭線（第 12 章）も同じ Δh で昇降します。</p>
+<div class="note tip"><b>基準となる地下水位線</b>井戸の間と外側の水位の形は基準形状で決まります。地形とボーリング資料をもとに平常時の水位として描いてください。井戸が多く、想定すべり面に近いほど、補間した水位線の信頼性が上がります。</div>
+<h3>17.2 観測井の設定</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/17-wells.png" alt="観測井"><figcaption>「時系列」タブの観測井</figcaption></figure>
+<div>
+<ol class="steps">
+<li>「断面」タブに地下水位線があることを確認します。</li>
+<li>「時系列」タブで<b>＋ 観測井を追加</b>を押し、井戸名と位置 x を入力します。CSV を読み込むと、見出しが井戸名と同じ列は自動で対応づけられ、対応のない列は観測井が追加されます。</li>
+<li><b>データ形式</b>が「水位標高」なら記録値は水位の標高、「地表からの深さ」なら地表から下向きに測った深さで、井戸位置の地表標高で換算します。</li>
+<li>カードの下に井戸位置の地表標高、断面の水位、データ件数、水位の範囲が表示されます。水位が地表より高いと注意が出ます。多くはデータ形式か位置の誤りです。</li>
+</ol>
+<p>断面図には井戸の位置が縦線で表示されます。<b>有効</b>のチェックを外した井戸は計算に使いません。</p>
+</div>
+</div>
+<h3>17.3 水位と雨量の読み込み</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/17-records.png" alt="水位・雨量の時系列"><figcaption>時系列データの読み込み</figcaption></figure>
+<div>
+<p>時系列データは CSV で読み込みます。1 行目は見出し、1 列目は時刻、ほかの列は井戸名を見出しとした水位です。見出しに「雨」または rain を含む列は雨量 (mm) とみなし、なくてもかまいません。</p>
+<pre class="code">時刻,雨量(mm),W1,W2
+2024-05-01 00:00,0,13.91,16.57
+2024-05-01 01:00,0,13.92,16.57
+…</pre>
+<ul>
+<li>時刻は 2024-07-24 13:00、2024/7/24 13:00、2024-07-24T13:00 のほか、時間単位の数値でもかまいません。</li>
+<li>間隔は一定でなくてもかまいません。欠測の水位は前後から直線補間し、欠測の雨量は 0 とします。</li>
+<li>読み込み後、件数、期間、間隔、累計雨量が表示されます。時系列データは JSON モデルファイルに一緒に保存されます。</li>
+</ul>
+<p><b>仮想デモデータを読み込む</b>を押すと、現在の断面に 2 本の井戸を設け、2024 年 5～10 月の時間データを作成します。午後の雷雨、2 回の梅雨前線、2 回の台風を含み、水位は線形貯留モデルで雨量から求めています。練習用の仮想データで、実測値ではありません。</p>
+</div>
+</div>
+<h3>17.4 Fs 時系列の計算</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/17-run.png" alt="Fs 時系列の計算"><figcaption>計算設定と結果の要約</figcaption></figure>
+<div>
+<p>すべての時刻で全探索を行うと時間がかかるため、SSA は 3 段階で計算します。</p>
+<ol class="steps">
+<li>いくつかの主要時刻で全探索を行い、候補すべり面を求めます。主要時刻は水位が最も低い時刻と、互いに 72 時間以上離れた数回の水位ピークです。</li>
+<li>ほかの時刻はすべての候補すべり面で Fs を計算し、最小値をとります。</li>
+<li>Fs が最小の時刻でもう一度全探索を行います。より危険なすべり面が見つかれば候補に加えて計算し直し、最小 Fs の時刻が探索済みになるまで繰り返します。</li>
+</ol>
+<p>また、各井戸の昇降量を<b>昇降量の丸め</b>（既定値 0.05 m）でまとめ、同じ組の時刻は 1 回だけ計算します。デモデータの 4416 時刻は 312 組になり、約 5 秒で終わります。</p>
+</div>
+</div>
+<table class="plain">
+<thead><tr><th>設定</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>計算時間間隔</td><td>元データのまま、または 1、3、6、12、24 時間にまとめます。まとめた区間では最高水位と累計雨量を使い、区間の終わりの時刻で表示します。</td></tr>
+<tr><td>昇降量の丸め</td><td>組分けの刻みです。小さくすると組が増え、水位線が観測値に近づきます。</td></tr>
+<tr><td>計算方式</td><td>「主要時刻で探索」は上記の方法、「全組で全探索」はすべての組で全探索を行います。最も厳密ですが時間がかかり、確認に使えます。</td></tr>
+<tr><td>主要時刻の数</td><td>全探索の回数で、既定値 4（最低水位 1 回と水位ピーク 3 回）です。降雨が多いときや、水位によってすべり面の位置が変わるときは増やします。</td></tr>
+<tr><td>所要安全率</td><td>所要値を下回る時間の集計に使います。既定値 1.2（台湾の水土保持技術規範の豪雨時）です。</td></tr>
+</tbody>
+</table>
+<p>計算方法、震度、探索設定は「設定」タブの値を使います。デモデータで 2 つの計算方式を比べると、最小 Fs はどちらも同じ時刻の 1.021 で、各時刻の Fs の差は 0.5% 未満（主要時刻で探索のほうがわずかに大きい）、計算時間は 298 秒から約 6 秒に短縮されます。</p>
+<h3>17.5 結果の読み方</h3>
+<figure class="wide"><img src="img/17-series.png" alt="Fs 時系列グラフ"><figcaption>雨量、観測井の水位、Fs の時系列（仮想デモデータ）</figcaption></figure>
+<p>結果は断面図の下に、上から雨量、各井戸の水位、Fs の順に表示されます。水位グラフの点線は井戸位置の地表、Fs グラフの 2 本の破線は所要値と 1.0 です。左の「時系列」タブには要約が出ます。この例の最小 Fs = 1.021 は 1 回目の台風中の 2024-07-25 17:00 で、W1 は断面の水位より 2.30 m 高くなっています。Fs が 1.2 を下回るのは 2 回の台風で合計 2.9 日、1.0 を下回る時間はありません。</p>
+<figure class="wide"><img src="img/17-board.png" alt="最小 Fs 時刻の水位線とすべり面"><figcaption>最小 Fs の時刻の地下水位線（実線）と支配すべり面（橙色の破線）。青い破線は断面の地下水位線</figcaption></figure>
+<ul>
+<li>グラフ下の<b>タイムスライダー</b>をドラッグするか、◀ ▶ を押すか、グラフをクリックすると時刻を移動できます。断面図にはその時刻の地下水位線、各井戸の水位、支配すべり面が表示され、左上に時刻と Fs が出ます。<b>最小 Fs へ</b>で最も危険な時刻に戻ります。</li>
+<li>「候補すべり面」には各候補を探索した時刻と、それが支配する時刻数が表示され、低水位時と高水位時ですべり面が異なるかが分かります。</li>
+<li><b>結果をダウンロード (CSV)</b> には各時刻の雨量、各井戸の水位と昇降量、Fs、支配すべり面の番号が入ります。<b>グラフをダウンロード (SVG)</b> は報告書にそのまま使えます。</li>
+</ul>
+<div class="note warn"><b>適用上の注意</b>間隙水圧は各時刻の水位線から静水圧で求めており、非定常浸透による過剰間隙水圧や、浸透による不飽和帯のサクションの変化は考慮していません。井戸間の水位は補間値なので、井戸が少ないときやすべり面から遠いときは実際と異なることがあります。井戸のスクリーンが被圧帯水層にある場合は、その層の水圧を水頭線（第 12 章）で表してください。</div>
+<div class="note tip"><b>基準値の設定</b>結果の CSV から Fs が所要値や 1.0 まで下がったときの各井戸の水位が分かり、水位の警戒基準値の参考になります。雨量の列を使えば累積雨量と Fs の関係も確認できます。</div>
 </section>
 
 <!-- ================================================================ -->
@@ -781,6 +864,8 @@
 <tr><td><a href="examples/tutorial-1-slope.json">tutorial-1-slope.json</a></td><td>断面、土質定数、交通荷重。補強なし</td><td>第 4 章、各応用章の開始時</td></tr>
 <tr><td><a href="examples/tutorial-2-nails.json">tutorial-2-nails.json</a></td><td>長さ 9 m の鉄筋挿入工 8 本と 3 ケースを追加</td><td>第 5、6 章</td></tr>
 <tr><td><a href="examples/tutorial-3-wall.json">tutorial-3-wall.json</a></td><td>のり尻の重力式擁壁を追加</td><td>第 7、8 章</td></tr>
+<tr><td><a href="examples/tutorial-4-wells.json">tutorial-4-wells.json</a></td><td>第 4 章のモデルに観測井 2 本と仮想デモの時系列を追加</td><td>第 17 章</td></tr>
+<tr><td><a href="examples/wells-demo.csv">wells-demo.csv</a></td><td>仮想デモの時間雨量と井戸の水位</td><td>第 17 章</td></tr>
 <tr><td><a href="examples/tutorial-report.docx">tutorial-report.docx</a>、<a href="examples/tutorial-report.pdf">.pdf</a></td><td>例題の計算書</td><td>第 8 章</td></tr>
 </tbody>
 </table>
@@ -808,7 +893,7 @@
 </section>
 
 </main>
-<footer class="docfoot screen-only"><p>SSA 斜面安定解析 ユーザーマニュアル <span class="v-man">1.1</span> · プログラム <span class="v-ssa">v2.10.3</span> · 陳振宇 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
+<footer class="docfoot screen-only"><p>SSA 斜面安定解析 ユーザーマニュアル <span class="v-man">1.2</span> · プログラム <span class="v-ssa">v2.11.0</span> · 陳振宇 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
 <script src="../manual.js"></script>
 </body>
 </html>

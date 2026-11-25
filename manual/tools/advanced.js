@@ -1,4 +1,4 @@
-// Part 3: advanced chapters 9–16
+// Part 3: advanced chapters 9–17
 const L = require('./lib.js');
 const log = (...a) => console.log(...a);
 const ONLY = process.argv[2] ? process.argv[2].split(',') : null;
@@ -82,6 +82,20 @@ const waitBusy = async p => { await p.waitForTimeout(300); await p.waitForFuncti
     await p.evaluate(() => document.querySelectorAll('#verOut details').forEach(d => d.open = false));
     log('verify', (await p.textContent('#verOut')).replace(/\s+/g, ' ').slice(0, 120));
     await L.shot(p, '#verOut', '16-verify.png');
+  }
+  if (want('wells')) {  // ---- 17 observation wells and the Fs time series (synthetic demo records)
+    await fresh(); await L.tab(p, 'ts'); await p.click('#btnTsDemo'); await p.waitForTimeout(500);
+    await L.shot(p, '[data-pane="ts"] .sec:nth-of-type(1)', '17-wells.png');
+    await L.shot(p, '[data-pane="ts"] .sec:nth-of-type(2)', '17-records.png');
+    await p.click('#btnTsRun');
+    await p.waitForFunction(() => !document.querySelector('#tsPanel').hidden && !document.querySelector('#btnRun').disabled, null, { timeout: 600000 }); await p.waitForTimeout(600);
+    log('wells', (await p.textContent('#tsSum')).replace(/\s+/g, ' ').trim());
+    log('wells now', (await p.textContent('#tsNow')).replace(/\s+/g, ' ').trim());
+    await L.tab(p, 'ts'); await L.shot(p, '[data-pane="ts"] .sec:nth-of-type(3)', '17-run.png');
+    await L.shot(p, '#tsPanel', '17-series.png');
+    await L.shot(p, '.board', '17-board.png');
+    const [d] = await Promise.all([p.waitForEvent('download'), p.click('#btnTsCsvEx')]); await d.saveAs(L.path.join(L.EX, 'wells-demo.csv'));
+    await L.saveJSON(p, L.path.join(L.EX, 'tutorial-4-wells.json'));
   }
   log('ERR', p.errs); await b.close();
 })();

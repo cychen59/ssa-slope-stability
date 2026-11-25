@@ -1,5 +1,5 @@
 {
- "ssaVersion": "2.10.3",
+ "ssaVersion": "2.11.0",
  "ground": [
   [
    0,
@@ -364,6 +364,14 @@
   "note": "説明用の例題で、定数は仮定値です。"
  },
  "zBase": 0,
+ "wells": [],
+ "tsSet": {
+  "step": 0,
+  "tol": 0.05,
+  "nKey": 4,
+  "Freq": 1.2,
+  "mode": "hybrid"
+ },
  "settings": {
   "kh": 0,
   "kv": 0,

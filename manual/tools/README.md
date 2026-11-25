@@ -14,7 +14,7 @@
 | `tutorial.js` | 第 0–6 章截圖，範例 tutorial-1-slope.json、tutorial-2-nails.json |
 | `wall.js` | 第 7–8 章截圖，tutorial-3-wall.json 與教學案例計算書 |
 | `report_pages.py` | 計算書縮圖 |
-| `advanced.js` | 第 9–16 章截圖，可用參數只跑部分章節，例如 `node advanced.js ctrl,pile` |
+| `advanced.js` | 第 9–17 章截圖，範例 tutorial-4-wells.json、wells-demo.csv，可用參數只跑部分章節，例如 `node advanced.js ctrl,pile` |
 | `optimize.py` | 截圖轉 256 色以縮小檔案 |
 | `build-pdf.js` | 產生 PDF（目錄頁碼、書籤、無頁碼的封面） |
 
@@ -36,6 +36,7 @@
 | 坡外積水、張力裂縫 | 第 13 章 |
 | 計算方法、搜尋設定 | 第 15 章 |
 | 驗證報告的檢核數、版本紀錄 | 第 16 章 |
+| 觀測井、時序匯入、Fs 時序計算 | 第 17 章 |
 
 改完後：
 

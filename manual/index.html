@@ -9,7 +9,7 @@
 </head>
 <body>
 <!-- 手冊對應的程式版本：建置時會與 ../index.html 的 SSA_VERSION 比對 -->
-<div id="meta" data-ssa-version="2.10.3" data-ssa-date="2026-11-03" data-manual-version="1.1" hidden></div>
+<div id="meta" data-ssa-version="2.11.0" data-ssa-date="2026-11-25" data-manual-version="1.2" hidden></div>
 
 <header class="cover" id="cover">
   <div class="cover-top"><span class="mark">SSA</span><span class="cover-kicker">Slope Stability Analysis</span></div>
@@ -17,8 +17,8 @@
   <p class="cover-sub">從第一個邊坡到完整的檢核報告</p>
   <img class="cover-img" src="img/07-board-global.png" alt="教學案例：加入土釘與坡趾擋土牆後的臨界滑動面">
   <dl class="cover-meta">
-    <dt>對應程式版本</dt><dd><span class="v-ssa">v2.10.3</span>（<span class="v-date">2026-11-03</span>）</dd>
-    <dt>手冊版本</dt><dd><span class="v-man">1.1</span></dd>
+    <dt>對應程式版本</dt><dd><span class="v-ssa">v2.11.0</span>（<span class="v-date">2026-11-25</span>）</dd>
+    <dt>手冊版本</dt><dd><span class="v-man">1.2</span></dd>
     <dt>開發者</dt><dd>陳振宇</dd>
     <dt>聯絡信箱</dt><dd><a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></dd>
     <dt>程式網址</dt><dd><a href="https://cychen59.github.io/ssa-slope-stability/">cychen59.github.io/ssa-slope-stability</a></dd>
@@ -53,7 +53,7 @@
 <tr><td>6</td><td>常時、暴雨、地震三種情境檢核</td><td>tutorial-2-nails.json</td></tr>
 <tr><td>7</td><td>擋土牆外部穩定檢核</td><td>tutorial-3-wall.json</td></tr>
 <tr><td>8</td><td>產出檢核報告與存檔</td><td>tutorial-report.docx</td></tr>
-<tr><td rowspan="8">進階</td><td>9</td><td>已知滑動面位置：控制點</td><td rowspan="8">各章以 tutorial-1-slope.json 為起點</td></tr>
+<tr><td rowspan="9">進階</td><td>9</td><td>已知滑動面位置：控制點</td><td rowspan="8">各章以 tutorial-1-slope.json 為起點</td></tr>
 <tr><td>10</td><td>指定滑動面與圓弧（比對舊報告）</td></tr>
 <tr><td>11</td><td>反算土壤參數</td></tr>
 <tr><td>12</td><td>分層水壓線與孔隙水壓比 r<sub>u</sub></td></tr>
@@ -61,6 +61,7 @@
 <tr><td>14</td><td>抑止樁、微型樁與地工合成材</td></tr>
 <tr><td>15</td><td>計算方法與搜尋設定</td></tr>
 <tr><td>16</td><td>單位、存檔、驗證報告與版本</td></tr>
+<tr><td>17</td><td>觀測井水位與 Fs 時序</td><td>tutorial-4-wells.json</td></tr>
 </tbody>
 </table>
 
@@ -71,6 +72,7 @@
 <li>土釘、地錨、抑止樁、微型樁、地工合成材等補強構件。</li>
 <li>重力式、懸臂式、扶壁式擋土牆，包含外部穩定檢核。</li>
 <li>常時、暴雨、地震等多個情境一次計算，依規範判定。</li>
+<li>依觀測井的水位紀錄逐時計算安全係數（Fs 時序）。</li>
 <li>Word 或 PDF 格式的計算書。</li>
 </ul>
 
@@ -89,7 +91,7 @@
 <thead><tr><th>編號</th><th>區域</th><th>用途</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>頂端按鈕</td><td>復原上一步（Ctrl+Z）、載入範例、本使用手冊、原理與公式、語言切換。</td></tr>
-<tr><td>2</td><td>分頁</td><td>剖面、土層、載重、補強、擋土牆、設定、檢核、說明。輸入資料大致依這個順序。</td></tr>
+<tr><td>2</td><td>分頁</td><td>剖面、土層、載重、補強、擋土牆、設定、檢核、時序、說明。輸入資料大致依這個順序。</td></tr>
 <tr><td>3</td><td>工具列</td><td>在圖上拖曳、加點、刪點，格點間距，顯示切片或搜尋節點，全圖顯示。</td></tr>
 <tr><td>4</td><td>剖面圖</td><td>即時顯示地形、土層、水位、載重、補強與滑動面，可以直接用滑鼠編輯。</td></tr>
 <tr><td>5</td><td>計算按鈕</td><td>「計算最危險滑動面」做自動搜尋；「試算指定滑動面」只算你指定的那一條。</td></tr>
@@ -730,14 +732,95 @@
 <li><b>JSON 模型檔</b>：「設定」頁的「儲存模型」與「匯入模型…」，包含所有輸入與設定（第 8.3 節）。</li>
 <li><b>CSV</b>：地形可由 CSV 匯入（第 1.2 節）；切片明細與多情境總表可以複製為 CSV。</li>
 <li><b>計算書</b>：Word 或 PDF（第 8 章）。</li>
+<li><b>觀測井時序</b>：水位與雨量以 CSV 匯入，隨 JSON 模型檔一起存檔；Fs 時序可以下載 CSV 與 SVG 圖檔（第 17 章）。</li>
 <li><b>復原</b>：Ctrl+Z 或左上角「復原」可以回到上一步。</li>
 </ul>
 <h3>16.3 驗證報告</h3>
 <figure class="mid"><img src="img/16-verify.png" alt="驗證報告"><figcaption>「說明」頁執行驗證報告的結果</figcaption></figure>
-<p>「說明」頁的<b>執行驗證</b>會以目前版本的計算核心，在您的瀏覽器中重算全部驗證考題，包含閉合解、Fredlund and Krahn、ACADS 標準題、坡外積水與張力裂縫、分層水壓、補強構件、鋼管杭計算例與擋土牆外部穩定，列出參考值、本工具的結果、差異與是否通過，約需 3 分鐘。結果可以下載 Word 或列印為 PDF，作為送審時的程式驗證文件。v2.10.3 共 146 項檢核全部通過。</p>
+<p>「說明」頁的<b>執行驗證</b>會以目前版本的計算核心，在您的瀏覽器中重算全部驗證考題，包含閉合解、Fredlund and Krahn、ACADS 標準題、坡外積水與張力裂縫、分層水壓、補強構件、鋼管杭計算例與擋土牆外部穩定，列出參考值、本工具的結果、差異與是否通過，約需 3 分鐘。結果可以下載 Word 或列印為 PDF，作為送審時的程式驗證文件。v2.11.0 共 146 項檢核全部通過。</p>
 <h3>16.4 版本與語言</h3>
 <p>網頁標題旁、計算書與存檔都標示程式版本號。「說明」頁的版本紀錄列出各版的修改內容。本手冊封面註明對應的程式版本，程式有功能更新時，手冊也會同步修訂。</p>
 <p>右上角可以切換中文、English、日本語，計算書也會以目前的語言產生。本手冊另有<a href="en/">英文版</a>與<a href="ja/">日文版</a>。</p>
+</section>
+
+<section class="chap" id="c17">
+<h2><span class="cn">第 17 章</span>觀測井水位與 Fs 時序</h2>
+<div class="when"><p class="when-h">什麼時候用</p>
+<ul>
+<li>邊坡設有地下水位觀測井與雨量站，想知道每一場降雨期間安全係數怎麼變化，哪幾場雨讓 Fs 低於要求值、持續多久。</li>
+<li>規劃預警時，需要知道水位升到多高時 Fs 會降到要求值或 1.0，作為訂定水位或雨量門檻的依據。</li>
+</ul></div>
+<p>本章以第 4 章的模型為起點，載入程式內建的虛擬示範資料操作一次。完成的模型為 <a href="examples/tutorial-4-wells.json">tutorial-4-wells.json</a>（含時序資料），時序資料另存為 <a href="examples/wells-demo.csv">wells-demo.csv</a>。</p>
+<h3>17.1 各時刻的地下水位線</h3>
+<p>觀測井只量到幾個點的水位，計算時需要整條地下水位線。SSA 以「剖面」頁的地下水位線為基準形狀，讓水位線在每口井處通過該時刻的觀測水位。</p>
+<p>z<sub>w</sub>(x, t) = z<sub>w0</sub>(x) + Δh(x, t)，Δh<sub>i</sub>(t) = h<sub>i</sub>(t) − z<sub>w0</sub>(x<sub>i</sub>)</p>
+<p>其中 z<sub>w0</sub> 為剖面水位線，h<sub>i</sub>(t) 為第 i 口井在時刻 t 的水位。Δh 在兩井之間線性內插，最外側的井以外維持該井的值，升高後高於地表的部分取地表。有分層水壓線時（第 12 章），水壓線也依同樣的 Δh 升降。</p>
+<div class="note tip"><b>剖面水位線怎麼畫</b>基準形狀決定井與井之間以及井以外的水位形狀，建議依地形與鑽孔資料畫成平時的水位。井愈多、位置愈靠近可能的滑動面，內插的水位線愈可靠。</div>
+<h3>17.2 設定觀測井</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/17-wells.png" alt="觀測井"><figcaption>「時序」頁的觀測井</figcaption></figure>
+<div>
+<ol class="steps">
+<li>確認「剖面」頁已有地下水位線。</li>
+<li>到「時序」頁按<b>＋ 新增觀測井</b>，輸入井名與位置 x。匯入 CSV 時，標題與井名相同的欄位會自動對應，沒有對應的欄位會自動新增觀測井。</li>
+<li><b>資料型式</b>選「水位高程」時，紀錄值就是水位高程；選「水位深度」時，紀錄值為自地表往下量的深度，程式以井位的地表高程換算。</li>
+<li>卡片下方列出井位的地表高程、剖面水位、資料筆數與水位範圍。水位高於地表時會出現提醒，通常是資料型式選錯或井位不對。</li>
+</ol>
+<p>剖面圖上以直線標出井的位置。取消勾選<b>啟用</b>的井不參與計算。</p>
+</div>
+</div>
+<h3>17.3 匯入水位與雨量</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/17-records.png" alt="水位與雨量時序"><figcaption>匯入時序資料</figcaption></figure>
+<div>
+<p>時序資料以 CSV 匯入。第一列為標題，第一欄為時間，其餘各欄以井名為標題；標題含「雨」或 rain 的欄位視為雨量 (mm)，沒有雨量也可以。</p>
+<pre class="code">時間,雨量(mm),W1,W2
+2024-05-01 00:00,0,13.91,16.57
+2024-05-01 01:00,0,13.92,16.57
+…</pre>
+<ul>
+<li>時間可寫成 2024-07-24 13:00、2024/7/24 13:00 或 2024-07-24T13:00，也可以是以小時為單位的數字。</li>
+<li>間隔不必固定。缺漏的水位以前後資料線性內插，缺漏的雨量視為 0。</li>
+<li>匯入後下方顯示筆數、起訖時間、間隔與累計雨量。時序資料隨 JSON 模型檔一起存檔。</li>
+</ul>
+<p>按<b>載入虛擬示範資料</b>會在目前的剖面上設兩口井，並產生 2024 年 5 月至 10 月的逐時資料，包含午後雷陣雨、兩場梅雨鋒面與兩場颱風，水位以線性水庫模式由雨量推算。這是練習用的虛擬資料，不是實測值。</p>
+</div>
+</div>
+<h3>17.4 計算 Fs 時序</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/17-run.png" alt="Fs 時序計算"><figcaption>計算設定與結果摘要</figcaption></figure>
+<div>
+<p>每個時刻都做完整搜尋太費時，SSA 分三步計算。</p>
+<ol class="steps">
+<li>在幾個關鍵時刻做完整搜尋，取得候選滑動面。關鍵時刻為水位最低的時刻，以及彼此相隔至少 72 小時的幾次水位高峰。</li>
+<li>其餘時刻以所有候選滑動面計算 Fs，取最小值。</li>
+<li>在 Fs 最低的時刻再做一次完整搜尋。找到更危險的滑動面時，加入候選並重算，直到 Fs 最低的時刻已經搜尋過為止。</li>
+</ol>
+<p>各井的升降量另依<b>升降量捨入</b>（預設 0.05 m）分組，升降量相同的時刻只算一次。示範資料的 4416 個時刻分成 312 組，約 5 秒完成。</p>
+</div>
+</div>
+<table class="plain">
+<thead><tr><th>設定</th><th>說明</th></tr></thead>
+<tbody>
+<tr><td>計算時間間隔</td><td>原始資料，或合併為 1、3、6、12、24 小時。合併時水位取區間內的最高值，雨量取累計值，時間標在區間結束。</td></tr>
+<tr><td>升降量捨入</td><td>分組的級距。改小則組數變多，水位線更貼近觀測值。</td></tr>
+<tr><td>計算方式</td><td>「關鍵時刻搜尋」為上述做法；「每組都完整搜尋」對每一組做完整搜尋，最嚴謹但費時，可以用來檢查。</td></tr>
+<tr><td>關鍵時刻數</td><td>完整搜尋的次數，預設 4，即水位最低 1 次與水位高峰 3 次。降雨事件多、滑動面位置隨水位改變時可以加大。</td></tr>
+<tr><td>要求安全係數</td><td>用來統計低於要求值的時數，預設 1.2（水土保持技術規範的暴雨情境）。</td></tr>
+</tbody>
+</table>
+<p>計算方法、震度與搜尋設定沿用「設定」頁。以示範資料比較兩種計算方式，兩者的最小 Fs 都是 1.021，發生在同一時刻；各時刻的 Fs 相差不到 0.5%（關鍵時刻搜尋略高），費時則由 298 秒減為約 6 秒。</p>
+<h3>17.5 判讀結果</h3>
+<figure class="wide"><img src="img/17-series.png" alt="Fs 時序圖"><figcaption>雨量、觀測井水位與 Fs 時序（虛擬示範資料）</figcaption></figure>
+<p>結果顯示在剖面圖下方，由上而下為雨量、各井水位與 Fs。水位圖的點線為井位的地表高程，Fs 圖的兩條虛線為要求值與 1.0。左側「時序」頁另列摘要。本例最小 Fs = 1.021，發生在第一場颱風的 2024-07-25 17:00，此時 W1 比剖面水位高 2.30 m。Fs 低於 1.2 共 2.9 天，分屬兩場颱風，沒有低於 1.0 的時段。</p>
+<figure class="wide"><img src="img/17-board.png" alt="最小 Fs 時刻的水位線與滑動面"><figcaption>最小 Fs 時刻的地下水位線（實線）與控制滑動面（橘色虛線），藍色虛線為剖面水位線</figcaption></figure>
+<ul>
+<li>拖曳圖下方的<b>時間軸</b>、按 ◀ ▶ 或直接點圖，可以逐時檢視。剖面圖同步顯示該時刻的地下水位線、各井水位與控制滑動面，左上角標出時間與 Fs。按<b>跳到最小 Fs</b> 回到最危險的時刻。</li>
+<li>「候選滑動面」列出每一條候選滑動面的搜尋時刻與控制的時刻數，可以看出低水位與高水位時的滑動面是否不同。</li>
+<li><b>下載結果 (CSV)</b> 包含每個時刻的雨量、各井水位與升降量、Fs 與控制滑動面的編號；<b>下載圖檔 (SVG)</b> 可以直接放進報告。</li>
+</ul>
+<div class="note warn"><b>使用限制</b>孔隙水壓以各時刻的水位線換算靜水壓，不含暫態滲流產生的超額孔隙水壓，也不考慮入滲造成的非飽和區吸力變化。井與井之間的水位是內插值，井太少或離滑動面太遠時，結果可能偏離實際。井的篩管若位於受壓含水層，宜改以水壓線表示該層的水壓（第 12 章）。</div>
+<div class="note tip"><b>訂定門檻</b>從結果 CSV 可以找出 Fs 降到要求值或 1.0 時各井的水位，作為水位警戒值的參考；搭配雨量欄也可以檢視累積雨量與 Fs 的關係。</div>
 </section>
 
 <!-- ================================================================ -->
@@ -781,6 +864,8 @@
 <tr><td><a href="examples/tutorial-1-slope.json">tutorial-1-slope.json</a></td><td>剖面、土層參數與道路車載，無補強</td><td>第 4 章，進階各章的起點</td></tr>
 <tr><td><a href="examples/tutorial-2-nails.json">tutorial-2-nails.json</a></td><td>加入 8 支 9 m 土釘與三個情境</td><td>第 5、6 章</td></tr>
 <tr><td><a href="examples/tutorial-3-wall.json">tutorial-3-wall.json</a></td><td>再加入坡趾重力式擋土牆</td><td>第 7、8 章</td></tr>
+<tr><td><a href="examples/tutorial-4-wells.json">tutorial-4-wells.json</a></td><td>第 4 章的模型加上兩口觀測井與虛擬示範時序</td><td>第 17 章</td></tr>
+<tr><td><a href="examples/wells-demo.csv">wells-demo.csv</a></td><td>虛擬示範的逐時雨量與井水位</td><td>第 17 章</td></tr>
 <tr><td><a href="examples/tutorial-report.docx">tutorial-report.docx</a>、<a href="examples/tutorial-report.pdf">.pdf</a></td><td>教學案例的計算書</td><td>第 8 章</td></tr>
 </tbody>
 </table>
@@ -808,7 +893,7 @@
 </section>
 
 </main>
-<footer class="docfoot screen-only"><p>SSA 邊坡穩定分析 使用手冊 <span class="v-man">1.1</span>・對應程式 <span class="v-ssa">v2.10.3</span>・陳振宇 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
+<footer class="docfoot screen-only"><p>SSA 邊坡穩定分析 使用手冊 <span class="v-man">1.2</span>・對應程式 <span class="v-ssa">v2.11.0</span>・陳振宇 <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
 <script src="manual.js"></script>
 </body>
 </html>

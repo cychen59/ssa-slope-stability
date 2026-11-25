@@ -9,7 +9,7 @@
 </head>
 <body>
 <!-- program version this manual describes; checked against ../../index.html SSA_VERSION at build time -->
-<div id="meta" data-ssa-version="2.10.3" data-ssa-date="2026-11-03" data-manual-version="1.1" hidden></div>
+<div id="meta" data-ssa-version="2.11.0" data-ssa-date="2026-11-25" data-manual-version="1.2" hidden></div>
 
 <header class="cover" id="cover">
   <div class="cover-top"><span class="mark">SSA</span><span class="cover-kicker">Slope Stability Analysis</span></div>
@@ -17,8 +17,8 @@
   <p class="cover-sub">From your first slope to a complete check report</p>
   <img class="cover-img" src="img/07-board-global.png" alt="Tutorial case: critical slip surface with soil nails and a retaining wall at the toe">
   <dl class="cover-meta">
-    <dt>Program version</dt><dd><span class="v-ssa">v2.10.3</span> (<span class="v-date">2026-11-03</span>)</dd>
-    <dt>Manual version</dt><dd><span class="v-man">1.1</span></dd>
+    <dt>Program version</dt><dd><span class="v-ssa">v2.11.0</span> (<span class="v-date">2026-11-25</span>)</dd>
+    <dt>Manual version</dt><dd><span class="v-man">1.2</span></dd>
     <dt>Developer</dt><dd>Chen-Yu Chen (陳振宇)</dd>
     <dt>Contact</dt><dd><a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></dd>
     <dt>Web app</dt><dd><a href="https://cychen59.github.io/ssa-slope-stability/?lang=en">cychen59.github.io/ssa-slope-stability</a></dd>
@@ -53,7 +53,7 @@
 <tr><td>6</td><td>Normal, heavy rain and earthquake cases</td><td>tutorial-2-nails.json</td></tr>
 <tr><td>7</td><td>External stability of a retaining wall</td><td>tutorial-3-wall.json</td></tr>
 <tr><td>8</td><td>Producing the report and saving</td><td>tutorial-report.docx</td></tr>
-<tr><td rowspan="8">Advanced</td><td>9</td><td>Known slip surface locations: control points</td><td rowspan="8">Each chapter starts from tutorial-1-slope.json</td></tr>
+<tr><td rowspan="9">Advanced</td><td>9</td><td>Known slip surface locations: control points</td><td rowspan="8">Each chapter starts from tutorial-1-slope.json</td></tr>
 <tr><td>10</td><td>Specified slip surfaces and circles (checking an old report)</td></tr>
 <tr><td>11</td><td>Back-calculating soil parameters</td></tr>
 <tr><td>12</td><td>Piezometric lines per layer and pore pressure ratio r<sub>u</sub></td></tr>
@@ -61,6 +61,7 @@
 <tr><td>14</td><td>Stabilizing piles, micropiles and geosynthetics</td></tr>
 <tr><td>15</td><td>Calculation methods and search settings</td></tr>
 <tr><td>16</td><td>Units, saving, verification report and versions</td></tr>
+<tr><td>17</td><td>Observation wells and the Fs time series</td><td>tutorial-4-wells.json</td></tr>
 </tbody>
 </table>
 
@@ -71,6 +72,7 @@
 <li>Reinforcement: soil nails, ground anchors, stabilizing piles, micropiles and geosynthetics.</li>
 <li>Gravity, cantilever and counterfort retaining walls, including external stability checks.</li>
 <li>Several cases such as normal, heavy rain and earthquake, computed in one go and judged against the code.</li>
+<li>Factor of safety at every time from observation-well records (Fs time series).</li>
 <li>Calculation reports in Word or PDF.</li>
 </ul>
 
@@ -89,7 +91,7 @@
 <thead><tr><th>No.</th><th>Area</th><th>Purpose</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Top buttons</td><td>Undo (Ctrl+Z), Load example, this user manual, Theory, language switch.</td></tr>
-<tr><td>2</td><td>Tabs</td><td>Profile, Soils, Loads, Reinf., Walls, Settings, Check, Help. Data is entered roughly in this order.</td></tr>
+<tr><td>2</td><td>Tabs</td><td>Profile, Soils, Loads, Reinf., Walls, Settings, Check, Wells, Help. Data is entered roughly in this order.</td></tr>
 <tr><td>3</td><td>Toolbar</td><td>Drag, add or delete points on the drawing, snap spacing, show slices or search nodes, fit to window.</td></tr>
 <tr><td>4</td><td>Profile drawing</td><td>Shows terrain, layers, water, loads, reinforcement and slip surfaces live, and can be edited with the mouse.</td></tr>
 <tr><td>5</td><td>Calculation buttons</td><td>“Find critical slip surface” runs the automatic search; “Check specified surface” evaluates only the surface you specified.</td></tr>
@@ -730,14 +732,95 @@
 <li><b>JSON model file</b>: “Save model” and “Import model…” on the Settings tab, holding all input and settings (Section 8.3).</li>
 <li><b>CSV</b>: terrain can be imported from CSV (Section 1.2); slice details and the multi-case summary can be copied as CSV.</li>
 <li><b>Report</b>: Word or PDF (Chapter 8).</li>
+<li><b>Well records</b>: water levels and rainfall are imported from CSV and saved with the JSON model; the Fs series can be downloaded as CSV and as an SVG chart (Chapter 17).</li>
 <li><b>Undo</b>: Ctrl+Z or “Undo” at the top left goes back one step.</li>
 </ul>
 <h3>16.3 Verification report</h3>
 <figure class="mid"><img src="img/16-verify.png" alt="Verification report"><figcaption>Result of the verification report on the Help tab</figcaption></figure>
-<p><b>Run verification</b> on the Help tab recomputes every verification problem in your browser with the current calculation core: closed-form solutions, Fredlund and Krahn, the ACADS benchmarks, ponded water and tension cracks, piezometric lines, reinforcement members, steel pipe pile examples and retaining wall external stability. It lists the reference value, this tool's result, the difference and pass or fail, and takes about three minutes. The result can be downloaded as Word or printed to PDF as program verification documentation for design review. In v2.10.3 all 146 checks pass.</p>
+<p><b>Run verification</b> on the Help tab recomputes every verification problem in your browser with the current calculation core: closed-form solutions, Fredlund and Krahn, the ACADS benchmarks, ponded water and tension cracks, piezometric lines, reinforcement members, steel pipe pile examples and retaining wall external stability. It lists the reference value, this tool's result, the difference and pass or fail, and takes about three minutes. The result can be downloaded as Word or printed to PDF as program verification documentation for design review. In v2.11.0 all 146 checks pass.</p>
 <h3>16.4 Versions and languages</h3>
 <p>The program version appears next to the page title, in reports and in saved files. The version history on the Help tab lists the changes in each version. The cover of this manual states the program version it describes, and the manual is revised when the program gains features.</p>
 <p>The buttons at the top right switch between 中文, English and 日本語, and reports are produced in the current language. This manual is also available in <a href="../">Chinese</a> and <a href="../ja/">Japanese</a>.</p>
+</section>
+
+<section class="chap" id="c17">
+<h2><span class="cn">Chapter 17</span>Observation wells and the Fs time series</h2>
+<div class="when"><p class="when-h">When to use it</p>
+<ul>
+<li>The slope has groundwater observation wells and a rain gauge, and you want to see how the factor of safety changes during each rainfall event, which events push Fs below the required value, and for how long.</li>
+<li>For an early-warning plan, you need to know how high the water must rise before Fs drops to the required value or to 1.0, as a basis for water-level or rainfall thresholds.</li>
+</ul></div>
+<p>This chapter starts from the Chapter 4 model and works through the synthetic demo data built into the program. The finished model is <a href="examples/tutorial-4-wells.json">tutorial-4-wells.json</a> (records included), and the records are also saved as <a href="examples/wells-demo.csv">wells-demo.csv</a>.</p>
+<h3>17.1 The water line at each time</h3>
+<p>Wells measure the water level at a few points only, but the analysis needs a complete water line. SSA keeps the shape of the water table on the Profile tab and moves it so that it passes through the observed level at every well.</p>
+<p>z<sub>w</sub>(x, t) = z<sub>w0</sub>(x) + Δh(x, t),　Δh<sub>i</sub>(t) = h<sub>i</sub>(t) − z<sub>w0</sub>(x<sub>i</sub>)</p>
+<p>Here z<sub>w0</sub> is the water table of the profile and h<sub>i</sub>(t) the level in well i at time t. Δh is interpolated linearly between wells and kept constant beyond the outermost wells; where the raised line would be above the ground it is capped at the ground. Piezometric lines (Chapter 12) are moved by the same Δh.</p>
+<div class="note tip"><b>Drawing the reference water table</b>The reference shape decides the water line between and beyond the wells, so draw it as the usual water table from the topography and boreholes. More wells, closer to the likely slip surfaces, give a more reliable water line.</div>
+<h3>17.2 Setting up the wells</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/17-wells.png" alt="Observation wells"><figcaption>Observation wells on the Wells tab</figcaption></figure>
+<div>
+<ol class="steps">
+<li>Make sure the Profile tab has a water table.</li>
+<li>On the Wells tab, click <b>+ Add well</b> and enter the name and position x. When a CSV is imported, columns headed with a well name are matched to that well, and other columns add new wells.</li>
+<li>With <b>Data type</b> “Water elevation” the records are elevations; with “Depth below ground” they are depths measured down from the ground, converted with the ground elevation at the well.</li>
+<li>Each card lists the ground elevation and profile water table at the well, the number of records and the range of levels. A warning appears if levels are above the ground, which usually means a wrong data type or position.</li>
+</ol>
+<p>The wells are drawn as vertical lines on the section. A well with <b>On</b> unticked is left out of the calculation.</p>
+</div>
+</div>
+<h3>17.3 Importing water levels and rainfall</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/17-records.png" alt="Water-level and rainfall records"><figcaption>Importing the records</figcaption></figure>
+<div>
+<p>Records are imported from a CSV file. The first row is a header and the first column is the time; every other column is headed by a well name. A column whose header contains “rain” holds rainfall (mm) and may be left out.</p>
+<pre class="code">time,rain(mm),W1,W2
+2024-05-01 00:00,0,13.91,16.57
+2024-05-01 01:00,0,13.92,16.57
+…</pre>
+<ul>
+<li>Times may be written as 2024-07-24 13:00, 2024/7/24 13:00 or 2024-07-24T13:00, or as numbers in hours.</li>
+<li>The interval need not be constant. Missing levels are interpolated linearly from the neighbouring records; missing rainfall counts as 0.</li>
+<li>After import, the number of records, the period, the interval and the total rainfall are shown. The records are saved with the JSON model file.</li>
+</ul>
+<p><b>Load synthetic demo data</b> places two wells on the current section and generates hourly records from May to October 2024 with afternoon thunderstorms, two frontal (plum rain) events and two typhoons; the levels follow the rainfall through a linear-reservoir model. These are synthetic data for practice, not measurements.</p>
+</div>
+</div>
+<h3>17.4 Computing the Fs series</h3>
+<div class="fig-row">
+<figure class="side"><img src="img/17-run.png" alt="Fs series computation"><figcaption>Settings and summary</figcaption></figure>
+<div>
+<p>A full search at every time would take too long, so SSA works in three steps.</p>
+<ol class="steps">
+<li>Full searches at a few key times give the candidate slip surfaces. The key times are the time of the lowest water and several water-level peaks at least 72 hours apart.</li>
+<li>Every other time is evaluated on all candidate surfaces and takes the minimum Fs.</li>
+<li>A further full search is run at the time of the lowest Fs. If it finds a more critical surface, that surface is added and the series recomputed, until the time of the lowest Fs has been searched.</li>
+</ol>
+<p>In addition, the rise at each well is rounded by <b>Rounding of rise</b> (0.05 m by default) and times with the same rounded rises are computed once. The 4416 demo records fall into 312 groups and finish in about 5 seconds.</p>
+</div>
+</div>
+<table class="plain">
+<thead><tr><th>Setting</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>Time step</td><td>As recorded, or merged into 1, 3, 6, 12 or 24 hours. A merged step takes the highest level and the total rainfall in it and is labelled at its end.</td></tr>
+<tr><td>Rounding of rise</td><td>Width of the groups. Smaller values give more groups and a water line closer to the observations.</td></tr>
+<tr><td>Procedure</td><td>“Key-time search” is the procedure above; “Full search, all groups” runs a full search for every group. It is the most rigorous but slow, and is useful as a check.</td></tr>
+<tr><td>Key times</td><td>Number of full searches, 4 by default: the lowest water once and three water-level peaks. Increase it when there are many events or the slip surface moves with the water level.</td></tr>
+<tr><td>Required Fs</td><td>Used to count the time below the required value; 1.2 by default (heavy-rain case of the Taiwanese soil and water conservation code).</td></tr>
+</tbody>
+</table>
+<p>The method, seismic coefficients and search settings come from the Settings tab. With the demo data both procedures give the same minimum Fs of 1.021 at the same time, and Fs at any time differs by less than 0.5% (slightly higher with the key-time search), while the run time drops from 298 s to about 6 s.</p>
+<h3>17.5 Reading the results</h3>
+<figure class="wide"><img src="img/17-series.png" alt="Fs time series"><figcaption>Rainfall, well levels and Fs against time (synthetic demo data)</figcaption></figure>
+<p>The results appear below the drawing: rainfall, the level in each well and Fs, from top to bottom. Dotted lines in the level chart mark the ground at each well; the dashed lines in the Fs chart are the required value and 1.0. The Wells tab shows a summary. In this example the minimum Fs = 1.021 occurs during the first typhoon at 2024-07-25 17:00, when W1 is 2.30 m above the profile water table. Fs is below 1.2 for 2.9 days in total during the two typhoons and never below 1.0.</p>
+<figure class="wide"><img src="img/17-board.png" alt="Water line and slip surface at the lowest Fs"><figcaption>Water line (solid) and governing slip surface (orange dashed) at the lowest Fs; the blue dashed line is the profile water table</figcaption></figure>
+<ul>
+<li>Drag the <b>time slider</b>, use ◀ ▶ or click the chart to step through the times. The drawing shows the water line, the level in each well and the governing slip surface at that time, with the time and Fs at the top left. <b>Go to minimum Fs</b> returns to the most critical time.</li>
+<li>“Candidate surfaces” lists when each candidate was searched and how many times it governs, which shows whether the slip surface at low and high water differs.</li>
+<li><b>Download results (CSV)</b> gives the rainfall, level and rise in each well, Fs and the governing surface for every time; <b>Download chart (SVG)</b> gives a figure ready for a report.</li>
+</ul>
+<div class="note warn"><b>Limitations</b>Pore pressure is hydrostatic below the water line of each time; excess pore pressure from transient seepage and changes of suction in the unsaturated zone are not included. Levels between wells are interpolated, so with few wells or wells far from the slip surface the result may depart from reality. If a well is screened in a confined aquifer, represent the pressure in that layer with a piezometric line (Chapter 12).</div>
+<div class="note tip"><b>Setting thresholds</b>The results CSV shows the level in each well when Fs drops to the required value or to 1.0, a starting point for water-level alert values; with the rainfall column you can also relate cumulative rainfall to Fs.</div>
 </section>
 
 <!-- ================================================================ -->
@@ -781,6 +864,8 @@
 <tr><td><a href="examples/tutorial-1-slope.json">tutorial-1-slope.json</a></td><td>Profile, soil parameters and traffic load, no reinforcement</td><td>Chapter 4; start of each advanced chapter</td></tr>
 <tr><td><a href="examples/tutorial-2-nails.json">tutorial-2-nails.json</a></td><td>With 8 soil nails 9 m long and three cases</td><td>Chapters 5 and 6</td></tr>
 <tr><td><a href="examples/tutorial-3-wall.json">tutorial-3-wall.json</a></td><td>With a gravity retaining wall at the toe</td><td>Chapters 7 and 8</td></tr>
+<tr><td><a href="examples/tutorial-4-wells.json">tutorial-4-wells.json</a></td><td>The Chapter 4 model with two observation wells and the synthetic demo records</td><td>Chapter 17</td></tr>
+<tr><td><a href="examples/wells-demo.csv">wells-demo.csv</a></td><td>Synthetic hourly rainfall and well levels</td><td>Chapter 17</td></tr>
 <tr><td><a href="examples/tutorial-report.docx">tutorial-report.docx</a>, <a href="examples/tutorial-report.pdf">.pdf</a></td><td>Report for the tutorial case</td><td>Chapter 8</td></tr>
 </tbody>
 </table>
@@ -808,7 +893,7 @@
 </section>
 
 </main>
-<footer class="docfoot screen-only"><p>SSA Slope Stability Analysis User Manual <span class="v-man">1.1</span> · Program <span class="v-ssa">v2.10.3</span> · Chen-Yu Chen <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
+<footer class="docfoot screen-only"><p>SSA Slope Stability Analysis User Manual <span class="v-man">1.2</span> · Program <span class="v-ssa">v2.11.0</span> · Chen-Yu Chen <a href="mailto:cychen59@gmail.com">cychen59@gmail.com</a></p></footer>
 <script src="../manual.js"></script>
 </body>
 </html>
